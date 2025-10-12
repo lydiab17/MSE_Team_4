@@ -15,4 +15,20 @@
    ![Git Path prüfen](assets/Settings_Menu_IntelliJ.png)
    ![Git Path prüfen](assets/Git_Path_IntelliJ.png)
    
+2. **Über das Menü VCS können Git-Befehle auch ohne Konsole ausgeführt werden.**
+
+   a. **Ein neues Git-Repository erstellen:**  
+   `VCS → Create Git Repository → (Projektordner auswählen)`
+
+   ![Git Repository erstellen](assets/img/Create_Git_Repo_IntelliJ.png)
+
+   b. **Einen Commit erstellen:**  
+   Über Menü `Git → Commit`.  
+   ![Commit erstellen](assets/img/Commit_IntelliJ1.png)
+
+   Dort auswählen, welche Dateien committed werden sollen, und eine Commit Message schreiben.  
+   Die Commits können bei Bedarf auch direkt gepusht werden. Danach erscheint unten rechts eine Erfolgsmeldung.
+
+   ![Commit erstellen](assets/img/Commit_IntelliJ2.png)
+
 ## Nützliche Git-Tools und Pla ormen (z. B. GitHub) 
