@@ -1,6 +1,6 @@
 # EA1 Grundlagen Git
 
-## Was ist Git und warum sollte es verwendet werden? 
+## Was ist Git und warum sollte es verwendet werden? (Lydia Boes)
 Git ist ein verteiltes Versionskontrollsystem (= Distributed Version Control System). Mithilfe von Git ist es möglich, Änderungen an Softwareprojekten (z.B. an Quellcode oder Dateien) zu verfolgen und nachzuvollziehen. Zum Beispiel lassen sich damit die folgenden Fragen beantworten:
 - Wer hat etwas geändert?
 - Wann wurde etwas geändert?
