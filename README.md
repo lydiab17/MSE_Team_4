@@ -12,9 +12,8 @@ Git bietet die Möglichkeit mit mehreren Entwicklern gleichzeitig am selben Soft
 
 Heutzutage gilt Git als Standard in der Softwareentwicklung. 
 
-## Grundlegende Git-Befehle (z. B. git init, git add, git commit, git push) 
+## Grundlegende Git-Befehle (z. B. git init, git add, git commit, git push) (Malinda Riebenstahl)
 [Git-Befehle.pdf](https://github.com/user-attachments/files/22888931/Git-Befehle.pdf)
-Malinda Riebenstahl
 
 | Git-Befehl | Description / Erklärung |
 | --- | --- |
