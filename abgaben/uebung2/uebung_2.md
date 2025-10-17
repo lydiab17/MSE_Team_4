@@ -40,7 +40,7 @@
 
 ## 6. Bonus
 
-- [ ] Erweiterung der CI-Pipeline
-- [ ] Code-Linting
-- [ ] Code-Coverage-Reports
-- [ ] automatische Dokumentation  
+- Erweiterung der CI-Pipeline
+  - [ ] Code-Linting
+  - [ ] Code-Coverage-Reports
+  - [ ] automatische Dokumentation  
