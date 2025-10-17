@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 run-name: ${{ github.actor }} is running CI/CD pipeline
 on:
   push:
-    branches: [ main, Fabian, Malinda, Ulli, lydia ]
+    branches: [ main, Fabian, Malinda, Ulli, lydia, ci_cd ]
   pull_request:
     branches: [ main ]
 
