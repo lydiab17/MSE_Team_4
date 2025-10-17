@@ -1,0 +1,63 @@
+name: CI/CD Pipeline
+run-name: ${{ github.actor }} is running CI/CD pipeline
+on:
+  push:
+    branches: [ main, Fabian, Malinda, Ulli, lydia, ci_cd ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      - name: Build application
+        run: |
+          echo "Building application"
+          echo "..."
+          echo "Build completed successfully"
+
+  unit-tests:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      - name: Run unit tests
+        run: |
+          echo "Running unit tests"
+          echo "..."
+          echo "All unit tests passed"
+
+  integration-tests:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      - name: Run integration tests
+        run: |
+          echo "Running integration tests"
+          echo "..."
+          echo "All integration tests passed"
+
+  code-quality:
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+      
+      - name: Code quality check
+        run: |
+          echo "Running code quality analysis"
+          echo "..."
+          echo "Code quality check passed"
