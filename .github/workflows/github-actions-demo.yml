@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 run-name: ${{ github.actor }} is running CI/CD pipeline
 on:
   push:
-    branches: [ main, Fabian, Malinda, Ulli, lydia, ci_cd ]
+    branches: [ Fabian, lydia, Ulli ]
   pull_request:
     branches: [ main ]
 
@@ -35,7 +35,7 @@ jobs:
           echo "All unit tests passed"
 
   integration-tests:
-    needs: build
+    needs: [build, unit-tests]
     runs-on: ubuntu-latest
     
     steps:

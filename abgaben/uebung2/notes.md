@@ -28,6 +28,3 @@ touch .github/workflows/github-actions-demo.yml
 - Ereignisse, die außerhalb des Repo auftreten
 - Geplante zeiten
 - Manuell
-
-
-
