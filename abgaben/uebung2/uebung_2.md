@@ -1,18 +1,18 @@
 ## 1. Einführung in CI/CD
 
-- [ ] Diskutieren Sie im Team die grundlegenden Konzepte von Continuous Integration und Continuous Deployment
-- [ ] Diskutieren Sie, wie CI/CD Ihre Softwareentwicklung unterstützt (z. B. wie automatisierte Tests und Builds integriert werden)
-- [ ] Halten Sie Ihre Diskussionsresultate fest, um diese in der Zwischenpräsentation vorzustellen
-- [ ] Begründen Sie Ihre Wahl der Plattform
+- [x] Diskutieren Sie im Team die grundlegenden Konzepte von Continuous Integration und Continuous Deployment
+- [x] Diskutieren Sie, wie CI/CD Ihre Softwareentwicklung unterstützt (z. B. wie automatisierte Tests und Builds integriert werden)
+- [x] Halten Sie Ihre Diskussionsresultate fest, um diese in der Zwischenpräsentation vorzustellen
+- [x] Begründen Sie Ihre Wahl der Plattform
 
 ---
 
 ## 2. Einrichtung der CI/CD-Pipeline
 
-- [ ] Implementieren Sie eine CI-Pipeline, die bei jedem neuen Commit oder Pull Request:
-    - [ ] den Quellcode automatisch baut
-    - [ ] automatisierte Tests ausführt
-- [ ] eine Konfigurationsdatei (für die Pipeline) erstellen
+- [x] Implementieren Sie eine CI-Pipeline, die bei jedem neuen Commit oder Pull Request:
+    - [x] den Quellcode automatisch baut
+    - [x] automatisierte Tests ausführt
+- [x] eine Konfigurationsdatei (für die Pipeline) erstellen
 
 ---
 
