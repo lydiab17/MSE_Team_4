@@ -1,0 +1,336 @@
+<mxfile host="drawio-plugin" agent="Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36" modified="2025-10-30T22:50:59.410Z" etag="0UG6BcEWku-yddbnvRo3" version="22.1.22" type="embed">
+  <diagram name="eVote-ClassDiagram-02" id="domain-model-class-diagram">
+    <mxGraphModel dx="2765" dy="665" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="citizen-context" value="Citizen Management Context" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#e1d5e7;strokeColor=#9673a6;" parent="1" vertex="1">
+          <mxGeometry x="100" y="10" width="350" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="citizen" value="&lt;&lt;Aggregate Root&gt;&gt;&#xa;Citizen" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="90" y="60" width="200" height="120" as="geometry" />
+        </mxCell>
+        <mxCell id="citizen-fields" value="- id: CitizenId&#xa;- personalInfo: PersonalInfo&#xa;- authentication: Authentication&#xa;- emailVerification: EmailVerification&#xa;- status: RegistrationStatus" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="citizen" vertex="1">
+          <mxGeometry y="40" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="personalinfo" value="&lt;&lt;Value Object&gt;&gt;&#xa;PersonalInfo" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="350" y="70" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="personalinfo-fields" value="- firstName: String&#xa;- lastName: String&#xa;- email: Email" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="personalinfo" vertex="1">
+          <mxGeometry y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="authentication" value="&lt;&lt;Entity&gt;&gt;&#xa;Authentication" style="swimlane;fontStyle=0;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="35" y="200" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="authentication-fields" value="- passwordHash: String&#xa;- isEmailVerified: boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="authentication" vertex="1">
+          <mxGeometry y="40" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="emailverification" value="&lt;&lt;Value Object&gt;&gt;&#xa;EmailVerification" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="215" y="200" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="emailverification-fields" value="- verificationCode: String&#xa;- expiresAt: DateTime&#xa;- isUsed: boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="emailverification" vertex="1">
+          <mxGeometry y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="voting-context" value="Voting Management Context" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#d5e8d4;strokeColor=#82b366;" parent="1" vertex="1">
+          <mxGeometry x="510" y="10" width="350" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="voting" value="&lt;&lt;Aggregate Root&gt;&gt;&#xa;Voting" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="585" y="60" width="200" height="160" as="geometry" />
+        </mxCell>
+        <mxCell id="voting-fields" value="- id: VotingId&#xa;- info: VotingInfo&#xa;- schedule: VotingSchedule&#xa;- options: List&lt;VotingOption&gt;&#xa;- status: VotingStatus" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="voting" vertex="1">
+          <mxGeometry y="40" width="200" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="voting-line" value="" style="line;strokeWidth=1;fillColor=none;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;strokeColor=inherit;" parent="voting" vertex="1">
+          <mxGeometry y="120" width="200" height="8" as="geometry" />
+        </mxCell>
+        <mxCell id="voting-methods" value="+ canAcceptVotes(): boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="voting" vertex="1">
+          <mxGeometry y="128" width="200" height="32" as="geometry" />
+        </mxCell>
+        <mxCell id="votinginfo" value="&lt;&lt;Value Object&gt;&gt;&#xa;VotingInfo" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="580" y="240" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="votinginfo-fields" value="- title: String&#xa;- description: String&#xa;- category: String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="votinginfo" vertex="1">
+          <mxGeometry y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="vote-context" value="Vote Management Context" style="rounded=1;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1;fillColor=#f8cecc;strokeColor=#b85450;" parent="1" vertex="1">
+          <mxGeometry x="100" y="380" width="600" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="vote" value="&lt;&lt;Aggregate Root&gt;&gt;&#xa;Vote" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="120" y="430" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="vote-fields" value="- id: VoteId&#xa;- votingRef: VotingReference&#xa;- voterRef: VoterReference&#xa;- choices: List&lt;VoteChoice&gt;&#xa;- metadata: VoteMetadata&#xa;- isValid: boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="vote" vertex="1">
+          <mxGeometry y="40" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="result" value="&lt;&lt;Aggregate Root&gt;&gt;&#xa;VotingResult" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;" parent="1" vertex="1">
+          <mxGeometry x="400" y="430" width="200" height="140" as="geometry" />
+        </mxCell>
+        <mxCell id="result-fields" value="- id: ResultId&#xa;- votingRef: VotingReference&#xa;- counts: List&lt;VoteCount&gt;&#xa;- metrics: ResultMetrics&#xa;- isPublished: boolean" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="result" vertex="1">
+          <mxGeometry y="40" width="200" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="citizenid" value="&lt;&lt;Value Object&gt;&gt;&#xa;CitizenId" style="whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="-80" y="480" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="votingid" value="&lt;&lt;Value Object&gt;&gt;&#xa;VotingId" style="whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="330" y="600" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="email" value="&lt;&lt;Value Object&gt;&gt;&#xa;Email" style="whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="390" y="200" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="registrationstatus" value="&lt;&lt;Value Object&gt;&gt;&#xa;RegistrationStatus" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="390" y="260" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="registrationstatus-fields" value="- status: String&#xa;- verifiedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="registrationstatus" vertex="1">
+          <mxGeometry y="40" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="votingschedule" value="&lt;&lt;Value Object&gt;&gt;&#xa;VotingSchedule" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="810" y="60" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="votingschedule-fields" value="- startDate: DateTime&#xa;- endDate: DateTime&#xa;- timeZone: String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="votingschedule" vertex="1">
+          <mxGeometry y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="votingstatus" value="&lt;&lt;Value Object&gt;&gt;&#xa;VotingStatus" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="750" y="280" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="votingstatus-fields" value="- status: String&#xa;- statusChangedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="votingstatus" vertex="1">
+          <mxGeometry y="40" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="votingoption" value="&lt;&lt;Value Object&gt;&gt;&#xa;VotingOption" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="810" y="170" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="votingoption-fields" value="- optionId: String&#xa;- optionText: String&#xa;- displayOrder: int" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="votingoption" vertex="1">
+          <mxGeometry y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="voteid" value="&lt;&lt;Value Object&gt;&gt;&#xa;VoteId" style="whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="-50" y="414" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="votingreference" value="&lt;&lt;Value Object&gt;&gt;&#xa;VotingReference" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="260" y="670" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="votingreference-fields" value="- votingId: VotingId" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="votingreference" vertex="1">
+          <mxGeometry y="40" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="voterreference" value="&lt;&lt;Value Object&gt;&gt;&#xa;VoterReference" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="90" y="660" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="voterreference-fields" value="- citizenId: CitizenId" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="voterreference" vertex="1">
+          <mxGeometry y="40" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="votechoice" value="&lt;&lt;Value Object&gt;&gt;&#xa;VoteChoice" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="-115" y="540" width="150" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="votechoice-fields" value="- optionId: String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="votechoice" vertex="1">
+          <mxGeometry y="40" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="votemetadata" value="&lt;&lt;Value Object&gt;&gt;&#xa;VoteMetadata" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="-70" y="630" width="150" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="votemetadata-fields" value="- castAt: DateTime&#xa;- ipAddress: String" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="votemetadata" vertex="1">
+          <mxGeometry y="40" width="150" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="resultid" value="&lt;&lt;Value Object&gt;&gt;&#xa;ResultId" style="whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="480" y="600" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="votecount" value="&lt;&lt;Value Object&gt;&gt;&#xa;VoteCount" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="640" y="440" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="votecount-fields" value="- optionId: String&#xa;- voteCount: int&#xa;- percentage: double" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="votecount" vertex="1">
+          <mxGeometry y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="resultmetrics" value="&lt;&lt;Value Object&gt;&gt;&#xa;ResultMetrics" style="swimlane;fontStyle=2;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=40;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;" parent="1" vertex="1">
+          <mxGeometry x="620" y="570" width="150" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="resultmetrics-fields" value="- totalVotes: int&#xa;- turnoutPercentage: double&#xa;- calculatedAt: DateTime" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;whiteSpace=wrap;html=1;" parent="resultmetrics" vertex="1">
+          <mxGeometry y="40" width="150" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="citizen-to-personalinfo" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="citizen" target="personalinfo" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="280" y="120" as="sourcePoint" />
+            <mxPoint x="290" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="citizen-to-auth" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="citizen" target="authentication" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="170" y="200" as="sourcePoint" />
+            <mxPoint x="170" y="210" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="citizen-to-emailverif" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="citizen" target="emailverification" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="220" y="190" as="sourcePoint" />
+            <mxPoint x="280" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="voting-to-votinginfo" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="voting" target="votinginfo" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="570" y="120" as="sourcePoint" />
+            <mxPoint x="580" y="120" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="personalinfo-to-email" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="personalinfo" target="email" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="430" y="170" as="sourcePoint" />
+            <mxPoint x="480" y="250" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vote-to-citizenid" value="" style="endArrow=none;html=1;rounded=0;dashed=1;" parent="1" source="vote" target="citizenid" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="470" as="sourcePoint" />
+            <mxPoint x="470" y="240" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="citizen-ref-label" value="references" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="vote-to-citizenid" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vote-to-votingid" value="" style="endArrow=none;html=1;rounded=0;dashed=1;" parent="1" source="vote" target="votingid" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="490" as="sourcePoint" />
+            <mxPoint x="470" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="voting-ref-label" value="references" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="vote-to-votingid" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="result-to-votingid" value="" style="endArrow=none;html=1;rounded=0;dashed=1;" parent="1" source="result" target="votingid" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="480" y="430" as="sourcePoint" />
+            <mxPoint x="520" y="290" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="result-ref-label" value="references" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="result-to-votingid" vertex="1" connectable="0">
+          <mxGeometry x="0.1" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vote-contributes-result" value="" style="endArrow=open;html=1;rounded=0;endFill=0;dashed=1;" parent="1" source="vote" target="result" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="500" as="sourcePoint" />
+            <mxPoint x="400" y="500" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="contributes-label" value="contributes to" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="vote-contributes-result" vertex="1" connectable="0">
+          <mxGeometry x="-0.1" y="-1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="legend" value="Legend" style="rounded=1;whiteSpace=wrap;html=1;fontSize=12;fontStyle=1;fillColor=#f5f5f5;strokeColor=#666666;" parent="1" vertex="1">
+          <mxGeometry x="1050" y="325" width="150" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="aggregate-legend" value="&lt;&lt;Aggregate Root&gt;&gt;" style="whiteSpace=wrap;html=1;fillColor=#fff2cc;strokeColor=#d6b656;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1050" y="355" width="120" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="aggregate-text" value="Aggregate Root" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1175" y="360" width="90" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="entity-legend" value="&lt;&lt;Entity&gt;&gt;" style="whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1050" y="385" width="120" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="entity-text" value="Entity" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1175" y="390" width="40" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="valueobject-legend" value="&lt;&lt;Value Object&gt;&gt;" style="whiteSpace=wrap;html=1;fillColor=#e6f7ff;strokeColor=#0050ef;fontSize=10;fontStyle=2;" parent="1" vertex="1">
+          <mxGeometry x="1050" y="415" width="120" height="25" as="geometry" />
+        </mxCell>
+        <mxCell id="valueobject-text" value="Value Object" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1175" y="422" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="composition-legend" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;fontSize=10;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1300" y="367" as="sourcePoint" />
+            <mxPoint x="1350" y="367" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="composition-text" value="Composition" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1360" y="360" width="80" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="reference-legend" value="" style="endArrow=none;html=1;rounded=0;dashed=1;fontSize=10;" parent="1" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="1300" y="397" as="sourcePoint" />
+            <mxPoint x="1350" y="397" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="reference-text" value="Cross-context reference" style="text;html=1;align=left;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;fontSize=10;" parent="1" vertex="1">
+          <mxGeometry x="1360" y="390" width="130" height="15" as="geometry" />
+        </mxCell>
+        <mxCell id="citizen-to-registrationstatus" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="citizen" target="registrationstatus" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="290" y="180" as="sourcePoint" />
+            <mxPoint x="390" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="voting-to-votingschedule" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="voting" target="votingschedule" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="785" y="120" as="sourcePoint" />
+            <mxPoint x="960" y="110" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="voting-to-votingstatus" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="voting" target="votingstatus" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="785" y="180" as="sourcePoint" />
+            <mxPoint x="960" y="220" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="voting-to-votingoption" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="voting" target="votingoption" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="785" y="160" as="sourcePoint" />
+            <mxPoint x="800" y="230" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vote-to-voteid" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="vote" target="voteid" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="470" as="sourcePoint" />
+            <mxPoint x="620" y="450" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vote-to-votingreference" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="vote" target="votingreference" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="500" as="sourcePoint" />
+            <mxPoint x="620" y="515" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vote-to-voterreference" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="vote" target="voterreference" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="520" as="sourcePoint" />
+            <mxPoint x="620" y="595" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vote-to-votechoice" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="vote" target="votechoice" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="500" as="sourcePoint" />
+            <mxPoint x="780" y="515" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="vote-to-votemetadata" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="vote" target="votemetadata" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="320" y="540" as="sourcePoint" />
+            <mxPoint x="780" y="600" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="result-to-resultid" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="result" target="resultid" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="450" as="sourcePoint" />
+            <mxPoint x="620" y="370" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="result-to-votecount" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="result" target="votecount" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="480" as="sourcePoint" />
+            <mxPoint x="940" y="480" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="result-to-resultmetrics" value="" style="endArrow=diamond;html=1;rounded=0;endFill=1;" parent="1" source="result" target="resultmetrics" edge="1">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="600" y="520" as="sourcePoint" />
+            <mxPoint x="940" y="580" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3" value="Text" style="text;strokeColor=none;align=center;fillColor=none;html=1;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="570" y="550" width="60" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
