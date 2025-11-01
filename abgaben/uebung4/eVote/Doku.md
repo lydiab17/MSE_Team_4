@@ -40,8 +40,7 @@ String n = name.trim();
 ```
 Nachher:
 ```java
-String n = Optional.ofNullable(name).map(String::trim) 
-        .orElseThrow(() -> new IllegalArgumentException("name"));
+String n = Optional.ofNullable(name).map(String::trim).orElseThrow(() -> new IllegalArgumentException("name"));
 ```
 Einige Änderungen die vorgeschlagen wurden hätten die lesbarkeit so stark eingeschränkt, so dass diese nicht implementiert wurden. Ein Beispiel dafür ist die Umlaute über Unicode Kategorien abzudecken anstatt explizit anzugeben:
 
@@ -66,6 +65,10 @@ private static final Pattern NAME_RE = Pattern.compile("^(\\p{Lu})[\\p{L}\\p{N} 
 ### Kurzfazit
 - Tests: **bestanden** und inhaltlich schlüssig.  
 - Code: nach der Iteration **robuster** und **wartbarer**; kurzfristig etwas weniger zugänglich (aufgrund fehlender Java Expertise), langfristig jedoch **konsistenter** und **kürzer**.
+
+## Aufgabe 4
+Müssen wir noch machen. Erweitern Sie Ihre Tests, um auch Randfälle und
+Fehlerbedingungen abzudecken.
 
 ## Aufgabe 5
 
