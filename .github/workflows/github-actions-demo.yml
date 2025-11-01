@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is running CI/CD pipeline
 
 on:
   push:
-    branches: [ Fabian, lydia, Ulli ]
+    branches: [ Fabian, lydia, Malinda ]
   pull_request:
     branches: [ main ]
 
@@ -22,5 +22,4 @@ jobs:
       - name: Build & run tests (Maven)
         working-directory: abgaben/uebung4/eVote
         run: mvn -B -ntp test
-        # alternativ (Integrationstests via Failsafe):
-        # run: mvn -B -ntp verify
+
