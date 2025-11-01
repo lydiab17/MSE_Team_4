@@ -1,1 +1,0 @@
-Ordner für die Abagen zur Aufgabe 4
