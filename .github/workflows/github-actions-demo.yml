@@ -1,5 +1,6 @@
 name: CI/CD Pipeline
 run-name: ${{ github.actor }} is running CI/CD pipeline
+
 on:
   push:
     branches: [ Fabian, lydia, Ulli ]
@@ -9,21 +10,17 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
           cache: maven
 
       - name: Build & run tests (Maven)
-        working-directory: eVote
-        run: |
-            mvn -B -ntp -DskipTests=false test
-            # optional strenger:
-            # mvn -B -ntp verify
+        working-directory: abgaben/uebung4/eVote
+        run: mvn -B -ntp test
+        # alternativ (Integrationstests via Failsafe):
+        # run: mvn -B -ntp verify
