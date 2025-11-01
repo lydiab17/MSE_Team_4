@@ -15,13 +15,19 @@ public class Voting {
     private LocalDate endDate;
     private Set<String> options;
 
-    /** Regex Pattern für Name, Info und Options */
+    /** Regex Pattern für Name, Info und Options
+     * Name = Fängt mit Großbuchstaben an. Mindestens 10 Zeichen lang
+     * Info = Fängt mit Großbuchstaben an. Mindestens 30 Zeichen lang
+     * Optiinen = Fängt mit einem beliebigen Zeichen an und ist mindestens 1 - max 50 Zeichen lang*/
     private static final Pattern NAME_RE = Pattern.compile("^[A-ZÄÖÜ][A-Za-zÄÖÜäöüß0-9 ]{9,99}$");
     private static final Pattern INFO_RE = Pattern.compile("^[A-ZÄÖÜ].{29,999}$", Pattern.DOTALL);
     private static final Pattern OPT_RE  = Pattern.compile("^[A-Za-zÄÖÜäöüß0-9 ]{1,50}$");
 
-    /** Beim initialisieren wird record erstellt mit daten und direkt geprüft ob Start vor End
-     * contains Methode wird aktuell nicht verwenden. Kann im Zweifel später genutzt werden. */
+    /** Beim initialisieren des records werden start und end Datum direkt zugewiesen. Können über
+     * period.start() und period.end() aufgerufen werden.
+     * Beim erstellen des Record wird geprüft ob Start vor End ist und ggfs. eine Exception geworfen.
+     * contains Methode wird aktuell nicht verwendet. Kann im Zweifel später genutzt werden um zu prüfen ob ein Datum
+     * innerhalb von Start und End liegt.*/
     private record Period(LocalDate start, LocalDate end) {
         Period {
             Objects.requireNonNull(start, "start");
@@ -35,28 +41,29 @@ public class Voting {
 
     private Voting() {}
 
+    /** Methode um eine neue Abstimmung zu erstellen. */
     public static Voting create(int id, String name, String info, LocalDate start, LocalDate end, Set<String> options) {
         if (id <= 0) throw new IllegalArgumentException("Invalid id");
 
         // Optional für sauberes Trim + Null-Check in einem Schritt. Trim entfernt Leerzeichen am Anfang und Ende.
-        // Sonst erst checken ob name null ist ... jetzt in einer Zeile Code.
         String n = Optional.ofNullable(name).map(String::trim)
                 .orElseThrow(() -> new IllegalArgumentException("name"));
         String i = Optional.ofNullable(info).map(String::trim)
                 .orElseThrow(() -> new IllegalArgumentException("info"));
 
         Objects.requireNonNull(options, "options");
-        // Regex-Checks
+        // Regex-Checks für Name und Info
         if (!NAME_RE.matcher(n).matches()) throw new IllegalArgumentException("Invalid name");
         if (!INFO_RE.matcher(i).matches()) throw new IllegalArgumentException("Invalid info");
 
         // Period (Record) validiert Datumsordnung
         Period period = new Period(start, end);
 
-        // Größe prüfen
+        // Prüft ob die Anzahl der übergebenen Optionen ok ist
         if (options.size() < 2 || options.size() > 10) throw new IllegalArgumentException("Invalid options size");
 
         // Streams: trimmen, token prüfen, in definierter Reihenfolge einsammeln
+        // peak schaut sich das aktuelle objekt an
         List<String> normalized = options.stream()
                 .peek(o -> { if (o == null) throw new IllegalArgumentException("Null option"); })
                 .map(String::trim)
