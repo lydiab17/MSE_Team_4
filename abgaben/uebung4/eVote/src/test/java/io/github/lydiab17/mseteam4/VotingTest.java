@@ -275,27 +275,3 @@ public class VotingTest {
 
 }
 
-/* Dokumentation
-
-Ich hatte der KI folgendes gesagt:
-
-Es geht darum eine Abstimmung zu erstellen (für digitale Bürgerabstimmungen). Abstimmungsnamen (name) müssen immer
- mit einem Großbuchstaben anfangen und der Titel muss mindestens 10 Zeichen lang sein. es dürfen keine Sonderzeichen
-im Titel einer Abstimmung enthalten sein. Die Beschreibung (info) muss mindestens 30 Zeichen lang sein. Diese muss
-ebenfalls mit einem Großbuchstaben anfangen. Du sollst also einen Test generieren fürs erstellen einer Abstimmung.
-Denk dir ruhig noch weitere Einschränkungen aus die für eine Abstimmung gelten muss damit du die verschiedenen
-Test-Cases die in der Aufgabe beschrieben sind durchführen kannst. Es können auch ruhig neue Variablen für die
-Klasse vorausgesetzt werden, aber nicht übertreiben. Wenn du Ideen für weitere Methoden hast gerne her damit
-(aber auch nicht übertreiben) und nicht die methode abstimmen (höchstens abstimmung noch offen oder sowas da
-sich ein anderer Student aus meiner Gruppe um das abstimmen selbst kümmert)
-
-Ich habe mir die Tests angeschaut und die machen in meinen Augen auch alle Sinn.
-Angepasst habe ich überhaupt nichts. Ich finde es bei den Edge-Cases ein bisschen komisch das ChatGPT die Beschreibung
- des Tests zuerst in der info Variable erstellt hat und die info Variable dann in der nächsten Zeile mit dem
- tatsächlichen Wert überschrieben hat wie in Zeile 96. Aber kann ich gut mit Leben. Folgend einmal dargestellt:
-
- void edge_infoExactlyMinLength() {
-        String info = "Beschreibung hat genau 30 Zeichen"; // zähle: 31? Wir bauen sicher:
-        info = "AbcdefghijAbcdefghijAbcdefghij"; // 30 exakt
-	... */
-
