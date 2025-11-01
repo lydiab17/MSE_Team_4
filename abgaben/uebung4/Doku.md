@@ -106,3 +106,4 @@ jobs:
         working-directory: abgaben/uebung4/eVote
         run: mvn -B -ntp test
 ```
+Test
