@@ -1,63 +1,25 @@
 name: CI/CD Pipeline
 run-name: ${{ github.actor }} is running CI/CD pipeline
+
 on:
   push:
-    branches: [ Fabian, lydia, Ulli ]
+    branches: [ Fabian, lydia, Malinda ]
   pull_request:
     branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-      
-      - name: Build application
-        run: |
-          echo "Building application"
-          echo "..."
-          echo "Build completed successfully"
+      - uses: actions/checkout@v4
 
-  unit-tests:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-      
-      - name: Run unit tests
-        run: |
-          echo "Running unit tests"
-          echo "..."
-          echo "All unit tests passed"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
 
-  integration-tests:
-    needs: [build, unit-tests]
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-      
-      - name: Run integration tests
-        run: |
-          echo "Running integration tests"
-          echo "..."
-          echo "All integration tests passed"
+      - name: Build & run tests (Maven)
+        working-directory: abgaben/uebung4/eVote
+        run: mvn -B -ntp test
 
-  code-quality:
-    needs: build
-    runs-on: ubuntu-latest
-    
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v5
-      
-      - name: Code quality check
-        run: |
-          echo "Running code quality analysis"
-          echo "..."
-          echo "Code quality check passed"
