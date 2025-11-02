@@ -4,6 +4,11 @@
 
 Diese Implementierungsstrategie beschreibt, wie die DDD-Modelle des eVote Systems in Code umgesetzt werden. Fokus liegt auf Testbarkeit, Modularität und strikter Einhaltung von DDD-Prinzipien.
 
+1. Umsetzung der Entitäten 
+2. Umsetzung der Aggregate
+3. Umsetzung der Domain Services 
+4. Umsetzung der Repositories
+
 ---
 
 ## 1. Architektur-Prinzipien
