@@ -67,8 +67,174 @@ private static final Pattern NAME_RE = Pattern.compile("^(\\p{Lu})[\\p{L}\\p{N} 
 - Code: nach der Iteration **robuster** und **wartbarer**; kurzfristig etwas weniger zugänglich (aufgrund fehlender Java Expertise), langfristig jedoch **konsistenter** und **kürzer**.
 
 ## Aufgabe 4
-Müssen wir noch machen. Erweitern Sie Ihre Tests, um auch Randfälle und
-Fehlerbedingungen abzudecken.
+
+### Test-Erweiterung
+- Erster Prompt an ChatGPT: Könntest du mir die Klassen Voting und VotingTest bitte erklären: ...
+- Zweiter Prompt an ChatGPT: Bitte erweitere meine Tests in der Klasse "VotingTest" und identifiziere zusätzliche Edge-Cases und Fehlerbedingungen.
+
+1. Negativer Test
+- Testet, dass Voting.create() keine null-Werte akzeptiert
+- Name, Info, Optionsliste, Start- und Enddatum dürfen nicht null sein
+- Wenn name oder info null sind → IllegalArgumentException
+- Wenn start, end oder options null sind → NullPointerException
+- Problem: ChatGPT hat die falschen Exceptions beim Test angegeben
+
+```java
+    @Test
+    @DisplayName("Null-Werte: Name, Info, Optionen, Start, End werfen Exception")
+    void nullValues_throwException() {
+        assertThrows(IllegalArgumentException.class, () ->
+                Voting.create(21, null, "Info OK Mit Mehr Als Dreißig Zeichen.",
+                        today, today.plusDays(1), opts("Ja", "Nein")));
+
+        assertThrows(IllegalArgumentException.class, () ->
+                Voting.create(22, "Abstimmung OK", null,
+                        today, today.plusDays(1), opts("Ja", "Nein")));
+
+        assertThrows(NullPointerException.class, () ->
+                Voting.create(23, "Abstimmung OK", "Info OK Mit Mehr Als Dreißig Zeichen.",
+                        null, today.plusDays(1), opts("Ja", "Nein")));
+
+        assertThrows(NullPointerException.class, () ->
+                Voting.create(24, "Abstimmung OK", "Info OK Mit Mehr Als Dreißig Zeichen.",
+                        today, null, opts("Ja", "Nein")));
+
+        assertThrows(NullPointerException.class, () ->
+                Voting.create(25, "Abstimmung OK", "Info OK Mit Mehr Als Dreißig Zeichen.",
+                        today, today.plusDays(1), null));
+    }
+```
+
+2. Happy-Path-Test
+- Test stellt sicher, dass das Info-Feld (Beschreibung der Abstimmung)Zeilenumbrüche enthalten darf (mehrzeilig)
+
+```java
+    @Test
+    @DisplayName("Info darf Zeilenumbrüche enthalten (DOTALL aktiv)")
+    void info_withNewline_valid() {
+        Voting v = Voting.create(1, "Abstimmung",
+                "Dies ist eine Beschreibung\nmit Zeilenumbruch.",
+                LocalDate.now(), LocalDate.now().plusDays(1), opts("Ja", "Nein"));
+        assertNotNull(v);
+    }
+```
+
+### Refactoring-Vorschläge
+- Prompt an ChatGPT: Ich schicke dir zwei meiner Java-Klassen (Voting und VotingTest). Bitte gib mir für die Klasse Voting Refactoring-Vorschläge: Code-Smells, Verbesserung der Code-Lesbarkeit, Performance Optimierungen, bessere Verwendung von Java-Features.
+
+1. Code-Smells
+- Problem: zu viele Verantwortlichkeiten in create-Methode (Validierung, Regex, Trim)
+- Lösung: mehrere kleinere Hilfsmethoden
+- VorteiL: Übersichtlichkeit
+
+Vorher:
+```java
+public static Voting create(int id, String name, String info, LocalDate start, LocalDate end, Set<String> options) {
+        if (id <= 0) throw new IllegalArgumentException("Invalid id");
+
+        // Optional für sauberes Trim + Null-Check in einem Schritt. Trim entfernt Leerzeichen am Anfang und Ende.
+        String n = Optional.ofNullable(name).map(String::trim)
+                .orElseThrow(() -> new IllegalArgumentException("name"));
+        String i = Optional.ofNullable(info).map(String::trim)
+                .orElseThrow(() -> new IllegalArgumentException("info"));
+
+        Objects.requireNonNull(options, "options");
+        // Regex-Checks für Name und Info
+        if (!NAME_RE.matcher(n).matches()) throw new IllegalArgumentException("Invalid name");
+        if (!INFO_RE.matcher(i).matches()) throw new IllegalArgumentException("Invalid info");
+
+        // Period (Record) validiert Datumsordnung
+        Period period = new Period(start, end);
+
+        // Prüft ob die Anzahl der übergebenen Optionen ok ist
+        if (options.size() < 2 || options.size() > 10) throw new IllegalArgumentException("Invalid options size");
+
+        // Streams: trimmen, token prüfen, in definierter Reihenfolge einsammeln
+        // peak schaut sich das aktuelle objekt an
+        List<String> normalized = options.stream()
+                .peek(o -> { if (o == null) throw new IllegalArgumentException("Null option"); })
+                .map(String::trim)
+                .peek(t -> { if (!OPT_RE.matcher(t).matches()) throw new IllegalArgumentException("Invalid option: " + t); })
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        // Generics + Lambda: Duplikate auf einem beliebigen Schlüssel verbieten (hier: lower-case)
+        // Optionen werden hier überprüft
+        requireNoDuplicate(normalized, s -> s.toLowerCase(Locale.ROOT), dup ->
+                new IllegalArgumentException("Duplicate option: " + dup));
+
+        Voting v = new Voting();
+        v.votingID = id;
+        v.name = n;
+        v.info = i;
+        v.startDate = period.start();
+        v.endDate = period.end();
+        // Unmodifiable + Reihenfolge erhalten
+        v.options = Collections.unmodifiableSet(new LinkedHashSet<>(normalized));
+        v.votingStatus = false;
+        return v;
+    }
+```
+
+Nachher:
+```java
+public static Voting_R create(int id, String name, String info,
+                                LocalDate start, LocalDate end,
+                                Set<String> options) {
+
+        if (id <= 0) throw new IllegalArgumentException("Invalid id");
+
+        // Schrittweise Validierung
+        String n = validateName(name);
+        String i = validateInfo(info);
+        Period period = validateDates(start, end);
+        Set<String> opts = validateOptions(options);
+
+        // Objekt aufbauen
+        Voting_R v = new Voting_R();
+        v.votingID = id;
+        v.name = n;
+        v.info = i;
+        v.startDate = period.start();
+        v.endDate = period.end();
+        v.options = opts;
+        v.votingStatus = false;
+        return v;
+    }
+```
+
+2. Verbesserung der Code-Lesbarkeit
+- Problem: Magic Numbers sind schlecht lesbar
+- Lösung: Verwendung von Konstanten mit sprechenden Namen
+- Vorteil: einfachere Wartung, bessere Lesbarkeit der Regex-Ausdrücke
+
+Vorher:
+```java
+    private static final Pattern NAME_RE = Pattern.compile("^[A-ZÄÖÜ][A-Za-zÄÖÜäöüß0-9 ]{9,99}$");
+    private static final Pattern INFO_RE = Pattern.compile("^[A-ZÄÖÜ].{29,999}$", Pattern.DOTALL);
+    private static final Pattern OPT_RE  = Pattern.compile("^[A-Za-zÄÖÜäöüß0-9 ]{1,50}$");
+```
+
+Nachher: 
+```java
+  private static final int MIN_NAME_LEN = 10;
+  private static final int MAX_NAME_LEN = 100;
+  private static final int MIN_INFO_LEN = 30;
+  private static final int MAX_INFO_LEN = 1000;
+  private static final int MAX_OPTION_LEN = 50;
+
+  private static final Pattern NAME_RE =
+    Pattern.compile("^[A-ZÄÖÜ][A-Za-zÄÖÜäöüß0-9 ]{" + (MIN_NAME_LEN - 1) + "," + (MAX_NAME_LEN - 1) + "}$");
+
+  private static final Pattern INFO_RE =
+    Pattern.compile("^[A-ZÄÖÜ].{" + (MIN_INFO_LEN - 1) + "," + (MAX_INFO_LEN - 1) + "}$", Pattern.DOTALL);
+
+  private static final Pattern OPT_RE =
+    Pattern.compile("^[A-Za-zÄÖÜäöüß0-9 ]{1," + MAX_OPTION_LEN + "}$");
+```
+### Systematisches Refactoring
+- Die für mich sinnvollen Vorschläge von ChatGPT habe ich schrittweise implementiert (siehe oben) in die neue Klasse Voting_R.java. Die Tests bestehen weiterhin. 
+- Beispiel für einen nicht sinnvollen Refactoring-Vorschlag: manchmal IllegalArgumentException, manchmal NullPointerException (vereinheitlichen); Unterschiedliche Exception-Typen helfen, Fehlerarten zu trennen
+
 
 ## Aufgabe 5
 

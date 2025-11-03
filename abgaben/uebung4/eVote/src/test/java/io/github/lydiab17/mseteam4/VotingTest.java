@@ -273,5 +273,42 @@ public class VotingTest {
                         opts("A", "B")));
     }
 
+
+    // ---------- Additional Tests  ----------
+    // Negativer Test: Testet, dass Voting.create() keine null-Werte akzeptiert
+    @Test
+    @DisplayName("Null-Werte: Name, Info, Optionen, Start, End werfen Exception")
+    void nullValues_throwException() {
+        assertThrows(IllegalArgumentException.class, () ->
+                Voting.create(21, null, "Info OK Mit Mehr Als Dreißig Zeichen.",
+                        today, today.plusDays(1), opts("Ja", "Nein")));
+
+        assertThrows(IllegalArgumentException.class, () ->
+                Voting.create(22, "Abstimmung OK", null,
+                        today, today.plusDays(1), opts("Ja", "Nein")));
+
+        assertThrows(NullPointerException.class, () ->
+                Voting.create(23, "Abstimmung OK", "Info OK Mit Mehr Als Dreißig Zeichen.",
+                        null, today.plusDays(1), opts("Ja", "Nein")));
+
+        assertThrows(NullPointerException.class, () ->
+                Voting.create(24, "Abstimmung OK", "Info OK Mit Mehr Als Dreißig Zeichen.",
+                        today, null, opts("Ja", "Nein")));
+
+        assertThrows(NullPointerException.class, () ->
+                Voting.create(25, "Abstimmung OK", "Info OK Mit Mehr Als Dreißig Zeichen.",
+                        today, today.plusDays(1), null));
+    }
+
+    // Happy-Path-Test: Test stellt sicher, dass das Info-Feld Zeilenumbrüche enthalten darf (mehrzeilig)
+    @Test
+    @DisplayName("Info darf Zeilenumbrüche enthalten (DOTALL aktiv)")
+    void info_withNewline_valid() {
+        Voting v = Voting.create(1, "Abstimmung",
+                "Dies ist eine Beschreibung\nmit Zeilenumbruch.",
+                LocalDate.now(), LocalDate.now().plusDays(1), opts("Ja", "Nein"));
+        assertNotNull(v);
+    }
+
 }
 
