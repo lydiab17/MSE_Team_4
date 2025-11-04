@@ -1,5 +1,5 @@
 # Dokumentation
-## Aufagbe 1
+## Aufgabe 1
 Übung 4
 Wir haben uns beim LLM für ChatGPT entschieden, da ChatGPT gut geeignet ist für Review und Verbesserung Implementierungsstrategien sowie Testgenerierung, und Refactoring- und Codequalitäts-Überprüfungen. Außerdem bietet ChatGPT sehr verständliche Erklärungen, wie in unserem Fall bezüglich DDD, TDD und Java-Features und baut Antworten sehr strukturiert auf. Es ist natürlich verständlich, dass ChatGPT auch Fehler machen kann. Daher verwenden wir die KI nur als „Partner“ und überprüfen stets die Antworten. 
  
