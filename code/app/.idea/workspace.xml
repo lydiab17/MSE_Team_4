@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40e179f9-a46d-4beb-a71c-0bcbd69a7ce0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/VotingName.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/VotingName.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/model/Voting.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/model/Voting.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/domain/model/Voting.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/domain/model/Voting.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/domain/valueobjects/OptionLabel.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/domain/valueobjects/OptionLabel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/domain/valueobjects/VotingInfo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/domain/valueobjects/VotingInfo.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -30,23 +34,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "JUnit.VotingTest.executor": "Run",
-    "Maven.app [org.openjfx:javafx-maven-plugin:0.0.8:run].executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "Fabian",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Fabia/Desktop/MSE-Projekt/MSE_Team_4/code/app/pom.xml",
-    "project.structure.last.edited": "Project",
-    "project.structure.proportion": "0.0",
-    "project.structure.side.proportion": "0.0"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.VotingTest.executor&quot;: &quot;Run&quot;,
+    &quot;Maven.app [org.openjfx:javafx-maven-plugin:0.0.8:run].executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Fabian&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Fabia/Desktop/MSE-Projekt/MSE_Team_4/code/app/pom.xml&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.0&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.0&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="VotingTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
       <module name="app" />
