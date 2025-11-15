@@ -20,6 +20,6 @@ jobs:
           cache: maven
 
       - name: Build & run tests (Maven)
-        working-directory: abgaben/uebung4/eVote
+        working-directory: code/app
         run: mvn -B -ntp test
 
