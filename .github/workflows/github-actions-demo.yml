@@ -20,6 +20,6 @@ jobs:
           cache: maven
 
       - name: Build & run tests (Maven)
-        working-directory: code\app
+        working-directory: code/app
         run: mvn -B -ntp test
 

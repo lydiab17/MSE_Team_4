@@ -4,13 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="40e179f9-a46d-4beb-a71c-0bcbd69a7ce0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/application/VotingApplicationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/application/VotingApplicationService.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/OptionLabel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/OptionLabel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/VotingName.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/VotingName.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/application/VotingApplicationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/application/VotingApplicationService.class" afterDir="false" />
-    </list>
+    <list default="true" id="40e179f9-a46d-4beb-a71c-0bcbd69a7ce0" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
