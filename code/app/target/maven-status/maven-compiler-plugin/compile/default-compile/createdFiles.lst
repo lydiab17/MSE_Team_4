@@ -1,0 +1,10 @@
+com\evote\app\citizen_management\domain\model\Citizen.class
+com\evote\app\HelloController.class
+module-info.class
+com\evote\app\EvoteSpringConfig.class
+com\evote\app\HelloApplication.class
+com\evote\app\citizen_management\domain\valueobjects\CitizenID.class
+com\evote\app\citizen_management\domain\valueobjects\Name.class
+com\evote\app\citizen_management\domain\valueobjects\Email.class
+com\evote\app\Launcher.class
+com\evote\app\citizen_management\domain\valueobjects\Adress.class
