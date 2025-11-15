@@ -5,13 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="40e179f9-a46d-4beb-a71c-0bcbd69a7ce0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/interfaces/rest/VotingRestController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/evote/app/EvoteSpringConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/EvoteSpringConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/module-info.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/module-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/com/evote/app/EvoteSpringConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/evote/app/EvoteSpringConfig.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/module-info.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/module-info.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/application/VotingApplicationService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/application/VotingApplicationService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/OptionLabel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/OptionLabel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/VotingName.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/evote/app/voting_management/domain/valueobjects/VotingName.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/application/VotingApplicationService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/evote/app/voting_management/application/VotingApplicationService.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

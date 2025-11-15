@@ -15,8 +15,6 @@ public class VotingApplicationService {
 
     private final VotingRepository votingRepository;
 
-    // später kann Spring das hier automatisch injizieren,
-    // im Moment kannst du den Service auch "von Hand" mit dem Repo bauen.
     public VotingApplicationService(VotingRepository votingRepository) {
         this.votingRepository = votingRepository;
     }

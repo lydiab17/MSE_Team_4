@@ -1,11 +1,29 @@
 package com.evote.app.voting_management.domain.valueobjects;
 
+/**
+ * Repräsentiert den Namen/Titel einer Abstimmung.
+ *
+ * Fachliche Regeln:
+ * <ul>
+ *     <li>darf nicht {@code null} sein</li>
+ *     <li>darf nach dem Trimmen nicht leer sein</li>
+ *     <li>Länge (nach Trim): mindestens 10, höchstens 100 Zeichen</li>
+ *     <li>muss mit einem Großbuchstaben beginnen (inkl. Ä/Ö/Ü usw.)</li>
+ *     <li>erlaubte Zeichen: Buchstaben, Ziffern und Leerzeichen</li>
+ *     <li>keine Sonderzeichen wie {@code ! ? , .} usw.</li>
+ * </ul>
+ *
+ * Ungültige Werte führen im Konstruktor zu einer {@link IllegalArgumentException}.
+ */
 public class VotingName {
 
     private final String value;
 
     private static final int MIN_LENGTH = 10;
     private static final int MAX_LENGTH = 100;
+    // \\p{Lu} -> ein Großbuchstabe (Unicode Uppercase Letter, z.B. A–Z, Ä, Ö, Ü)
+    // \\p{L} -> irgendein Buchstabe (Letter, auch Umlaute, andere Sprachen etc.)
+    // \\p{Nd}-> Dezimalziffer (Number, decimal digit, 0–9)
     private static final String PATTERN = "^[\\p{Lu}][\\p{L}\\p{Nd} ]*$";
 
     public VotingName(String raw) {

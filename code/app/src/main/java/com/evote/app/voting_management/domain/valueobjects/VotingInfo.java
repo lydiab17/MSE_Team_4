@@ -1,5 +1,19 @@
 package com.evote.app.voting_management.domain.valueobjects;
 
+/**
+ * Repräsentiert den Beschreibungstext (`info`) einer Abstimmung.
+ *
+ * Fachliche Regeln:
+ * <ul>
+ *     <li>darf nicht {@code null} sein</li>
+ *     <li>darf nach dem Trimmen nicht leer sein</li>
+ *     <li>Länge (nach Trim): mindestens 30, höchstens 1000 Zeichen</li>
+ *     <li>muss mit einem Großbuchstaben beginnen</li>
+ *     <li>Zeilenumbrüche und sonstige Zeichen im Rest sind erlaubt</li>
+ * </ul>
+ *
+ * Ungültige Werte führen im Konstruktor zu einer {@link IllegalArgumentException}.
+ */
 public class VotingInfo {
 
     private static final int MIN_LENGTH = 30;
