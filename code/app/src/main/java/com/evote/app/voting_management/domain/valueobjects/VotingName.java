@@ -4,6 +4,10 @@ public class VotingName {
 
     private final String value;
 
+    private static final int MIN_LENGTH = 10;
+    private static final int MAX_LENGTH = 100;
+    private static final String PATTERN = "^[\\p{Lu}][\\p{L}\\p{Nd} ]*$";
+
     public VotingName(String raw) {
         if (raw == null) {
             throw new IllegalArgumentException("Name darf nicht null sein");
@@ -21,21 +25,15 @@ public class VotingName {
         if (length > 100) {
             throw new IllegalArgumentException("Name darf höchstens 100 Zeichen haben");
         }
-
-        // Erster Buchstabe muss groß sein (inkl. Ä/Ö/Ü usw.)
-        char first = trimmed.charAt(0);
-        if (!Character.isUpperCase(first)) {
-            throw new IllegalArgumentException("Name muss mit Großbuchstaben beginnen");
+        int len = trimmed.length();
+        if (len < MIN_LENGTH || len > MAX_LENGTH) {
+            throw new IllegalArgumentException("Name muss zwischen 10 und 100 Zeichen lang sein");
         }
 
-        // Nur Buchstaben, Ziffern und Leerzeichen
-        for (int i = 0; i < trimmed.length(); i++) {
-            char c = trimmed.charAt(i);
-            boolean letterOrDigit = Character.isLetterOrDigit(c);
-            boolean space = c == ' ';
-            if (!letterOrDigit && !space) {
-                throw new IllegalArgumentException("Name enthält unzulässige Zeichen");
-            }
+        if (!trimmed.matches(PATTERN)) {
+            throw new IllegalArgumentException(
+                    "Name muss mit Großbuchstaben beginnen und darf nur Buchstaben, Ziffern und Leerzeichen enthalten"
+            );
         }
 
         this.value = trimmed;

@@ -2,6 +2,8 @@ package com.evote.app.voting_management.domain.valueobjects;
 
 public class OptionLabel {
 
+    private static final String PATTERN = "^[\\p{L}\\p{Nd} ]+$";
+
     private final String value;
 
     public OptionLabel(String raw) {
@@ -14,14 +16,8 @@ public class OptionLabel {
             throw new IllegalArgumentException("Option darf nicht leer sein");
         }
 
-        // Nur Buchstaben, Ziffern und Leerzeichen – kein "!"
-        for (int i = 0; i < trimmed.length(); i++) {
-            char c = trimmed.charAt(i);
-            boolean letterOrDigit = Character.isLetterOrDigit(c);
-            boolean space = c == ' ';
-            if (!letterOrDigit && !space) {
-                throw new IllegalArgumentException("Option enthält unzulässige Zeichen");
-            }
+        if (!trimmed.matches(PATTERN)) {
+            throw new IllegalArgumentException("Option darf nur Buchstaben, Ziffern und Leerzeichen enthalten");
         }
 
         this.value = trimmed;

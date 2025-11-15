@@ -2,6 +2,9 @@ package com.evote.app.voting_management.domain.valueobjects;
 
 public class VotingInfo {
 
+    private static final int MIN_LENGTH = 30;
+    private static final int MAX_LENGTH = 1000;
+
     private final String value;
 
     public VotingInfo(String raw) {
@@ -14,21 +17,18 @@ public class VotingInfo {
             throw new IllegalArgumentException("Info darf nicht leer sein");
         }
 
-        int length = trimmed.length();
-        if (length < 30) {
-            throw new IllegalArgumentException("Info muss mindestens 30 Zeichen haben");
-        }
-        if (length > 1000) {
-            throw new IllegalArgumentException("Info darf höchstens 1000 Zeichen haben");
+        int len = trimmed.length();
+        if (len < MIN_LENGTH || len > MAX_LENGTH) {
+            throw new IllegalArgumentException("Info muss zwischen 30 und 1000 Zeichen lang sein");
         }
 
-        // Erster Buchstabe muss groß sein
+        // Nicht mit Regex geprüft, da es so einfacher ist
         char first = trimmed.charAt(0);
         if (!Character.isUpperCase(first)) {
             throw new IllegalArgumentException("Info muss mit Großbuchstaben beginnen");
         }
 
-        // Hier erlauben wir alle weiteren Zeichen (inkl. Punkt, Zeilenumbruch, …)
+        // Rest darf alles, inkl. Zeilenumbruch → kein weiterer Regex nötig
         this.value = raw;
     }
 
