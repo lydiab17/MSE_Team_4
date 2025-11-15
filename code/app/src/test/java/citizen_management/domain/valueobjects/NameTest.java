@@ -25,15 +25,6 @@ class NameTest {
         assertEquals("Mustermann", name.lastName());
     }
 
-    @Test
-    @DisplayName("Sollte Leerzeichen entfernen")
-    void shouldRemoveSpaces() {
-        Name name = new Name("   Max  ", " Mustermann     ");
-        assertEquals("Max", name.firstName());
-        assertEquals("Mustermann", name.lastName());
-    }
-
-
     // Edge-Cases
     @Test
     @DisplayName("Sollte gültigen Namen erstellen, wenn Vorname genau 3 Zeichen hat")
@@ -41,7 +32,7 @@ class NameTest {
         Name name = new Name("Max", "Muster");
         // Max = 3 Zeichen (3 Zeichen sind minimal erlaubt)
         assertEquals("Max", name.firstName());
-        assertEquals("Müller", name.lastName());
+        assertEquals("Muster", name.lastName());
 
     }
 

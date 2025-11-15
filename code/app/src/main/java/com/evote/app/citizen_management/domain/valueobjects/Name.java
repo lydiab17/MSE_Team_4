@@ -16,6 +16,7 @@ public record Name(String firstName, String lastName) {
      * @throws IllegalArgumentException wenn Vor- oder Nachname ungültig ist.
      */
     public Name {
+
         if (!isValidFirstName(firstName)) {
             throw new IllegalArgumentException("Der folgende Vorname ist ungültig: " + firstName);
         }
@@ -34,7 +35,7 @@ public record Name(String firstName, String lastName) {
         if (firstName == null || firstName.trim().isEmpty()) {
             return false;
         }
-        firstName = firstName.trim();
+
         // Nur Buchstaben. Minimal 3 Zeichen. Maximal 10 Zeichen.
         return firstName.matches("^[A-Za-zÄÖÜäöüß]{3,10}$");
     }
@@ -49,7 +50,7 @@ public record Name(String firstName, String lastName) {
         if (lastName == null || lastName.trim().isEmpty()) {
             return false;
         }
-        lastName = lastName.trim();
+
         // Nur Buchstaben. Minimal 3 Zeichen. Maximal 10 Zeichen.
         return lastName.matches("^[A-Za-zÄÖÜäöüß]{3,10}$");
     }
