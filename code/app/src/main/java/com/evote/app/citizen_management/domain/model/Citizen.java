@@ -1,9 +1,6 @@
 package com.evote.app.citizen_management.domain.model;
 
-import com.evote.app.citizen_management.domain.valueobjects.Adress;
-import com.evote.app.citizen_management.domain.valueobjects.CitizenID;
-import com.evote.app.citizen_management.domain.valueobjects.Email;
-import com.evote.app.citizen_management.domain.valueobjects.Name;
+import com.evote.app.citizen_management.domain.valueobjects.*;
 
 /**
  * Diese Klasse repräsentiert einen Bürger.
@@ -19,11 +16,15 @@ public class Citizen {
     /** Die Email-Adresse des Bürgers. */
     private Email email;
 
+    /** Das Passwort des Bürgers. */
+    private Password password;
+
     /** Der vollständige Name des Bürgers. */
     private Name name;
 
     /** Die Adresse des Bürgers. */
     private Adress adress;
+
 
     /**
      * Gibt die ID des Bürgers zurück.

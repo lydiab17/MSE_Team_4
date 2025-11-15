@@ -3,6 +3,8 @@ package citizen_management.domain.valueobjects;
 import com.evote.app.citizen_management.domain.valueobjects.Name;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -15,9 +17,42 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 class NameTest {
 
     // Happy-Path-Tests
+    @Test
+    @DisplayName("Sollte gültigen Namen erstellen")
+    void shouldCreateValidName() {
+        Name name = new Name("Max", "Mustermann");
+        assertEquals("Max", name.firstName());
+        assertEquals("Mustermann", name.lastName());
+    }
+
+    @Test
+    @DisplayName("Sollte Leerzeichen entfernen")
+    void shouldRemoveSpaces() {
+        Name name = new Name("   Max  ", " Mustermann     ");
+        assertEquals("Max", name.firstName());
+        assertEquals("Mustermann", name.lastName());
+    }
 
 
     // Edge-Cases
+    @Test
+    @DisplayName("Sollte gültigen Namen erstellen, wenn Vorname genau 3 Zeichen hat")
+    void shouldAcceptFirstNameWithExactlyThreeCharacters() {
+        Name name = new Name("Max", "Muster");
+        // Max = 3 Zeichen (3 Zeichen sind minimal erlaubt)
+        assertEquals("Max", name.firstName());
+        assertEquals("Müller", name.lastName());
+
+    }
+
+    @Test
+    @DisplayName("Sollte gültigen Namen erstellen, wenn Nachname genau 3 Zeichen hat")
+    void shouldAcceptLastNameWithExactlyThreeCharacters() {
+        Name name = new Name("Anna", "Özi");
+        // Özi = 3 Zeichen (3 Zeichen sind minimal erlaubt)
+        assertEquals("Anna", name.firstName());
+        assertEquals("Özi", name.lastName());
+    }
 
 
     // Negative Tests
@@ -41,5 +76,18 @@ class NameTest {
         assertThrows(IllegalArgumentException.class, () -> new Name("Max", " "));
         // kein Wert
         assertThrows(IllegalArgumentException.class, () -> new Name("Max", null));
+    }
+
+    @Test
+    @DisplayName("Sollte Ausnahme werfen bei zu langem Vornamen")
+    void shouldThrowExceptionWhenFirstNameTooLong() {
+        assertThrows(IllegalArgumentException.class, () -> new Name("Maximiliano", "Muster"));
+        // Vorname hat 11 Zeichen; nur 10 Zeichen maximal erlaubt
+    }
+    @Test
+    @DisplayName("Sollte Ausnahme werfen bei zu langem Nachnamen")
+    void shouldThrowExceptionWhenLastNameTooLong() {
+        assertThrows(IllegalArgumentException.class, () -> new Name("Max", "Mustermanns"));
+        // Nachname hat 11 Zeichen; nur 10 Zeichen maximal erlaubt
     }
 }
