@@ -23,19 +23,6 @@ public class InMemoryVotingRepository implements VotingRepository {
     }
 
     @Override
-    public List<Voting> findAllOpen() {
-        Clock clock = Clock.systemDefaultZone();
-        List<Voting> result = new ArrayList<>();
-
-        for (Voting v : store.values()) {
-            if (v.isOpen(clock)) {
-                result.add(v);
-            }
-        }
-        return result;
-    }
-
-    @Override
     public List<Voting> findAll() {
         return new ArrayList<>(store.values());
     }

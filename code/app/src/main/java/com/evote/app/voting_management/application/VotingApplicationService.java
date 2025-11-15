@@ -73,8 +73,7 @@ public class VotingApplicationService {
      * Beispiel: Alle aktuell offenen Votings holen.
      * (hier nehmen wir die System-Uhr; in Tests könntest du eine andere Uhr verwenden)
      */
-    public List<Voting> getOpenVotings() {
-        Clock clock = Clock.systemDefaultZone();
+    public List<Voting> getOpenVotings(Clock clock) {
         return votingRepository.findAll().stream()
                 .filter(v -> v.isOpen(clock))
                 .toList();

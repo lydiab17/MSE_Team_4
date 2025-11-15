@@ -9,7 +9,5 @@ public interface VotingRepository {
 
     Optional<Voting> findById(int id);
 
-    List<Voting> findAllOpen();
-
     List<Voting> findAll();
 }
