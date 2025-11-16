@@ -13,6 +13,8 @@ public class HelloApplication extends Application {
 
     private ConfigurableApplicationContext springContext;
 
+    public static final String APP_TITLE = "eVote";
+
     @Override
     public void init() {
         // Spring Boot starten und ApplicationContext erstellen
@@ -31,7 +33,7 @@ public class HelloApplication extends Application {
         fxmlLoader.setControllerFactory(springContext::getBean);
 
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle("Hello!");
+        stage.setTitle(APP_TITLE);
         stage.setScene(scene);
         stage.show();
     }
