@@ -28,7 +28,7 @@ public class LoginController {
 
     @FXML
     private void registerAction(ActionEvent e2) {
-        // Wechsel des Fensters
+        MainController.getInstance().changeView("register");
     }
 
     // Ausgabe einer Erfolgsmeldung

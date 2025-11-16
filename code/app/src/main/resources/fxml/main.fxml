@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.layout.StackPane?>
+
+
+<StackPane fx:id="viewHolder" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1"
+           fx:controller="com.evote.app.citizen_management.ui.controller.MainController">
+    <fx:include source="login.fxml" />
+</StackPane>

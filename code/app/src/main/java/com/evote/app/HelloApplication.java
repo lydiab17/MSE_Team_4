@@ -2,6 +2,8 @@ package com.evote.app;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.springframework.boot.builder.SpringApplicationBuilder;
@@ -24,18 +26,39 @@ public class HelloApplication extends Application {
     }
 
     @Override
-    public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(
-                HelloApplication.class.getResource("/fxml/hello-view.fxml")
-        );
+    public void start(Stage primaryStage) throws Exception {
+        try {
+            // Hauptansicht laden
+            Node main = loadFXML("fxml/main.fxml");
+            // Neue Szene erstellen mit der Hauptansicht
+            Scene scene = new Scene((Parent) main, 1024, 768);
+            primaryStage.setScene(scene);
 
-        // Controller aus Spring holen statt selbst zu instanziieren
-        fxmlLoader.setControllerFactory(springContext::getBean);
+            // Titel des Hauptfensters setzen
+            primaryStage.setTitle(APP_TITLE);
 
-        Scene scene = new Scene(fxmlLoader.load(), 320, 240);
-        stage.setTitle(APP_TITLE);
-        stage.setScene(scene);
-        stage.show();
+            // Minimale Breite und Höhe des Hauptfensters setzen
+            primaryStage.setMinWidth(600);
+            primaryStage.setMinHeight(400);
+
+            primaryStage.show();
+
+            // es fehlt:
+            // fxmlLoader.setControllerFactory(springContext::getBean);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // FXML-Datei laden und die darin definierten Benutzeroberflächenelemente erstellen
+    public static Node loadFXML(String fxmlFilename) {
+        try {
+            return FXMLLoader.load(HelloApplication.class.getClassLoader().getResource(fxmlFilename));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
