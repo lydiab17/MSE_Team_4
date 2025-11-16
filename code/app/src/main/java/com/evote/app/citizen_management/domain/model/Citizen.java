@@ -2,6 +2,8 @@ package com.evote.app.citizen_management.domain.model;
 
 import com.evote.app.citizen_management.domain.valueobjects.*;
 
+import java.util.Objects;
+
 /**
  * Diese Klasse repräsentiert einen Bürger.
  *
@@ -22,8 +24,13 @@ public class Citizen {
     /** Der vollständige Name des Bürgers. */
     private Name name;
 
-    /** Die Adresse des Bürgers. */
-    private Adress adress;
+
+    private Citizen(Name name, Email email, Password password) {
+        this.citizenID = CitizenID.generate();
+        this.name = Objects.requireNonNull(name, "Name darf nicht null sein");
+        this.email = Objects.requireNonNull(email, "E-Mail darf nicht null sein");
+        this.password = Objects.requireNonNull(password, "Passwort darf nicht null sein");
+    }
 
 
     /**
@@ -50,11 +57,4 @@ public class Citizen {
         return name;
     }
 
-    /**
-     * Gibt die Adresse des Bürgers zurück.
-     * @return adress
-     */
-    public Adress getAdress() {
-        return adress;
-    }
 }
