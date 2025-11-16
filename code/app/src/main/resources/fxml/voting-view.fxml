@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.evote.app.voting_management.ui.VotingFxController">
+
+    <center>
+        <GridPane hgap="10" vgap="8" BorderPane.alignment="TOP_CENTER">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Titel -->
+            <Label text="Voting anlegen / bearbeiten"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold;"
+                   GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+
+            <!-- ID -->
+            <Label text="ID:"
+                   GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="idField"
+                       promptText="z.B. 1"
+                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <!-- Name -->
+            <Label text="Name:"
+                   GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextField fx:id="nameField"
+                       promptText="Titel der Abstimmung"
+                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <!-- Info -->
+            <Label text="Beschreibung:"
+                   GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <TextArea fx:id="infoArea"
+                      promptText="Beschreibung mit mindestens 30 Zeichen"
+                      prefRowCount="4"
+                      GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+            <!-- Start / Ende -->
+            <Label text="Startdatum:"
+                   GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="startDatePicker"
+                        GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+            <Label text="Enddatum:"
+                   GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="endDatePicker"
+                        GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <!-- Optionen -->
+            <Label text="Optionen (durch Komma getrennt):"
+                   wrapText="true"
+                   GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <TextField fx:id="optionsField"
+                       promptText="z.B. Ja,Nein,Enthaltung"
+                       GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+
+            <!-- Buttons -->
+            <HBox spacing="10"
+                  GridPane.rowIndex="7" GridPane.columnIndex="0" GridPane.columnSpan="2">
+                <Button text="Voting anlegen"
+                        onAction="#onCreateVoting"/>
+                <Button text="Voting öffnen"
+                        onAction="#onOpenVoting"/>
+                <Button text="Voting laden"
+                        onAction="#onLoadVoting"/>
+            </HBox>
+        </GridPane>
+    </center>
+
+    <!-- rechte Seite: Liste der offenen Votings -->
+    <right>
+        <VBox spacing="10" BorderPane.alignment="TOP_RIGHT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="Offene Votings"
+                   style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+            <ListView fx:id="openVotingsList" prefWidth="250" prefHeight="300"/>
+            <Button text="Offene Votings aktualisieren"
+                    onAction="#onRefreshOpenVotings"/>
+        </VBox>
+    </right>
+
+    <!-- Statuszeile unten -->
+    <bottom>
+        <Label fx:id="statusLabel"
+               text="Bereit."
+               BorderPane.alignment="CENTER_LEFT">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+        </Label>
+    </bottom>
+
+</BorderPane>
