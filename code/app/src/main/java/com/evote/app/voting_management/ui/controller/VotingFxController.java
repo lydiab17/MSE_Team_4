@@ -1,4 +1,4 @@
-package com.evote.app.voting_management.ui;
+package com.evote.app.voting_management.ui.controller;
 
 import com.evote.app.voting_management.application.VotingApplicationService;
 import com.evote.app.voting_management.domain.model.Voting;
