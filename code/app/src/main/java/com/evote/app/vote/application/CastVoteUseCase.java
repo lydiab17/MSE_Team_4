@@ -1,12 +1,11 @@
-package com.example.evote.vote.application;
+package com.evote.app.Vote.application;
 
-import com.example.evote.application.port.AuthPort;
-import com.example.evote.application.port.EventPublisher;
-import com.example.evote.vote.domain.Vote;
-import com.example.evote.vote.domain.VoteRepository;
+import com.evote.app.Vote.application.port.AuthPort;
+import com.evote.app.Vote.application.port.EventPublisher;
+import com.evote.vote.domain.Vote;
+import com.evote.vote.domain.VoteRepository;
 import com.example.evote.vote.events.VoteSubmittedEvent;
-import com.example.evote.shared.PseudonymToken;
-import com.example.evote.shared.VotingId;
+import com.evote.shared.VotingId;
 
 public class CastVoteUseCase {
 
