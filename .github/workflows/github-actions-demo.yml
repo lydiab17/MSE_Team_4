@@ -8,7 +8,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -16,10 +16,18 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
+          java-version: '21'
           cache: maven
 
       - name: Build & run tests (Maven)
         working-directory: code/app
-        run: mvn -B -ntp test
+        run: mvn -B -ntp clean verify
+
+      - name: Upload test reports & coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-and-coverage-reports
+          path: |
+            code/app/target/surefire-reports
+            code/app/target/site/jacoco
 
