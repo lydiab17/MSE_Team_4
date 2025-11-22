@@ -1,11 +1,15 @@
-package com.example.evote.vote.domain;
+package com.evote.app.vote.domain;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface VoteRepository {
+/**
+ * Domain-Port: nur Interface (keine Implementierung hier).
+ */
+public interface voteRepository {
     void save(Vote vote);
     Optional<Vote> findById(String voteId);
-    List<Vote> findByVotingId(String votingId); // for projections / results
-    boolean existsByVotingIdAndPseudonym(String votingId, String pseudonym); // used for duplicate-check (sync)
+    List<Vote> findByVotingId(String votingId);
+    boolean existsByVotingIdAndPseudonym(String votingId, String pseudonymToken);
 }
+

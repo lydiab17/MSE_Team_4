@@ -1,14 +1,22 @@
-// events/VoteSubmittedEvent.java
-package com.example.evote.vote.events;
-
-import com.example.evote.shared.PseudonymToken;
-import java.time.Instant;
-
-public record VoteSubmittedEvent(String voteId, String votingId, String optionId, PseudonymToken pseudonym, Instant submittedAt) { }
-
-// events/VotePersistedEvent.java
-package com.example.evote.vote.events;
+package com.evote.app.vote.events;
 
 import java.time.Instant;
 
-public record VotePersistedEvent(String voteId, String votingId, Instant recordedAt, String storageHash) { }
+/**
+ * Minimales Event-Record. Pseudonym token als String, um Abhängigkeiten zu reduzieren.
+ */
+public final class VoteSubmittedEvent {
+    public final String voteId;
+    public final String votingId;
+    public final String optionId;
+    public final String pseudonymToken;
+    public final Instant submittedAt;
+
+    public VoteSubmittedEvent(String voteId, String votingId, String optionId, String pseudonymToken, Instant submittedAt) {
+        this.voteId = voteId;
+        this.votingId = votingId;
+        this.optionId = optionId;
+        this.pseudonymToken = pseudonymToken;
+        this.submittedAt = submittedAt;
+    }
+}
