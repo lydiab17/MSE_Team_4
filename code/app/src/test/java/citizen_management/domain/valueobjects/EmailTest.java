@@ -21,7 +21,6 @@ class EmailTest {
     @DisplayName("Sollte eine gültige E-Mail akzeptieren")
     void shouldNotThrowExceptionWhenEmailIsValid() {
         assertDoesNotThrow(() -> new Email("username@domain.com"));
-        // E-Mail ist gültig, weil @ vorhanden ist
     }
 
 
@@ -30,9 +29,20 @@ class EmailTest {
 
     // Negative Tests
     @Test
-    @DisplayName("Sollte eine Exception werfen, wenn kein '@' enthalten ist\"")
+    @DisplayName("Sollte eine Exception werfen, wenn kein '@' enthalten ist")
     void shouldThrowExceptionWhenEmailHasNoAt() {
         assertThrows(IllegalArgumentException.class, () -> new Email("usernamedomain.com"));
-        // E-Mail ist ungültig, weil kein @ vorhanden ist
+    }
+
+    @Test
+    @DisplayName("Sollte Exception werfen, wenn E-Mail leer ist")
+    void shouldThrowExceptionWhenEmailIsEmpty() {
+        assertThrows(IllegalArgumentException.class, () -> new Email(""));
+    }
+
+    @Test
+    @DisplayName("Sollte Exception werfen, wenn E-Mail null ist")
+    void shouldThrowExceptionWhenEmailIsNull() {
+        assertThrows(IllegalArgumentException.class, () -> new Email(null));
     }
 }

@@ -8,6 +8,15 @@ package com.evote.app.citizen_management.domain.valueobjects;
  */
 public record Name(String firstName, String lastName) {
 
+
+    private static final int MIN_NAME_LENGTH = 3;
+    private static final int MAX_NAME_LENGTH = 10;
+
+    // Regex-Basis: erlaubt nur Buchstaben inkl. Umlaute
+    private static final String NAME_CHAR_PATTERN = "A-Za-zÄÖÜäöüß";
+    private static final String NAME_PATTERN =
+            "^[" + NAME_CHAR_PATTERN + "]{" + MIN_NAME_LENGTH + "," + MAX_NAME_LENGTH + "}$";
+
     /**
      * Erstellt einen neuen Namen mit Vorname und Nachname.
      *
@@ -37,7 +46,7 @@ public record Name(String firstName, String lastName) {
         }
 
         // Nur Buchstaben. Minimal 3 Zeichen. Maximal 10 Zeichen.
-        return firstName.matches("^[A-Za-zÄÖÜäöüß]{3,10}$");
+        return firstName.matches(NAME_PATTERN);
     }
 
     /**
@@ -52,7 +61,7 @@ public record Name(String firstName, String lastName) {
         }
 
         // Nur Buchstaben. Minimal 3 Zeichen. Maximal 10 Zeichen.
-        return lastName.matches("^[A-Za-zÄÖÜäöüß]{3,10}$");
+        return lastName.matches(NAME_PATTERN);
     }
 
     /**
