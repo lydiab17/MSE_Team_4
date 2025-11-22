@@ -1,12 +1,10 @@
 package voting_management.domain.model;
 
-import com.evote.app.voting_management.domain.model.Voting;
+import com.evote.app.votingmanagement.domain.model.Voting;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,8 +12,6 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.*;
 import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 public class VotingTest {
     private Clock fixedClock;

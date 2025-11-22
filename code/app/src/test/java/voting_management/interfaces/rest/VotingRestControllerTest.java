@@ -1,8 +1,8 @@
 package voting_management.interfaces.rest;
 
-import com.evote.app.voting_management.application.VotingApplicationService;
-import com.evote.app.voting_management.domain.model.Voting;
-import com.evote.app.voting_management.interfaces.rest.VotingRestController;
+import com.evote.app.votingmanagement.application.VotingApplicationService;
+import com.evote.app.votingmanagement.domain.model.Voting;
+import com.evote.app.votingmanagement.interfaces.rest.VotingRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

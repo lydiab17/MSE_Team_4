@@ -1,6 +1,6 @@
 package voting_management.domain.valueobjects;
 
-import com.evote.app.voting_management.domain.valueobjects.VotingInfo;
+import com.evote.app.votingmanagement.domain.valueobjects.VotingInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
