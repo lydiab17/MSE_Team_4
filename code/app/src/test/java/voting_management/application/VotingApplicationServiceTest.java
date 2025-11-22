@@ -1,7 +1,7 @@
-package com.evote.app.voting_management.application;
+package com.evote.app.votingmanagement.application;
 
-import com.evote.app.voting_management.domain.model.Voting;
-import com.evote.app.voting_management.infrastructure.repositories.InMemoryVotingRepository;
+import com.evote.app.votingmanagement.domain.model.Voting;
+import com.evote.app.votingmanagement.infrastructure.repositories.InMemoryVotingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
