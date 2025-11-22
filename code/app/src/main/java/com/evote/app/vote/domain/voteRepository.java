@@ -7,9 +7,9 @@ import java.util.Optional;
  * Domain-Port: nur Interface (keine Implementierung hier).
  */
 public interface voteRepository {
-    void save(Vote vote);
-    Optional<Vote> findById(String voteId);
-    List<Vote> findByVotingId(String votingId);
+    void save(vote vote);
+    Optional<vote> findById(String voteId);
+    List<vote> findByVotingId(String votingId);
     boolean existsByVotingIdAndPseudonym(String votingId, String pseudonymToken);
 }
 

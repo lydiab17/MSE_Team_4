@@ -7,14 +7,14 @@ import java.util.UUID;
 /**
  * Einfaches immutable Vote-Aggregate (minimal).
  */
-public final class Vote {
+public final class vote {
     private final String id;
     private final VotingId votingId;
     private final String optionId;
     private final PseudonymToken pseudonym;
     private final Instant submittedAt;
 
-    private Vote(String id, VotingId votingId, String optionId, PseudonymToken pseudonym, Instant submittedAt) {
+    private vote(String id, VotingId votingId, String optionId, PseudonymToken pseudonym, Instant submittedAt) {
         this.id = Objects.requireNonNull(id, "id");
         this.votingId = Objects.requireNonNull(votingId, "votingId");
         this.optionId = Objects.requireNonNull(optionId, "optionId");
@@ -22,8 +22,8 @@ public final class Vote {
         this.submittedAt = Objects.requireNonNull(submittedAt, "submittedAt");
     }
 
-    public static Vote createNew(VotingId votingId, String optionId, PseudonymToken pseudonym) {
-        return new Vote(UUID.randomUUID().toString(), votingId, optionId, pseudonym, Instant.now());
+    public static vote createNew(VotingId votingId, String optionId, PseudonymToken pseudonym) {
+        return new vote(UUID.randomUUID().toString(), votingId, optionId, pseudonym, Instant.now());
     }
 
     // getters
