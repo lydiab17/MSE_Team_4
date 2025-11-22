@@ -7,6 +7,9 @@ package com.evote.app.citizen_management.domain.valueobjects;
  * @version 1.0
  */
 public record Email(String email) {
+
+    private static final String EMAIL_PATTERN = "^(.+)@(\\S+)$";
+
     /**
      * Erstellt eine neue E-Mail.
      * @param email Die E-Mail-Adresse des Bürgers.
@@ -27,7 +30,7 @@ public record Email(String email) {
         if (email == null) {
             return false;
         }
-        return email.matches("^(.+)@(\\S+)$");
-        // prüft nur, ob das @-Zeichen vorhanden ist
+        return email.matches(EMAIL_PATTERN);
     }
+
 }

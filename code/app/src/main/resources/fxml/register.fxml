@@ -22,12 +22,20 @@
         </Label>
         <TextField fx:id="firstName" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="200.0" promptText="Vorname">
             <VBox.margin>
-                <Insets left="200.0" right="200.0" top="3.0" />
+                <Insets left="200.0" right="200.0" />
             </VBox.margin>
         </TextField>
+      <Label fx:id="firstNameError" text="Label" textFill="#ff0202" visible="false">
+         <font>
+            <Font size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="200.0" right="200.0" />
+         </VBox.margin>
+      </Label>
       <Label prefHeight="13.0" prefWidth="601.0" text="Nachname:">
          <VBox.margin>
-            <Insets left="200.0" right="200.0" top="20.0" />
+            <Insets left="200.0" right="200.0" top="5.0" />
          </VBox.margin>
       </Label>
       <TextField fx:id="lastName" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="200.0" promptText="Nachname">
@@ -35,26 +43,50 @@
             <Insets left="200.0" right="200.0" />
          </VBox.margin>
       </TextField>
+      <Label fx:id="lastNameError" text="Label" textFill="#ff0202" visible="false">
+         <font>
+            <Font size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="200.0" right="200.0" />
+         </VBox.margin>
+      </Label>
       <Label prefHeight="13.0" prefWidth="601.0" text="E-Mail:">
-         <padding>
-            <Insets left="200.0" right="200.0" top="20.0" />
-         </padding>
+         <VBox.margin>
+            <Insets left="200.0" right="200.0" top="5.0" />
+         </VBox.margin>
       </Label>
       <TextField fx:id="email" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="200.0" promptText="E-Mail">
          <VBox.margin>
             <Insets left="200.0" right="200.0" />
          </VBox.margin>
       </TextField>
+      <Label fx:id="emailError" text="Label" textFill="#ff0202" visible="false">
+         <font>
+            <Font size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="200.0" right="200.0" />
+         </VBox.margin>
+      </Label>
         <Label prefHeight="17.0" prefWidth="614.0" text="Passwort:">
             <VBox.margin>
-                <Insets left="200.0" right="200.0" top="20.0" />
+                <Insets left="200.0" right="200.0" top="5.0" />
             </VBox.margin>
         </Label>
         <PasswordField fx:id="password" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="200.0" promptText="Passwort">
             <VBox.margin>
-                <Insets left="200.0" right="200.0" top="3.0" />
+                <Insets left="200.0" right="200.0" />
             </VBox.margin>
         </PasswordField>
+      <Label fx:id="passwordError" text="Label" textFill="#ff0202" visible="false">
+         <font>
+            <Font size="11.0" />
+         </font>
+         <VBox.margin>
+            <Insets left="200.0" right="200.0" />
+         </VBox.margin>
+      </Label>
         <Button fx:id="registerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#registerAction" prefHeight="26.0" prefWidth="113.0" text="Registrieren">
             <VBox.margin>
                 <Insets left="200.0" right="200.0" top="20.0" />

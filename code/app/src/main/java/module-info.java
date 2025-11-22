@@ -11,8 +11,8 @@ open module com.evote.app {
     requires spring.web;
     requires spring.beans;
     requires spring.core;
-    requires java.sql; // für Tomcat/JDBC-Kram (SQLException-Fehler im Log)
-
+    requires java.sql;
+    requires java.desktop;
 
 
     exports com.evote.app;
