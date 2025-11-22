@@ -4,6 +4,7 @@ import com.evote.app.vote.domain.PseudonymToken;
 import com.evote.app.vote.domain.Vote;
 import com.evote.app.vote.domain.voteRepository;
 import com.evote.app.vote.events.VoteSubmittedEvent;
+import com.evote.app.vote.domain.port.AuthPort;
 
 import java.time.Instant;
 import java.util.Optional;
