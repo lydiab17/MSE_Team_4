@@ -1,7 +1,7 @@
-package com.evote.app.voting_management.application;
+package com.evote.app.votingmanagement.application;
 
-import com.evote.app.voting_management.domain.model.Voting;
-import com.evote.app.voting_management.domain.model.VotingRepository;
+import com.evote.app.votingmanagement.domain.model.Voting;
+import com.evote.app.votingmanagement.domain.model.VotingRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;

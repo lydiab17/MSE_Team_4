@@ -1,10 +1,9 @@
-package com.evote.app.voting_management.infrastructure.repositories;
+package com.evote.app.votingmanagement.infrastructure.repositories;
 
-import com.evote.app.voting_management.domain.model.Voting;
-import com.evote.app.voting_management.domain.model.VotingRepository;
+import com.evote.app.votingmanagement.domain.model.Voting;
+import com.evote.app.votingmanagement.domain.model.VotingRepository;
 import org.springframework.stereotype.Repository;
 
-import java.time.Clock;
 import java.util.*;
 
 @Repository  // Spring kann dieses Bean dann automatisch injizieren

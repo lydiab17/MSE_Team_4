@@ -6,7 +6,7 @@ import com.evote.app.vote.domain.valueobjects.PseudonymToken;
 import com.evote.app.vote.domain.valueobjects.auth.VerificationStatus;
 import com.evote.app.vote.domain.valueobjects.port.AuthPort;
 import com.evote.app.vote.events.VoteSubmittedEvent;
-import com.evote.app.voting_management.application.VotingApplicationService;
+import com.evote.app.votingmanagement.application.VotingApplicationService;
 import java.time.Instant;
 import org.springframework.stereotype.Service;
 

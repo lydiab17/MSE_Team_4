@@ -1,4 +1,4 @@
-package com.evote.app.voting_management.domain.model;
+package com.evote.app.votingmanagement.domain.model;
 
 import java.util.List;
 import java.util.Optional;

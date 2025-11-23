@@ -1,4 +1,4 @@
-package com.evote.app.voting_management.domain.valueobjects;
+package com.evote.app.votingmanagement.domain.valueobjects;
 
 /**
  * Repräsentiert den Namen/Titel einer Abstimmung.

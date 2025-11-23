@@ -1,7 +1,7 @@
-package com.evote.app.voting_management.ui;
+package com.evote.app.votingmanagement.ui;
 
-import com.evote.app.voting_management.application.VotingApplicationService;
-import com.evote.app.voting_management.domain.model.Voting;
+import com.evote.app.votingmanagement.application.VotingApplicationService;
+import com.evote.app.votingmanagement.domain.model.Voting;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;

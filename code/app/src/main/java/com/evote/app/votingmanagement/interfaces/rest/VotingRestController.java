@@ -1,7 +1,7 @@
-package com.evote.app.voting_management.interfaces.rest;
+package com.evote.app.votingmanagement.interfaces.rest;
 
-import com.evote.app.voting_management.application.VotingApplicationService;
-import com.evote.app.voting_management.domain.model.Voting;
+import com.evote.app.votingmanagement.application.VotingApplicationService;
+import com.evote.app.votingmanagement.domain.model.Voting;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;

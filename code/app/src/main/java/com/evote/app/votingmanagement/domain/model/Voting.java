@@ -1,8 +1,8 @@
-package com.evote.app.voting_management.domain.model;
+package com.evote.app.votingmanagement.domain.model;
 
-import com.evote.app.voting_management.domain.valueobjects.OptionLabel;
-import com.evote.app.voting_management.domain.valueobjects.VotingInfo;
-import com.evote.app.voting_management.domain.valueobjects.VotingName;
+import com.evote.app.votingmanagement.domain.valueobjects.OptionLabel;
+import com.evote.app.votingmanagement.domain.valueobjects.VotingInfo;
+import com.evote.app.votingmanagement.domain.valueobjects.VotingName;
 
 import java.time.Clock;
 import java.time.LocalDate;
