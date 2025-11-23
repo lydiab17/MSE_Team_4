@@ -1,6 +1,5 @@
-package com.evote.app.vote.domain;
+package com.evote.app.vote.domain.valueobjects;
 
-import com.evote.app.vote.domain.auth.VerificationStatus;
 public class port {
 
     public static interface AuthPort {
