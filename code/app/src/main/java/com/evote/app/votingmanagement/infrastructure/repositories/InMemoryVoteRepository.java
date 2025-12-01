@@ -6,6 +6,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import com.evote.app.votingmanagement.domain.model.Vote;
+import com.evote.app.votingmanagement.domain.model.VoteRepository;
 import org.springframework.stereotype.Repository;
 
 /**
