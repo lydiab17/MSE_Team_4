@@ -1,12 +1,13 @@
-package com.evote.app.vote.application;
+package com.evote.app.votingmanagement.application;
 
-import com.evote.app.vote.domain.Vote;
-import com.evote.app.vote.domain.VoteRepository;
-import com.evote.app.vote.domain.valueobjects.PseudonymToken;
-import com.evote.app.vote.domain.valueobjects.auth.VerificationStatus;
-import com.evote.app.vote.domain.valueobjects.port.AuthPort;
-import com.evote.app.vote.events.VoteSubmittedEvent;
-import com.evote.app.votingmanagement.application.VotingApplicationService;
+
+import com.evote.app.votingmanagement.domain.model.Vote;
+import com.evote.app.votingmanagement.domain.valueobjects.PseudonymToken;
+import com.evote.app.votingmanagement.domain.valueobjects.auth;
+import com.evote.app.votingmanagement.domain.valueobjects.port;
+import com.evote.app.votingmanagement.domain.model.VoteRepository;
+import com.evote.app.votingmanagement.events.VoteSubmittedEvent;
+
 import java.time.Instant;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ import org.springframework.stereotype.Service;
  *
  * Schritte:
  * <ol>
- *   <li>Authentifizierung über {@link AuthPort}</li>
+ *   <li>Authentifizierung über {@link port.AuthPort}</li>
  *   <li>Voting über {@link VotingApplicationService} laden</li>
  *   <li>Prüfen, ob Voting geöffnet ist</li>
  *   <li>Prüfen, ob die gewählte Option im Voting existiert</li>
@@ -27,12 +28,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class CastVoteService {
 
-  private final AuthPort authPort;
+  private final port.AuthPort authPort;
   private final VoteRepository voteRepository;
   private final EventPublisher eventPublisher;
   private final VotingApplicationService votingService;
 
-  public CastVoteService(AuthPort authPort,
+  public CastVoteService(port.AuthPort authPort,
                          VoteRepository voteRepository,
                          EventPublisher eventPublisher,
                          VotingApplicationService votingService) {
@@ -44,7 +45,7 @@ public class CastVoteService {
 
   public void execute(CastVoteDto dto) {
     // 1) Authentifizieren (Domain-Port)
-    VerificationStatus status = authPort.verify(dto.authToken);
+    auth.VerificationStatus status = authPort.verify(dto.authToken);
     if (status == null || !status.isVerified()) {
       throw new RuntimeException("Not authenticated");
     }

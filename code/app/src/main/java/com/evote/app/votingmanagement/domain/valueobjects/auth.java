@@ -1,4 +1,4 @@
-package com.evote.app.vote.domain.valueobjects;
+package com.evote.app.votingmanagement.domain.valueobjects;
 
 public class auth {
   public static class VerificationStatus {

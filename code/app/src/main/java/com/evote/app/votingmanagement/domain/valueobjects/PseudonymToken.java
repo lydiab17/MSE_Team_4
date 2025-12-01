@@ -1,4 +1,4 @@
-package com.evote.app.vote.domain.valueobjects;
+package com.evote.app.votingmanagement.domain.valueobjects;
 
 import java.util.Objects;
 import java.util.UUID;

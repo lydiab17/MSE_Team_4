@@ -1,4 +1,4 @@
-package com.evote.app.vote.application;
+package com.evote.app.votingmanagement.application;
 
 /**
  * Einfaches DTO für CastVote.

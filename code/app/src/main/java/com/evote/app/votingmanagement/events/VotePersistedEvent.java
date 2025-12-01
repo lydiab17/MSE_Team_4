@@ -1,4 +1,4 @@
-package com.evote.app.vote.events;
+package com.evote.app.votingmanagement.events;
 
 import java.time.Instant;
 

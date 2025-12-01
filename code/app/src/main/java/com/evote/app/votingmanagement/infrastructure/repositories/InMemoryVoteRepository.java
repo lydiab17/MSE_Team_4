@@ -1,7 +1,5 @@
-package com.evote.app.vote.infrastructure;
+package com.evote.app.votingmanagement.infrastructure.repositories;
 
-import com.evote.app.vote.domain.Vote;
-import com.evote.app.vote.domain.VoteRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
