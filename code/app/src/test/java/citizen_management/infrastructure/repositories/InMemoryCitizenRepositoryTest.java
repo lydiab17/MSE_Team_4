@@ -42,7 +42,7 @@ class InMemoryCitizenRepositoryTest {
         repository.save(citizen);
 
         // Citizen anhand der ID finden
-        Optional<Citizen> result = repository.findById(id);
+        Optional<Citizen> result = repository.findByEmail(email);
 
         // Assertions
         // prüft, dass der Citizen tatsächlich gefunden wurde

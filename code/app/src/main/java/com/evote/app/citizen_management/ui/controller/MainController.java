@@ -7,6 +7,8 @@ import javafx.scene.layout.StackPane;
 
 public class MainController {
     // Singleton
+    // Sicherstellen, dass von einer Klasse genau eine einzige Instanz existiert
+    // und dass diese Instanz global zugreifbar ist.
     private static MainController instance;
 
     // Singleton-Zugriff auf die einzige Instanz von Main-Controller

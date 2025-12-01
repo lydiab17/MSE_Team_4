@@ -13,6 +13,9 @@ open module com.evote.app {
     requires spring.core;
     requires java.sql;
     requires java.desktop;
+    requires java.net.http;
+    requires com.fasterxml.jackson.databind;
+
 
 
     exports com.evote.app;

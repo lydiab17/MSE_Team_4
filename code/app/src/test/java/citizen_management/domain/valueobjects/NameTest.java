@@ -25,6 +25,17 @@ class NameTest {
         assertEquals("Mustermann", name.lastName());
     }
 
+    @Test
+    @DisplayName("Sollte eine korrekte String-Repräsentation erstellen")
+    void testToString() {
+        Name name = new Name("Max", "Muster");
+
+        String expected = "Max Muster";
+        String actual = name.toString();
+
+        assertEquals(expected, actual);
+    }
+
     // Edge-Cases
     @Test
     @DisplayName("Sollte gültigen Namen erstellen, wenn Vorname genau 3 Zeichen hat")
