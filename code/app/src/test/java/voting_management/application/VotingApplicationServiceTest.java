@@ -1,6 +1,8 @@
-package com.evote.app.votingmanagement.application;
+package voting_management.application;
 
+import com.evote.app.votingmanagement.application.VotingApplicationService;
 import com.evote.app.votingmanagement.domain.model.Voting;
+import com.evote.app.votingmanagement.infrastructure.repositories.InMemoryVoteRepository;
 import com.evote.app.votingmanagement.infrastructure.repositories.InMemoryVotingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,15 +18,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class VotingApplicationServiceTest {
 
-    private InMemoryVotingRepository repo;
+    private InMemoryVotingRepository votingRepo;
+    private InMemoryVoteRepository voteRepo;
     private VotingApplicationService service;
     private Clock fixedClock;
     private LocalDate today;
 
     @BeforeEach
     void setup() {
-        repo = new InMemoryVotingRepository();
-        service = new VotingApplicationService(repo);
+        votingRepo = new InMemoryVotingRepository();
+        voteRepo = new InMemoryVoteRepository();
+
+        service = new VotingApplicationService(votingRepo, voteRepo);
 
         today = LocalDate.of(2030, 5, 10);
         fixedClock = Clock.fixed(
@@ -53,7 +58,7 @@ public class VotingApplicationServiceTest {
         );
 
         assertNotNull(created);
-        Optional<Voting> fromRepo = repo.findById(1);
+        Optional<Voting> fromRepo = votingRepo.findById(1);
         assertTrue(fromRepo.isPresent(), "Voting sollte im Repository gespeichert werden");
         assertEquals("Abstimmung 2030", fromRepo.get().getName());
     }
@@ -85,7 +90,7 @@ public class VotingApplicationServiceTest {
 
         service.openVoting(3);
 
-        Voting v = repo.findById(3)
+        Voting v = votingRepo.findById(3)
                 .orElseThrow(() -> new AssertionError("Voting nicht gefunden"));
         assertTrue(v.isVotingStatus(), "Voting-Status sollte nach openVoting true sein");
     }
@@ -102,7 +107,7 @@ public class VotingApplicationServiceTest {
                 opts("Ja", "Nein")
         );
         v1.setVotingStatus(true);
-        repo.save(v1);
+        votingRepo.save(v1);
 
         // Voting 2: zu, weil Status false
         Voting v2 = service.createVoting(
@@ -114,7 +119,7 @@ public class VotingApplicationServiceTest {
                 opts("Ja", "Nein")
         );
         // Status bleibt false
-        repo.save(v2);
+        votingRepo.save(v2);
 
         var openVotings = service.getOpenVotings(fixedClock);
 
