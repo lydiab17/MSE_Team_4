@@ -10,6 +10,7 @@ public interface VoteRepository {
     void save(Vote vote);
     Optional<Vote> findById(String voteId);
     List<Vote> findByVotingId(int votingId);
-    boolean existsByVotingIdAndPseudonym(int votingId, String pseudonymToken);
+    boolean existsByVotingIdAndVoterKey(int votingId, String voterKey);
+
 }
 

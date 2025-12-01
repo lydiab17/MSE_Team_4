@@ -1,5 +1,7 @@
 package com.evote.app.votingmanagement.application;
 
+import com.evote.app.votingmanagement.domain.model.Vote;
+import com.evote.app.votingmanagement.domain.model.VoteRepository;
 import com.evote.app.votingmanagement.domain.model.Voting;
 import com.evote.app.votingmanagement.domain.model.VotingRepository;
 import java.time.Clock;
@@ -10,74 +12,171 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 
 /**
- * Anwendungsschicht-Service rund um Votings.
+ * Anwendungsschicht-Service rund um Votings und Votes.
+ *
+ * Verantwortlichkeiten:
+ * <ul>
+ *   <li>Abstimmungen anlegen, öffnen, schließen, abfragen</li>
+ *   <li>Stimmen abgeben (ohne Auth / Pseudonymisierung – vorläufig)</li>
+ * </ul>
  */
 @Service
 public class VotingApplicationService {
 
-  private final VotingRepository votingRepository;
+    private final VotingRepository votingRepository;
+    private final VoteRepository voteRepository;
 
-  public VotingApplicationService(VotingRepository votingRepository) {
-    this.votingRepository = votingRepository;
-  }
+    public VotingApplicationService(VotingRepository votingRepository,
+                                    VoteRepository voteRepository) {
+        this.votingRepository = votingRepository;
+        this.voteRepository = voteRepository;
+    }
 
-  /**
-   * Use Case: Neues Voting anlegen.
-   */
-  public Voting createVoting(int id,
-                             String name,
-                             String info,
-                             LocalDate startDate,
-                             LocalDate endDate,
-                             Set<String> options) {
+    public record OptionResult(
+            String option,
+            long count
+    ) {
+    }
 
-    // Domain kümmert sich um alle Regeln / Validierung
-    Voting voting = Voting.create(id, name, info, startDate, endDate, options);
+    // =========================================================
+    //  Voting-Use-Cases (wie bisher)
+    // =========================================================
 
-    // dann speichern wir es über das Repository
-    votingRepository.save(voting);
+    /**
+     * Use Case: Neues Voting anlegen.
+     */
+    public Voting createVoting(int id,
+                               String name,
+                               String info,
+                               LocalDate startDate,
+                               LocalDate endDate,
+                               Set<String> options) {
 
-    return voting;
-  }
+        // Domain kümmert sich um alle Regeln / Validierung
+        Voting voting = Voting.create(id, name, info, startDate, endDate, options);
 
-  /**
-   * Use Case: Voting öffnen (freischalten).
-   */
-  public void openVoting(int id) {
-    Voting voting = votingRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(
-                    "Voting mit ID " + id + " nicht gefunden"));
+        // dann speichern wir es über das Repository
+        votingRepository.save(voting);
 
-    voting.setVotingStatus(true);
-    votingRepository.save(voting);
-  }
+        return voting;
+    }
 
-  /**
-   * Use Case: Voting schließen.
-   */
-  public void closeVoting(int id) {
-    Voting voting = votingRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException(
-                    "Voting mit ID " + id + " nicht gefunden"));
+    /**
+     * Use Case: Voting öffnen (freischalten).
+     */
+    public void openVoting(int id) {
+        Voting voting = votingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Voting mit ID " + id + " nicht gefunden"));
 
-    voting.setVotingStatus(false);
-    votingRepository.save(voting);
-  }
+        voting.setVotingStatus(true);
+        votingRepository.save(voting);
+    }
 
-  /**
-   * Use Case: Einzelnes Voting holen.
-   */
-  public Optional<Voting> getVotingById(int id) {
-    return votingRepository.findById(id);
-  }
+    /**
+     * Use Case: Voting schließen.
+     */
+    public void closeVoting(int id) {
+        Voting voting = votingRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Voting mit ID " + id + " nicht gefunden"));
 
-  /**
-   * Beispiel: Alle aktuell offenen Votings holen.
-   * (hier nehmen wir die System-Uhr; in Tests könntest du eine andere Uhr verwenden)
-   */
-  public List<Voting> getOpenVotings(Clock clock) {
-    return votingRepository.findAll().stream()
-            .filter(v -> v.isOpen(clock))
-            .toList();
-  }
+        voting.setVotingStatus(false);
+        votingRepository.save(voting);
+    }
+
+    /**
+     * Use Case: Einzelnes Voting holen.
+     */
+    public Optional<Voting> getVotingById(int id) {
+        return votingRepository.findById(id);
+    }
+
+    /**
+     * Beispiel: Alle aktuell offenen Votings holen.
+     * (hier nehmen wir die System-Uhr; in Tests könntest du eine andere Uhr verwenden)
+     */
+    public List<Voting> getOpenVotings(Clock clock) {
+        return votingRepository.findAll().stream()
+                .filter(v -> v.isOpen(clock))
+                .toList();
+    }
+
+    public List<OptionResult> getResultsForVoting(int votingId) {
+        // Sicherstellen, dass das Voting existiert
+        Voting voting = votingRepository.findById(votingId)
+                .orElseThrow(() -> new IllegalArgumentException("Voting nicht gefunden"));
+
+        // Alle Votes zu diesem Voting laden
+        var votes = voteRepository.findByVotingId(votingId);
+
+        // Für jede Option die Anzahl der Stimmen zählen
+        return voting.getOptionTexts().stream()
+                .map(option -> {
+                    long count = votes.stream()
+                            .filter(v -> v.getOptionId().equalsIgnoreCase(option))
+                            .count();
+                    return new OptionResult(option, count);
+                })
+                .toList();
+    }
+
+
+    // =========================================================
+    //  Vote-Use-Case: Stimme abgeben (vereinfachte Variante)
+    // =========================================================
+
+    /**
+     * Use Case: Stimme abgeben (ohne Auth / Events).
+     *
+     * Schritte:
+     * <ol>
+     *   <li>Voting laden</li>
+     *   <li>prüfen, ob Voting geöffnet ist</li>
+     *   <li>prüfen, ob Option existiert</li>
+     *   <li>prüfen, ob dieser "Wähler" schon abgestimmt hat</li>
+     *   <li>Vote erzeugen und speichern</li>
+     * </ol>
+     *
+     * Hinweis: {@code dto.authToken()} wird hier vorläufig
+     * als einfacher voterKey verwendet. Später wird das durch
+     * ein echtes Pseudonym/Token aus dem citizen_management ersetzt.
+     */
+    public void castVote(CastVoteDto dto) {
+        // 1) Voting laden
+        Voting voting = getVotingById(dto.votingId)
+                .orElseThrow(() -> new IllegalArgumentException("Voting nicht gefunden"));
+
+        // 2) Prüfen, ob Voting geöffnet ist
+        if (!voting.isVotingStatus()) {
+            throw new IllegalStateException("Voting ist nicht geöffnet");
+        }
+
+        // 3) Prüfen, ob Option zum Voting gehört
+        boolean optionExists = voting.getOptionTexts().stream()
+                .anyMatch(o -> o.equalsIgnoreCase(dto.optionId));
+        if (!optionExists) {
+            throw new IllegalArgumentException("Option existiert nicht in diesem Voting");
+        }
+
+        // 4) "Wähler" identifizieren – vorläufig nehmen wir den authToken als voterKey
+        String voterKey = dto.authToken;
+
+        // Doppelabstimmung verhindern
+        if (voteRepository.existsByVotingIdAndVoterKey(dto.votingId, voterKey)) {
+            throw new IllegalStateException("Dieser Wähler hat bereits abgestimmt");
+        }
+
+        // 5) Vote erstellen (Domain)
+        Vote vote = Vote.createNew(
+                dto.votingId,
+                dto.optionId,
+                voterKey
+        );
+
+        // 6) Persistieren
+        voteRepository.save(vote);
+
+        // Kein Event-Publishing in der vereinfachten Variante
+    }
 }

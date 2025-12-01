@@ -13,58 +13,39 @@ public final class Vote {
     private final String id;
     private final int votingId;
     private final String optionId;
-    private final PseudonymToken pseudonym;
+    private final String voterKey;   // früher: PseudonymToken
     private final Instant submittedAt;
 
     private Vote(String id,
                  int votingId,
                  String optionId,
-                 PseudonymToken pseudonym,
+                 String voterKey,
                  Instant submittedAt) {
         this.id = Objects.requireNonNull(id, "id");
-        this.votingId = votingId; // primitive, kann nicht null sein
+        this.votingId = votingId;
         this.optionId = Objects.requireNonNull(optionId, "optionId");
-        this.pseudonym = Objects.requireNonNull(pseudonym, "pseudonym");
+        this.voterKey = Objects.requireNonNull(voterKey, "voterKey");
         this.submittedAt = Objects.requireNonNull(submittedAt, "submittedAt");
     }
 
-    /**
-     * Fabrikmethode zum Erzeugen einer neuen Stimme.
-     *
-     * @param votingId   ID der Abstimmung
-     * @param optionId   gewählte Option
-     * @param pseudonym  Pseudonym des Wählers
-     * @return neues {@code Vote}-Objekt
-     */
-    public static Vote createNew(int votingId, String optionId, PseudonymToken pseudonym) {
+    public static Vote createNew(int votingId, String optionId, String voterKey) {
         return new Vote(
                 UUID.randomUUID().toString(),
                 votingId,
                 optionId,
-                pseudonym,
+                voterKey,
                 Instant.now()
         );
     }
 
-    // Getter
+    public String getId() { return id; }
 
-    public String getId() {
-        return id;
-    }
+    public int getVotingId() { return votingId; }
 
-    public int getVotingId() {
-        return votingId;
-    }
+    public String getOptionId() { return optionId; }
 
-    public String getOptionId() {
-        return optionId;
-    }
+    public String getVoterKey() { return voterKey; }
 
-    public PseudonymToken getPseudonym() {
-        return pseudonym;
-    }
-
-    public Instant getSubmittedAt() {
-        return submittedAt;
-    }
+    public Instant getSubmittedAt() { return submittedAt; }
 }
+
