@@ -2,18 +2,22 @@ package com.evote.app.citizen_management.ui.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
+import com.evote.app.citizen_management.infrastructure.CitizenApiClient;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
 
 public class LoginController {
     @FXML
     private TextField email;
 
     @FXML
+    private Label emailError;
+
+    @FXML
     private PasswordField password;
+
+    @FXML
+    private Label passwordError;
 
     @FXML
     private Button loginbutton;
@@ -21,8 +25,27 @@ public class LoginController {
     @FXML
     private Button registerbutton;
 
+    private final CitizenApiClient apiClient = new CitizenApiClient();
+
     @FXML
     private void loginAction(ActionEvent e1) {
+
+        if (isAnyFieldEmpty()) {
+            System.out.println("Es wurden nicht alle Felder ausgefüllt.");
+        } else {
+            System.out.println("Es wurden alle Felder ausgefüllt.");
+        }
+
+        String mail = email.getText();
+        String pw = password.getText();
+
+        boolean success = apiClient.loginCitizen(mail, pw);
+
+        if (success) {
+            showAlert("Login", "Erfolgreich eingeloggt!", AlertType.CONFIRMATION);
+        } else {
+            showAlert("Login", "Login fehlgeschlagen!", AlertType.ERROR);
+        }
 
     }
 
@@ -31,21 +54,34 @@ public class LoginController {
         MainController.getInstance().changeView("register");
     }
 
-    // Ausgabe einer Erfolgsmeldung
-    private void showErrorAlert(String fehlermeldung) {
-        Alert alert = new Alert(AlertType.ERROR);
-        alert.setTitle("Fehler");
+
+    private void showAlert(String title, String message, AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
         alert.setHeaderText(null);
-        alert.setContentText(fehlermeldung);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 
-    // Ausgabe einer Fehlermeldung
-    private void showSuccessAlert(String meldung) {
-        Alert alert = new Alert(AlertType.INFORMATION);
-        alert.setTitle("Erfolg");
-        alert.setHeaderText(null);
-        alert.setContentText(meldung);
-        alert.showAndWait();
+    private boolean isAnyFieldEmpty() {
+
+        boolean emailEmpty = checkField(email, emailError, "Email darf nicht leer sein!");
+        boolean passwordEmpty = checkField(password, passwordError, "Passwort darf nicht leer sein!");
+
+        return emailEmpty || passwordEmpty;
+    }
+
+    private boolean checkField(TextField field, Label errorLabel, String errorMessage) {
+        boolean empty = field.getText().isEmpty();
+
+        if (empty) {
+            field.setStyle("-fx-border-color: red;");
+            errorLabel.setText(errorMessage);
+            errorLabel.setVisible(true);
+        } else {
+            field.setStyle("");
+            errorLabel.setVisible(false);
+        }
+        return empty;
     }
 }

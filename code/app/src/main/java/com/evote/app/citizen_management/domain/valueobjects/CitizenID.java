@@ -23,9 +23,10 @@ public record CitizenID(UUID id) {
 
     /**
      * Erzeugt eine neue, zufällige und gültige CitizenID
+     *
      * @return neue CitizenID mit zufällig generierter UUID
      */
-    public static CitizenID generate () {
+    public static CitizenID generate() {
         return new CitizenID(UUID.randomUUID());
         // UUID = Universally Unique Identifier: 128-Bit große zufällige Zahl
     }

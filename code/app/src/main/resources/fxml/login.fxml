@@ -25,9 +25,14 @@
                 <Insets left="200.0" right="200.0" top="3.0" />
             </VBox.margin>
         </TextField>
+      <Label fx:id="emailError" text="Label" textFill="RED" visible="false">
+         <VBox.margin>
+            <Insets left="200.0" right="200.0" />
+         </VBox.margin>
+      </Label>
         <Label prefHeight="17.0" prefWidth="614.0" text="Passwort:">
             <VBox.margin>
-                <Insets left="200.0" right="200.0" top="20.0" />
+                <Insets left="200.0" right="200.0" top="5.0" />
             </VBox.margin>
         </Label>
         <PasswordField fx:id="password" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="200.0" promptText="Passwort">
@@ -35,14 +40,19 @@
                 <Insets left="200.0" right="200.0" top="3.0" />
             </VBox.margin>
         </PasswordField>
+      <Label fx:id="passwordError" text="Label" textFill="RED" visible="false">
+         <VBox.margin>
+            <Insets left="200.0" right="200.0" />
+         </VBox.margin>
+      </Label>
         <Button fx:id="loginbutton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loginAction" prefHeight="26.0" prefWidth="113.0" text="Login">
             <VBox.margin>
-                <Insets left="200.0" right="200.0" top="20.0" />
+                <Insets left="200.0" right="200.0" top="5.0" />
             </VBox.margin>
         </Button>
         <Label text="Neu hier?">
             <VBox.margin>
-                <Insets left="200.0" right="200.0" top="50.0" />
+                <Insets left="200.0" right="200.0" top="30.0" />
             </VBox.margin>
         </Label>
         <Button fx:id="registerbutton" mnemonicParsing="false" onAction="#registerAction" text="Registrieren">
