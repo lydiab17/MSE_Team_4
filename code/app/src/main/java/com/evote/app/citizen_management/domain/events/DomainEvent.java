@@ -1,4 +1,4 @@
 package com.evote.app.citizen_management.domain.events;
-
-public class DomainEvent {
+// TODO
+public abstract class DomainEvent {
 }
