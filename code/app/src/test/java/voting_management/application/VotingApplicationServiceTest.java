@@ -1,6 +1,6 @@
 package voting_management.application;
 
-import com.evote.app.votingmanagement.application.VotingApplicationService;
+import com.evote.app.votingmanagement.application.services.VotingApplicationService;
 import com.evote.app.votingmanagement.domain.model.Voting;
 import com.evote.app.votingmanagement.infrastructure.repositories.InMemoryVoteRepository;
 import com.evote.app.votingmanagement.infrastructure.repositories.InMemoryVotingRepository;

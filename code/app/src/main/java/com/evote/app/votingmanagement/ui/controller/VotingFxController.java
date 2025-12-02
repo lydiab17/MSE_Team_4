@@ -1,6 +1,6 @@
 package com.evote.app.votingmanagement.ui.controller;
 
-import com.evote.app.votingmanagement.application.VotingApplicationService;
+import com.evote.app.votingmanagement.application.services.VotingApplicationService;
 import com.evote.app.votingmanagement.domain.model.Voting;
 import java.time.Clock;
 import java.time.LocalDate;

@@ -1,5 +1,7 @@
-package com.evote.app.votingmanagement.application;
+package com.evote.app.votingmanagement.application.services;
 
+import com.evote.app.votingmanagement.application.dto.CastVoteDto;
+import com.evote.app.votingmanagement.application.dto.OptionResult;
 import com.evote.app.votingmanagement.domain.model.Vote;
 import com.evote.app.votingmanagement.domain.model.VoteRepository;
 import com.evote.app.votingmanagement.domain.model.Voting;
@@ -32,11 +34,7 @@ public class VotingApplicationService {
         this.voteRepository = voteRepository;
     }
 
-    public record OptionResult(
-            String option,
-            long count
-    ) {
-    }
+
 
     // =========================================================
     //  Voting-Use-Cases (wie bisher)

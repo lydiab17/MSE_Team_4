@@ -1,10 +1,10 @@
 package com.evote.app.votingmanagement.interfaces.rest;
 
-import com.evote.app.votingmanagement.application.CastVoteDto;
-import com.evote.app.votingmanagement.application.VotingApplicationService;
+import com.evote.app.votingmanagement.application.dto.CastVoteDto;
+import com.evote.app.votingmanagement.application.dto.OptionResult;
+import com.evote.app.votingmanagement.application.services.VotingApplicationService;
 import com.evote.app.votingmanagement.domain.model.Voting;
 
-import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -126,7 +126,7 @@ public class VotingRestController {
      */
     @GetMapping("/{id}/results")
     public VotingResultsResponse getResults(@PathVariable int id) {
-        List<VotingApplicationService.OptionResult> optionResults = service.getResultsForVoting(id);
+        List<OptionResult> optionResults = service.getResultsForVoting(id);
 
         List<OptionResultResponse> responseList = optionResults.stream()
                 .map(OptionResultResponse::fromOptionResult)
