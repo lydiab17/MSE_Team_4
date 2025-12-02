@@ -1,7 +1,9 @@
 package voting_management.interfaces.rest;
 
-import com.evote.app.votingmanagement.application.VotingApplicationService;
+import com.evote.app.votingmanagement.application.services.VotingApplicationService;
 import com.evote.app.votingmanagement.domain.model.Voting;
+import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
+import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
 import com.evote.app.votingmanagement.interfaces.rest.VotingRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,8 +53,8 @@ class VotingRestControllerTest {
         LocalDate end = start.plusDays(7);
 
         // Das hier ist der simulierte Body im POST Request
-        VotingRestController.CreateVotingRequest request =
-                new VotingRestController.CreateVotingRequest(
+        CreateVotingRequest request =
+                new CreateVotingRequest(
                         1,
                         "Abstimmung 1",
                         "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
@@ -78,7 +80,7 @@ class VotingRestControllerTest {
 
         // Hier wird die eigentliche Methode erst aufgerufen.
         // Der Controller ruft dann ja die service.createVoting auf, die dann einfach voting zurückgibt
-        VotingRestController.VotingResponse response = controller.create(request);
+        VotingResponse response = controller.create(request);
 
         // Hier wird geprüft, ob die Rückgabe im Controller korrekt ist
         assertEquals(1, response.id());
@@ -119,7 +121,7 @@ class VotingRestControllerTest {
         when(service.getVotingById(2)).thenReturn(Optional.of(voting));
 
         // Hier findet der eigentliche Aufruf statt
-        VotingRestController.VotingResponse response = controller.getById(2);
+        VotingResponse response = controller.getById(2);
 
         // Prüfung ob Ausgabe mit Eingabe übereinstimmt
         assertEquals(2, response.id());
@@ -154,7 +156,7 @@ class VotingRestControllerTest {
         when(service.getOpenVotings(any()))
                 .thenReturn(List.of(v1, v2));
 
-        List<VotingRestController.VotingResponse> responses = controller.getOpen();
+        List<VotingResponse> responses = controller.getOpen();
 
         assertEquals(2, responses.size());
         assertEquals(1, responses.get(0).id());
