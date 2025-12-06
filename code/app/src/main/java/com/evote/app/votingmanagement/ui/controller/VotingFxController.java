@@ -16,7 +16,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
+
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
 /**
  * JavaFX-Controller für die Voting-Oberfläche.
@@ -27,6 +30,7 @@ import org.springframework.stereotype.Component;
  * - offene Votings anzeigen
  */
 @Component
+@Scope(SCOPE_PROTOTYPE)
 public class VotingFxController {
 
   private final VotingApplicationService service;
