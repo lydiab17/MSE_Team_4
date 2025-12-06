@@ -49,7 +49,7 @@ public class LoginController {
 
         if (success) {
             showAlert("Login", "Erfolgreich eingeloggt!", AlertType.CONFIRMATION);
-            MainController.getInstance().changeView("voting-view");
+            MainController.getInstance().changeView("vote-view");
 
         } else {
             showAlert("Login", "Login fehlgeschlagen!", AlertType.ERROR);

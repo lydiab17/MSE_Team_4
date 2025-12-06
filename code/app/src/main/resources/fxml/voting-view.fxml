@@ -4,98 +4,96 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="com.evote.app.votingmanagement.ui.controller.VotingFxController">
 
-    <center>
-        <GridPane hgap="10" vgap="8" BorderPane.alignment="TOP_CENTER">
+    <!-- OBERER BEREICH: Voting anlegen -->
+    <top>
+        <VBox spacing="10.0">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
 
-            <!-- Titel -->
-            <Label text="Voting anlegen / bearbeiten"
-                   style="-fx-font-size: 16px; -fx-font-weight: bold;"
-                   GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="2"/>
+            <Label text="Neues Voting anlegen" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
 
-            <!-- ID -->
-            <Label text="ID:"
-                   GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-            <TextField fx:id="idField"
-                       promptText="z.B. 1"
-                       GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <GridPane hgap="8.0" vgap="8.0">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT" minWidth="100"/>
+                    <ColumnConstraints hgrow="ALWAYS"/>
+                </columnConstraints>
 
-            <!-- Name -->
-            <Label text="Name:"
-                   GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-            <TextField fx:id="nameField"
-                       promptText="Titel der Abstimmung"
-                       GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+                <!-- ID -->
+                <Label text="ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="idField"
+                           GridPane.rowIndex="0" GridPane.columnIndex="1"
+                           promptText="z.B. 1"/>
 
-            <!-- Info -->
-            <Label text="Beschreibung:"
-                   GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-            <TextArea fx:id="infoArea"
-                      promptText="Beschreibung mit mindestens 30 Zeichen"
-                      prefRowCount="4"
-                      GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <!-- Name -->
+                <Label text="Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="nameField"
+                           GridPane.rowIndex="1" GridPane.columnIndex="1"
+                           promptText="Titel der Abstimmung"/>
 
-            <!-- Start / Ende -->
-            <Label text="Startdatum:"
-                   GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-            <DatePicker fx:id="startDatePicker"
-                        GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                <!-- Info -->
+                <Label text="Beschreibung:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextArea fx:id="infoArea"
+                          GridPane.rowIndex="2" GridPane.columnIndex="1"
+                          prefRowCount="3"
+                          wrapText="true"/>
 
-            <Label text="Enddatum:"
-                   GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-            <DatePicker fx:id="endDatePicker"
-                        GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                <!-- Startdatum -->
+                <Label text="Startdatum:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <DatePicker fx:id="startDatePicker"
+                            GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-            <!-- Optionen -->
-            <Label text="Optionen (durch Komma getrennt):"
-                   wrapText="true"
-                   GridPane.rowIndex="6" GridPane.columnIndex="0"/>
-            <TextField fx:id="optionsField"
-                       promptText="z.B. Ja,Nein,Enthaltung"
-                       GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+                <!-- Enddatum -->
+                <Label text="Enddatum:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <DatePicker fx:id="endDatePicker"
+                            GridPane.rowIndex="4" GridPane.columnIndex="1"/>
 
-            <!-- Buttons -->
-            <HBox spacing="10"
-                  GridPane.rowIndex="7" GridPane.columnIndex="0" GridPane.columnSpan="2">
-                <Button text="Voting anlegen"
-                        onAction="#onCreateVoting"/>
-                <Button text="Voting öffnen"
-                        onAction="#onOpenVoting"/>
-                <Button text="Voting laden"
-                        onAction="#onLoadVoting"/>
+                <!-- Optionen -->
+                <Label text="Optionen (kommagetrennt):" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextField fx:id="optionsField"
+                           GridPane.rowIndex="5" GridPane.columnIndex="1"
+                           promptText="Ja, Nein, Enthaltung"/>
+            </GridPane>
+
+            <HBox spacing="8.0">
+                <Button text="Voting anlegen" onAction="#onCreateVoting"/>
+                <Button text="Formular leeren" onAction="#onClearForm"/>
             </HBox>
-        </GridPane>
-    </center>
 
-    <!-- rechte Seite: Liste der offenen Votings -->
-    <right>
-        <VBox spacing="10" BorderPane.alignment="TOP_RIGHT">
-            <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
-            <Label text="Offene Votings"
-                   style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
-            <ListView fx:id="openVotingsList" prefWidth="250" prefHeight="300"/>
-            <Button text="Offene Votings aktualisieren"
-                    onAction="#onRefreshOpenVotings"/>
+            <Label fx:id="statusLabel"/>
         </VBox>
-    </right>
+    </top>
 
-    <!-- Statuszeile unten -->
-    <bottom>
-        <Label fx:id="statusLabel"
-               text="Bereit."
-               BorderPane.alignment="CENTER_LEFT">
+    <!-- UNTERER BEREICH: Listen der Votings -->
+    <center>
+        <HBox spacing="10.0">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
+                <Insets top="0" right="10" bottom="10" left="10"/>
             </padding>
-        </Label>
-    </bottom>
+
+            <!-- Nicht offene Votings -->
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label text="Nicht offene Votings" style="-fx-font-weight: bold;"/>
+                <ListView fx:id="notOpenVotingsList" prefHeight="200.0"/>
+
+                <HBox spacing="8.0">
+                    <Button text="Ausgewähltes Voting laden" onAction="#onLoadSelectedVoting"/>
+                    <Button text="Ausgewähltes Voting öffnen" onAction="#onOpenSelectedVoting"/>
+                </HBox>
+            </VBox>
+
+            <!-- Offene Votings -->
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label text="Offene Votings" style="-fx-font-weight: bold;"/>
+                <ListView fx:id="openVotingsList" prefHeight="200.0"/>
+
+                <Button text="Listen aktualisieren" onAction="#onRefreshVotingLists"/>
+            </VBox>
+        </HBox>
+    </center>
 
 </BorderPane>

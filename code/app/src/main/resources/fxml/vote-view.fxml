@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.evote.app.votingmanagement.ui.controller.CastVoteFxController">
+
+    <top>
+        <VBox spacing="8.0">
+            <padding>
+                <Insets top="10" right="10" bottom="10" left="10"/>
+            </padding>
+            <Label text="Abstimmen"
+                   style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+            <Label text="Wähle eine offene Abstimmung, dann eine Option und sende deine Stimme ab."/>
+        </VBox>
+    </top>
+
+    <center>
+        <HBox spacing="10.0">
+            <padding>
+                <Insets top="0" right="10" bottom="10" left="10"/>
+            </padding>
+
+            <!-- Linke Seite: Liste offener Votings -->
+            <VBox spacing="5.0" HBox.hgrow="ALWAYS">
+                <Label text="Offene Abstimmungen" style="-fx-font-weight: bold;"/>
+
+                <ListView fx:id="openVotingsList" prefHeight="250.0"/>
+
+                <Button text="Offene Abstimmungen aktualisieren"
+                        onAction="#onRefreshOpenVotings"/>
+            </VBox>
+
+            <!-- Rechte Seite: Details + Optionen + Stimme abgeben -->
+            <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                <Label text="Details &amp; Optionen" style="-fx-font-weight: bold;"/>
+
+                <Label fx:id="selectedVotingTitle"
+                       style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+
+                <Label fx:id="selectedVotingDates"/>
+
+                <TextArea fx:id="selectedVotingInfo"
+                          editable="false"
+                          wrapText="true"
+                          prefRowCount="4"/>
+
+                <Label text="Option wählen:"/>
+                <ListView fx:id="optionsList" prefHeight="150.0"/>
+
+                <Label text="Voter-Key (Demo):"/>
+                <TextField fx:id="voterKeyField"
+                           promptText="z. B. E-Mail oder Token"/>
+
+                <Button text="Stimme abgeben"
+                        onAction="#onCastVote"/>
+
+                <Label fx:id="statusLabel"/>
+            </VBox>
+        </HBox>
+    </center>
+
+</BorderPane>
