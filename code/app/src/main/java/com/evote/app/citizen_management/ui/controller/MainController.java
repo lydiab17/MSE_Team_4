@@ -4,7 +4,13 @@ import com.evote.app.HelloApplication;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
+
+@Component
+@Scope(SCOPE_PROTOTYPE)
 public class MainController {
     // Singleton
     // Sicherstellen, dass von einer Klasse genau eine einzige Instanz existiert

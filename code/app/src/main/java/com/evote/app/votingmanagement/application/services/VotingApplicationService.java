@@ -100,6 +100,16 @@ public class VotingApplicationService {
                 .toList();
     }
 
+    /**
+     * Beispiel: Alle nicht offenen Votings holen.
+     * (hier nehmen wir die System-Uhr; in Tests könntest du eine andere Uhr verwenden)
+     */
+    public List<Voting> getNotOpenVotings() {
+        return votingRepository.findAll().stream()
+                .filter(v -> !v.isVotingStatus())
+                .toList();
+    }
+
     public List<OptionResult> getResultsForVoting(int votingId) {
         // Sicherstellen, dass das Voting existiert
         Voting voting = votingRepository.findById(votingId)

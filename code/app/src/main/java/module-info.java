@@ -15,7 +15,9 @@ open module com.evote.app {
     requires java.desktop;
     requires java.net.http;
     requires com.fasterxml.jackson.databind;
-
+    requires spring.aop;
+    requires org.aspectj.weaver;
+    requires org.slf4j;
 
 
     exports com.evote.app;
