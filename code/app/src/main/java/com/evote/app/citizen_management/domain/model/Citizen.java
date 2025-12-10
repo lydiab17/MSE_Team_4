@@ -1,8 +1,10 @@
 package com.evote.app.citizen_management.domain.model;
 
-import com.evote.app.citizen_management.domain.events.CitizenCreatedEvent;
+import com.evote.app.citizen_management.domain.valueobjects.CitizenID;
+import com.evote.app.citizen_management.domain.valueobjects.Email;
+import com.evote.app.citizen_management.domain.valueobjects.Name;
+import com.evote.app.citizen_management.domain.valueobjects.Password;
 import com.evote.app.citizen_management.domain.events.DomainEvent;
-import com.evote.app.citizen_management.domain.valueobjects.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +30,6 @@ public class Citizen {
     /** Der vollständige Name des Bürgers. */
     private Name name;
 
-    private final List<DomainEvent> domainEvents = new ArrayList<>();
-
 
     /**
      * Privater Konstruktor, der ein neues Citizen-Objekt erstellt.
@@ -43,8 +43,6 @@ public class Citizen {
         this.name = Objects.requireNonNull(name, "Name darf nicht null sein");
         this.email = Objects.requireNonNull(email, "E-Mail darf nicht null sein");
         this.password = Objects.requireNonNull(password, "Passwort darf nicht null sein");
-
-        // domainEvents.add(new CitizenCreatedEvent(this.citizenID));
     }
 
     /**

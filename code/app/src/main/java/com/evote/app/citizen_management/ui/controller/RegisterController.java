@@ -46,9 +46,19 @@ public class RegisterController {
 
     private final CitizenApiClient apiClient = new CitizenApiClient();
 
+    // Regex
+    private static final int MIN_NAME_LENGTH = 3;
+    private static final int MAX_NAME_LENGTH = 10;
+    private static final String NAME_CHAR_PATTERN = "A-Za-zÄÖÜäöüß";
+    private static final String NAME_REGEX =
+            "^[" + NAME_CHAR_PATTERN + "]{" + MIN_NAME_LENGTH + "," + MAX_NAME_LENGTH + "}$";
+    private static final String EMAIL_REGEX = "^(.+)@(\\S+)$";
+    private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$";
+
+
     @FXML
     private void registerAction(ActionEvent e1) {
-        if (isAnyFieldEmpty()) return;
+        if (isAnyFieldInvalid()) return;
 
         String first = firstName.getText();
         String last  = lastName.getText();
@@ -78,28 +88,63 @@ public class RegisterController {
         alert.showAndWait();
     }
 
-    private boolean isAnyFieldEmpty() {
-        boolean firstEmpty = checkField(firstName, firstNameError, "Vorname darf nicht leer sein!");
-        boolean lastEmpty = checkField(lastName, lastNameError, "Nachname darf nicht leer sein!");
-        boolean emailEmpty = checkField(email, emailError, "Email darf nicht leer sein!");
-        boolean passwordEmpty = checkField(password, passwordError, "Passwort darf nicht leer sein!");
+    private boolean validateField(TextField field, Label errorLabel, String regex,
+                                  String emptyMsg, String invalidMsg) {
 
-        return firstEmpty || lastEmpty || emailEmpty || passwordEmpty;
-    }
+        String text = field.getText();
+        boolean hasError = false;
 
-    private boolean checkField(TextField field, Label errorLabel, String errorMessage) {
-        boolean empty = field.getText().isEmpty();
-
-        if (empty) {
+        if (text.isEmpty()) {
             field.setStyle("-fx-border-color: red;");
-            errorLabel.setText(errorMessage);
+            errorLabel.setText(emptyMsg);
             errorLabel.setVisible(true);
+            hasError = true;
+        } else if (!text.matches(regex)) {
+            field.setStyle("-fx-border-color: red;");
+            errorLabel.setText(invalidMsg);
+            errorLabel.setVisible(true);
+            hasError = true;
         } else {
             field.setStyle("");
             errorLabel.setVisible(false);
         }
-        return empty;
+
+        return hasError;  // KEIN early-return! nur Status zurückgeben
     }
+
+    private boolean isAnyFieldInvalid() {
+
+        boolean firstInvalid = validateField(
+                firstName, firstNameError,
+                NAME_REGEX,
+                "Vorname darf nicht leer sein!",
+                "Ungültiger Vorname: Nur Buchstaben, 3-10 Zeichen"
+        );
+
+        boolean lastInvalid = validateField(
+                lastName, lastNameError,
+                NAME_REGEX,
+                "Nachname darf nicht leer sein!",
+                "Ungütiger Name: Nur Buchstaben, 3-10 Zeichen"
+        );
+
+        boolean emailInvalid = validateField(
+                email, emailError,
+                EMAIL_REGEX,
+                "Email darf nicht leer sein!",
+                "Ungültige E-Mail: @ muss vorhanden sein"
+        );
+
+        boolean passwordInvalid = validateField(
+                password, passwordError,
+                PASSWORD_REGEX,
+                "Passwort darf nicht leer sein!",
+                "Ungültiges Passwort: 8 Zeichen, Buchstaben, Zahlen"
+        );
+
+        return firstInvalid || lastInvalid || emailInvalid || passwordInvalid;
+    }
+
 
 
 }

@@ -5,6 +5,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -15,92 +17,118 @@
                 <Font name="System Bold" size="18.0" />
             </font>
         </Label>
-        <Label prefHeight="13.0" prefWidth="601.0" text="Vorname:">
+        <Label prefHeight="13.0" prefWidth="601.0" text="Vorname*">
             <VBox.margin>
                 <Insets left="200.0" right="200.0" />
             </VBox.margin>
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
         </Label>
         <TextField fx:id="firstName" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="200.0" promptText="Vorname">
             <VBox.margin>
                 <Insets left="200.0" right="200.0" />
             </VBox.margin>
         </TextField>
-      <Label fx:id="firstNameError" text="Label" textFill="#ff0202" visible="false">
+      <Label fx:id="firstNameError" prefHeight="14.0" prefWidth="250.0" text="Label" textFill="#ff0202" visible="false">
          <font>
             <Font size="11.0" />
          </font>
          <VBox.margin>
-            <Insets left="200.0" right="200.0" />
+            <Insets left="200.0" right="100.0" />
          </VBox.margin>
       </Label>
-      <Label prefHeight="13.0" prefWidth="601.0" text="Nachname:">
+      <Label prefHeight="13.0" prefWidth="601.0" text="Nachname*">
          <VBox.margin>
             <Insets left="200.0" right="200.0" top="5.0" />
          </VBox.margin>
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
       </Label>
       <TextField fx:id="lastName" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="200.0" promptText="Nachname">
          <VBox.margin>
             <Insets left="200.0" right="200.0" />
          </VBox.margin>
       </TextField>
-      <Label fx:id="lastNameError" text="Label" textFill="#ff0202" visible="false">
+      <Label fx:id="lastNameError" prefHeight="14.0" prefWidth="250.0" text="Label" textFill="#ff0202" visible="false">
          <font>
             <Font size="11.0" />
          </font>
          <VBox.margin>
-            <Insets left="200.0" right="200.0" />
+            <Insets left="200.0" right="100.0" />
          </VBox.margin>
       </Label>
-      <Label prefHeight="13.0" prefWidth="601.0" text="E-Mail:">
+      <Label prefHeight="13.0" prefWidth="601.0" text="E-Mail*">
          <VBox.margin>
             <Insets left="200.0" right="200.0" top="5.0" />
          </VBox.margin>
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
       </Label>
       <TextField fx:id="email" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="200.0" promptText="E-Mail">
          <VBox.margin>
             <Insets left="200.0" right="200.0" />
          </VBox.margin>
       </TextField>
-      <Label fx:id="emailError" text="Label" textFill="#ff0202" visible="false">
+      <Label fx:id="emailError" prefHeight="14.0" prefWidth="230.0" text="Label" textFill="#ff0202" visible="false">
          <font>
             <Font size="11.0" />
          </font>
          <VBox.margin>
-            <Insets left="200.0" right="200.0" />
+            <Insets left="200.0" right="100.0" />
          </VBox.margin>
       </Label>
-        <Label prefHeight="17.0" prefWidth="614.0" text="Passwort:">
+        <Label prefHeight="17.0" prefWidth="614.0" text="Passwort*">
             <VBox.margin>
                 <Insets left="200.0" right="200.0" top="5.0" />
             </VBox.margin>
+         <font>
+            <Font name="System Bold" size="13.0" />
+         </font>
         </Label>
         <PasswordField fx:id="password" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="26.0" prefWidth="200.0" promptText="Passwort">
             <VBox.margin>
                 <Insets left="200.0" right="200.0" />
             </VBox.margin>
         </PasswordField>
-      <Label fx:id="passwordError" text="Label" textFill="#ff0202" visible="false">
+      <Label fx:id="passwordError" prefHeight="14.0" prefWidth="250.0" text="Label" textFill="#ff0202" visible="false">
          <font>
             <Font size="11.0" />
          </font>
          <VBox.margin>
-            <Insets left="200.0" right="200.0" />
+            <Insets left="200.0" right="100.0" />
          </VBox.margin>
       </Label>
-        <Button fx:id="registerButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#registerAction" prefHeight="26.0" prefWidth="113.0" text="Registrieren">
+        <Button fx:id="registerButton" alignment="CENTER" mnemonicParsing="false" onAction="#registerAction" prefHeight="30.0" prefWidth="115.0" text="Registrieren">
             <VBox.margin>
-                <Insets left="200.0" right="200.0" top="20.0" />
+                <Insets left="200.0" right="200.0" top="5.0" />
             </VBox.margin>
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/user-plus-solid.png" />
+               </image>
+            </ImageView>
+         </graphic>
         </Button>
       <Label prefHeight="13.0" prefWidth="601.0" text="Haben Sie bereits ein Konto?">
          <VBox.margin>
             <Insets left="200.0" right="200.0" top="30.0" />
          </VBox.margin>
       </Label>
-      <Button fx:id="loginButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#loginAction" prefHeight="26.0" prefWidth="113.0" text="Login">
+      <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" onAction="#loginAction" prefHeight="30.0" prefWidth="115.0" text="Login">
          <VBox.margin>
             <Insets left="200.0" right="200.0" />
          </VBox.margin>
+         <graphic>
+            <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icons/sign-in-alt-solid.png" />
+               </image>
+            </ImageView>
+         </graphic>
       </Button>
     </children>
 </VBox>

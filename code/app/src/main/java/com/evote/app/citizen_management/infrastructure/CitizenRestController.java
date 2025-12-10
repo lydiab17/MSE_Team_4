@@ -1,14 +1,14 @@
 package com.evote.app.citizen_management.infrastructure;
 
-import com.evote.app.citizen_management.application.dto.CitizenLoginRequestDto;
-import com.evote.app.citizen_management.application.dto.CitizenRegistrationRequestDto;
-import com.evote.app.citizen_management.application.dto.CitizenRegistrationResponseDto;
+import com.evote.app.citizen_management.application.dto.*;
 import com.evote.app.citizen_management.application.services.CitizenService;
+import com.evote.app.citizen_management.application.services.TokenService;
 import com.evote.app.citizen_management.domain.model.Citizen;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.evote.app.citizen_management.exceptions.UserAlreadyExistsException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -25,28 +25,34 @@ public class CitizenRestController {
     @PostMapping("/register")
     public CitizenRegistrationResponseDto register(
             @RequestBody CitizenRegistrationRequestDto request
-    ) {
-        Citizen c = citizenService.registerCitizen(
-                request.firstName(),
-                request.lastName(),
-                request.email(),
-                request.password()
-        );
+    ) throws UserAlreadyExistsException {
+        Citizen c = citizenService.registerCitizen(request);
 
         return CitizenRegistrationResponseDto.fromDomain(c);
     }
 
 
     @PostMapping("/login")
-    public Boolean login (@RequestBody CitizenLoginRequestDto request) {
-        Boolean b = citizenService.loginCitizen(
+    public ResponseEntity<String> login(@RequestBody CitizenLoginRequestDto request, HttpServletResponse response) {
+        boolean b = citizenService.loginCitizen(
                 request.email(),
                 request.password()
         );
-        return b;
+
+        if (!b) {
+            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
+        }
+
+        String token = TokenService.generateToken(request.email());
+        response.addHeader("Authorization", "Bearer " + token);
+        return ResponseEntity.ok(token);
     }
 
+    @GetMapping("/user")
+    public CitizenResponseDto getLoggedInCitizen (HttpServletRequest request) {
+        return CitizenResponseDto.fromDomain(citizenService.getCurrentLoggedInCitizen());
 
+    }
 
 
 }
