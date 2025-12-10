@@ -8,7 +8,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-// TODO: eventuell das hier als Task umsetzen
+
 public class CitizenApiClient {
     private static final String BASE_URL = "http://localhost:8080/api/citizens";
 
@@ -25,13 +25,12 @@ public class CitizenApiClient {
                     .build();
 
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-
-            if(response.statusCode() == 200) {
-                System.out.println(response.statusCode());
+            System.out.println("Hier: " + response.statusCode());
+            if (response.statusCode() == 200) {
                 return true;
-            } else {
-                return false;
             }
+
+            return false;
 
         } catch(Exception ex) {
             ex.printStackTrace();
@@ -53,6 +52,11 @@ public class CitizenApiClient {
 
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
+            System.out.println("Hier: " + response.statusCode());
+            if (response.statusCode() == 403) {
+                // Vom Backend geworfene UserAlreadyExistsException
+                System.out.println("geht nicsch");
+            }
             if(response.statusCode() == 200) {
                 System.out.println(response.statusCode());
                 return true;

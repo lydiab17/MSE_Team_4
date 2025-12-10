@@ -1,12 +1,17 @@
 package com.evote.app.citizen_management.application.services;
 
+import com.evote.app.citizen_management.aggregator.CitizenAggregator;
+import com.evote.app.citizen_management.application.dto.CitizenDto;
+import com.evote.app.citizen_management.application.dto.CitizenRegistrationRequestDto;
+import com.evote.app.citizen_management.domain.commands.CitizenRegistrationCommand;
+import com.evote.app.citizen_management.domain.events.CitizenCreatedEvent;
 import com.evote.app.citizen_management.domain.model.Citizen;
 import com.evote.app.citizen_management.domain.valueobjects.Email;
-import com.evote.app.citizen_management.domain.valueobjects.Name;
-import com.evote.app.citizen_management.domain.valueobjects.Password;
+import com.evote.app.citizen_management.exceptions.UserAlreadyExistsException;
+import com.evote.app.citizen_management.infrastructure.CitizenProjector;
 import com.evote.app.citizen_management.infrastructure.repositories.CitizenRepository;
-import com.evote.app.citizen_management.infrastructure.repositories.InMemoryCitizenRepository;
-import com.evote.app.votingmanagement.domain.model.VotingRepository;
+import com.evote.app.citizen_management.infrastructure.repositories.EventStore;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,24 +20,25 @@ import java.util.Optional;
 public class CitizenService {
 
     private final CitizenRepository citizenRepository;
+    private final EventStore eventRepository;
+    private final CitizenProjector citizenProjector;
+    private final CitizenAggregator citizenAggregator;
 
-    public CitizenService(CitizenRepository citizenRepository) {
+    private Citizen logincitizen;
+
+    public CitizenService(CitizenRepository citizenRepository, CitizenAggregator citizenAggregator, CitizenProjector citizenProjector, EventStore eventStore) {
         this.citizenRepository = citizenRepository;
+        this.eventRepository = eventStore;
+        this.citizenProjector = citizenProjector;
+        this.citizenAggregator = citizenAggregator;
     }
 
     /**
      * Use Case: Registrierung
      */
-    public Citizen registerCitizen(String firstname, String lastname, String email, String passwort) {
-
-        Name name = new Name(firstname, lastname);
-        Email email1 = new Email(email);
-        Password passwort1 = new Password(passwort);
-        Citizen citizen = Citizen.create(name, email1, passwort1);
-
-        citizenRepository.save(citizen);
-
-        return citizen;
+    public Citizen registerCitizen(CitizenRegistrationRequestDto registrationInput) throws UserAlreadyExistsException {
+        CitizenRegistrationCommand citizenRegistrationCommand = new CitizenRegistrationCommand(registrationInput.firstName(), registrationInput.lastName(), registrationInput.email(), registrationInput.password());
+        return this.citizenProjector.apply((CitizenCreatedEvent) this.citizenAggregator.handle(citizenRegistrationCommand).get(0));
     }
 
     /**
@@ -57,6 +63,20 @@ public class CitizenService {
         return false;
     }
 
+    public CitizenDto getCurrentLoggedInCitizen() {
+        String mail = (String) SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getPrincipal();
 
+        Citizen citizen = this.citizenRepository.findByEmail(new Email(mail)).orElseThrow();
+        return new CitizenDto(citizen.getCitizenID().toString(), citizen.getName().firstName(), citizen.getName().lastName(), citizen.getEmail().email(), citizen.getPassword().password());
     }
+
+    private void project() {
+        this.citizenProjector.project(this.eventRepository.getEvents());
+        this.eventRepository.clear();
+    }
+
+}
 

@@ -4,8 +4,6 @@ import com.evote.app.citizen_management.domain.valueobjects.CitizenID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CitizenIDTest {
