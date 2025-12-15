@@ -18,7 +18,11 @@ open module com.evote.app {
     requires spring.aop;
     requires org.aspectj.weaver;
     requires org.slf4j;
-
+    requires org.apache.tomcat.embed.core;
+    requires jjwt;
+    requires spring.security.core;
+    requires spring.security.config;
+    requires spring.security.web;
 
     exports com.evote.app;
 }

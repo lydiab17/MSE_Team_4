@@ -1,7 +1,6 @@
 package com.evote.app.citizen_management.infrastructure.repositories;
 
 import com.evote.app.citizen_management.domain.model.Citizen;
-import com.evote.app.citizen_management.domain.valueobjects.CitizenID;
 import com.evote.app.citizen_management.domain.valueobjects.Email;
 import org.springframework.stereotype.Repository;
 
