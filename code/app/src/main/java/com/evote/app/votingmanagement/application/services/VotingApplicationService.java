@@ -1,7 +1,10 @@
 package com.evote.app.votingmanagement.application.services;
 
+import com.evote.app.sharedkernel.AuthToken;
+import com.evote.app.sharedkernel.PseudonymToken;
 import com.evote.app.votingmanagement.application.dto.CastVoteDto;
 import com.evote.app.votingmanagement.application.dto.OptionResult;
+import com.evote.app.votingmanagement.application.port.AuthPort;
 import com.evote.app.votingmanagement.domain.model.Vote;
 import com.evote.app.votingmanagement.domain.model.VoteRepository;
 import com.evote.app.votingmanagement.domain.model.Voting;
@@ -27,11 +30,14 @@ public class VotingApplicationService {
 
     private final VotingRepository votingRepository;
     private final VoteRepository voteRepository;
+    private final AuthPort authPort;
 
     public VotingApplicationService(VotingRepository votingRepository,
-                                    VoteRepository voteRepository) {
+                                    VoteRepository voteRepository,
+                                    AuthPort authPort) {
         this.votingRepository = votingRepository;
         this.voteRepository = voteRepository;
+        this.authPort = authPort;
     }
 
 
@@ -151,6 +157,11 @@ public class VotingApplicationService {
      * ein echtes Pseudonym/Token aus dem citizen_management ersetzt.
      */
     public void castVote(CastVoteDto dto) {
+        // 0) Token -> Pseudonym
+        PseudonymToken pseudonym = authPort
+                .verifyAndGetPseudonym(new AuthToken(dto.authToken))
+                .orElseThrow(() -> new IllegalStateException("Not authenticated"));
+
         // 1) Voting laden
         Voting voting = getVotingById(dto.votingId)
                 .orElseThrow(() -> new IllegalArgumentException("Voting nicht gefunden"));
@@ -167,24 +178,16 @@ public class VotingApplicationService {
             throw new IllegalArgumentException("Option existiert nicht in diesem Voting");
         }
 
-        // 4) "Wähler" identifizieren – vorläufig nehmen wir den authToken als voterKey
-        String voterKey = dto.authToken;
-
-        // Doppelabstimmung verhindern
-        if (voteRepository.existsByVotingIdAndVoterKey(dto.votingId, voterKey)) {
+        // 4) Doppelabstimmung verhindern (jetzt mit Pseudonym)
+        if (voteRepository.existsByVotingIdAndPseudonym(dto.votingId, pseudonym.value())) {
             throw new IllegalStateException("Dieser Wähler hat bereits abgestimmt");
         }
 
-        // 5) Vote erstellen (Domain)
-        Vote vote = Vote.createNew(
-                dto.votingId,
-                dto.optionId,
-                voterKey
-        );
+        // 5) Vote erstellen (Domain) – statt voterKey jetzt pseudonym
+        Vote vote = Vote.createNew(dto.votingId, dto.optionId, pseudonym.value());
 
         // 6) Persistieren
         voteRepository.save(vote);
-
-        // Kein Event-Publishing in der vereinfachten Variante
     }
+
 }
