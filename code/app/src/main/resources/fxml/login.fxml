@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="575.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.evote.app.citizen_management.ui.controller.LoginController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="575.0" style="-fx-background-color: lightblue;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.evote.app.citizen_management.ui.controller.LoginController">
     <children>
-        <Label alignment="CENTER" prefHeight="209.0" prefWidth="704.0" text="Anmelden">
+        <Label alignment="CENTER" prefHeight="209.0" prefWidth="704.0" text="Anmelden bei eVote">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
@@ -30,7 +30,7 @@
                 <Insets left="200.0" right="200.0" top="3.0" />
             </VBox.margin>
         </TextField>
-      <Label fx:id="emailError" text="Label" textFill="RED" visible="false">
+      <Label fx:id="emailError" text="Label" textFill="#cd2626" visible="false">
          <VBox.margin>
             <Insets left="200.0" right="200.0" />
          </VBox.margin>
@@ -48,12 +48,12 @@
                 <Insets left="200.0" right="200.0" top="3.0" />
             </VBox.margin>
         </PasswordField>
-      <Label fx:id="passwordError" text="Label" textFill="RED" visible="false">
+      <Label fx:id="passwordError" text="Label" textFill="#cd2626" visible="false">
          <VBox.margin>
             <Insets left="200.0" right="200.0" />
          </VBox.margin>
       </Label>
-        <Button fx:id="loginbutton" alignment="CENTER" mnemonicParsing="false" onAction="#loginAction" prefHeight="30.0" prefWidth="115.0" text="Login">
+        <Button fx:id="loginbutton" alignment="CENTER" mnemonicParsing="false" onAction="#loginAction" prefHeight="30.0" prefWidth="76.0" style="-fx-background-color: white;" text="Login">
             <VBox.margin>
                 <Insets left="200.0" right="200.0" top="5.0" />
             </VBox.margin>
@@ -70,7 +70,7 @@
                 <Insets left="200.0" right="200.0" top="30.0" />
             </VBox.margin>
         </Label>
-        <Button fx:id="registerbutton" mnemonicParsing="false" onAction="#registerAction" prefHeight="30.0" prefWidth="115.0" text="Registrieren">
+        <Button fx:id="registerbutton" mnemonicParsing="false" onAction="#registerAction" prefHeight="30.0" prefWidth="109.0" style="-fx-background-color: white;" text="Registrieren">
             <VBox.margin>
                 <Insets left="200.0" right="200.0" top="3.0" />
             </VBox.margin>

@@ -54,10 +54,10 @@ public class LoginController {
 
         if (tokenOpt.isPresent()) {
             authSession.setToken(tokenOpt.get()); // <-- Token merken
-            showAlert("Login", "Erfolgreich eingeloggt!", AlertType.CONFIRMATION);
+            showAlert("Login", "Sie haben sich erfolgreich eingeloggt!", AlertType.INFORMATION);
             MainController.getInstance().changeView("vote-view");
         } else {
-            showAlert("Login", "Login fehlgeschlagen!", AlertType.ERROR);
+            showAlert("Login", "Der Login ist fehlgeschlagen. Bitte überprüfen Sie ihre Eingaben.", AlertType.ERROR);
         }
     }
 
@@ -87,7 +87,7 @@ public class LoginController {
         boolean empty = field.getText().isEmpty();
 
         if (empty) {
-            field.setStyle("-fx-border-color: red;");
+            field.setStyle("-fx-border-color: #CD2626;");
             errorLabel.setText(errorMessage);
             errorLabel.setVisible(true);
         } else {

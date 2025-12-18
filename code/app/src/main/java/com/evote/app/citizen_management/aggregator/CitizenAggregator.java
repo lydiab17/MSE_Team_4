@@ -16,6 +16,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * Dieses Aggregat kann einen Command akzeptieren (und ausführen) oder ablehnen.
+ * @author Lydia Boes
+ * @version 1.0
+ */
 @Service
 public class CitizenAggregator {
 
