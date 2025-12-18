@@ -7,6 +7,8 @@
 - Funktionale Programmierkonzepte (Übung 7)
 - SOLID-Prinzipien beim Code überprüfen
 - Übungsaufgaben Dokus
+- Checkstyle überprüfen und Anpassen
+- Testabdeckung 80%
 - ggfs. Zentrale fetchAPI Klasse, optimalerweise async
 
 ## Projekt holen und starten
