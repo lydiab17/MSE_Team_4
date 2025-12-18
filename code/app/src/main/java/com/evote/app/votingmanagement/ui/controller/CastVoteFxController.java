@@ -1,5 +1,6 @@
 package com.evote.app.votingmanagement.ui.controller;
 
+import com.evote.app.citizen_management.ui.controller.MainController;
 import com.evote.app.sharedkernel.AuthSession;
 import com.evote.app.votingmanagement.interfaces.dto.CastVoteRequest;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
@@ -85,6 +86,12 @@ public class CastVoteFxController {
                 }
         );
     }
+
+    @FXML
+    private void onGoToVotingView() {
+        MainController.getInstance().changeView("voting-view");
+    }
+
 
     private void loadVotingDetails(int votingId) {
         runAsync(

@@ -136,4 +136,14 @@ public class VotingRestController {
 
         return new VotingResultsResponse(id, responseList);
     }
+
+    // in VotingRestController
+
+    @GetMapping("/not-open")
+    public List<VotingResponse> getNotOpen() {
+        return service.getNotOpenVotings().stream()
+                .map(VotingResponse::fromDomain)
+                .toList();
+    }
+
 }

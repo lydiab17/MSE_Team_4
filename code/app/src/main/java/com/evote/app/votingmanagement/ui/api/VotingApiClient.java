@@ -3,6 +3,7 @@ package com.evote.app.votingmanagement.ui.api;
 import com.evote.app.votingmanagement.interfaces.dto.CastVoteRequest;
 import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
+import com.evote.app.votingmanagement.interfaces.dto.VotingResultsResponse;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URI;
@@ -104,6 +105,19 @@ public class VotingApiClient {
         }
     }
 
+    public VotingResultsResponse getResults(int votingId) throws Exception {
+        HttpRequest.Builder b = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/" + votingId + "/results"))
+                .GET();
+
+        addAuthHeaderIfPresent(b);
+
+        HttpResponse<String> resp = http.send(b.build(), HttpResponse.BodyHandlers.ofString());
+        if (resp.statusCode() >= 300) throw new IllegalStateException(resp.body());
+        return om.readValue(resp.body(), VotingResultsResponse.class);
+    }
+
+
 
 
     private void addAuthHeaderIfPresent(HttpRequest.Builder b) {
@@ -114,4 +128,6 @@ public class VotingApiClient {
 
         tokenOpt.ifPresent(t -> b.header("Authorization", "Bearer " + t));
     }
+
+
 }
