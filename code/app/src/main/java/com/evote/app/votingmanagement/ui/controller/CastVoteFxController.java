@@ -1,170 +1,168 @@
 package com.evote.app.votingmanagement.ui.controller;
 
-import com.evote.app.votingmanagement.application.dto.CastVoteDto;
-import com.evote.app.votingmanagement.application.services.VotingApplicationService;
-import com.evote.app.votingmanagement.domain.model.Voting;
-import java.time.Clock;
-import java.util.List;
+import com.evote.app.sharedkernel.AuthSession;
+import com.evote.app.votingmanagement.interfaces.dto.CastVoteRequest;
+import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
+import com.evote.app.votingmanagement.ui.api.VotingApiClient;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.Alert.AlertType;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 /**
- * JavaFX-Controller für die Abstimm-Ansicht.
- * Links: offene Votings, rechts: Details & Optionen.
+ * JavaFX-Controller für vote-view.fxml – kommuniziert per REST mit dem Backend.
  */
 @Component
 public class CastVoteFxController {
 
-    private final VotingApplicationService service;
+    private final VotingApiClient apiClient;
+    private final AuthSession authSession;
 
-    @FXML
-    private ListView<Voting> openVotingsList;
+    @FXML private ListView<VotingResponse> openVotingsList;
+    @FXML private ListView<String> optionsList;
 
-    @FXML
-    private ListView<String> optionsList;
+    @FXML private Label selectedVotingTitle;
+    @FXML private Label selectedVotingDates;
+    @FXML private TextArea selectedVotingInfo;
 
-    @FXML
-    private Label selectedVotingTitle;
+    // ist in deiner FXML noch drin – wird aber mit JWT nicht mehr gebraucht
+    @FXML private TextField voterKeyField;
 
-    @FXML
-    private Label selectedVotingDates;
+    @FXML private Label statusLabel;
 
-    @FXML
-    private TextArea selectedVotingInfo;
+    private VotingResponse selectedVoting;
 
-    @FXML
-    private TextField voterKeyField;
-
-    @FXML
-    private Label statusLabel;
-
-    public CastVoteFxController(VotingApplicationService service) {
-        this.service = service;
+    public CastVoteFxController(VotingApiClient apiClient, AuthSession authSession) {
+        this.apiClient = apiClient;
+        this.authSession = authSession;
     }
 
     @FXML
     private void initialize() {
-        // Schöne Darstellung der Votings
+        // Optional: voterKeyField verstecken/disable, wenn JWT vorhanden
+        if (voterKeyField != null) {
+            voterKeyField.setDisable(true);
+            voterKeyField.setManaged(false);
+            voterKeyField.setVisible(false);
+        }
+
+        // ListView schön rendern (ID + Name)
         openVotingsList.setCellFactory(lv -> new ListCell<>() {
             @Override
-            protected void updateItem(Voting item, boolean empty) {
+            protected void updateItem(VotingResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 if (empty || item == null) {
                     setText(null);
                 } else {
-                    setText(String.format(
-                            "ID %d - %s [%s bis %s]",
-                            item.getId(),
-                            item.getName(),
-                            item.getStartDate(),
-                            item.getEndDate()
-                    ));
+                    setText("ID " + item.id() + " – " + item.name());
                 }
             }
         });
 
-        // Wenn Voting ausgewählt wird, Details anzeigen
-        openVotingsList.getSelectionModel().selectedItemProperty()
-                .addListener((obs, oldV, newV) -> showVotingDetails(newV));
+        // Wenn Voting ausgewählt: Details laden + Optionen anzeigen
+        openVotingsList.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
+            if (newV != null) {
+                loadVotingDetails(newV.id());
+            }
+        });
 
-        refreshOpenVotings();
+        optionsList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        onRefreshOpenVotings();
     }
-
-    // ---------- Aktionen aus dem FXML ----------
 
     @FXML
     private void onRefreshOpenVotings() {
-        try {
-            refreshOpenVotings();
-            statusLabel.setText("Offene Abstimmungen aktualisiert.");
-        } catch (Exception e) {
-            showError("Fehler beim Laden der offenen Abstimmungen", e.getMessage());
-        }
+        runAsync(
+                () -> apiClient.getOpenVotings(),
+                votings -> {
+                    openVotingsList.setItems(FXCollections.observableArrayList(votings));
+                    statusLabel.setText("Offene Abstimmungen geladen: " + votings.size());
+                }
+        );
+    }
+
+    private void loadVotingDetails(int votingId) {
+        runAsync(
+                () -> apiClient.getById(votingId),
+                voting -> {
+                    this.selectedVoting = voting;
+
+                    selectedVotingTitle.setText(voting.name());
+                    selectedVotingDates.setText(voting.startDate() + " bis " + voting.endDate());
+                    selectedVotingInfo.setText(voting.info());
+
+                    // WICHTIG: VotingResponse muss options enthalten, sonst geht das nicht
+                    // -> wenn deine VotingResponse keine options() hat, sag kurz Bescheid.
+                    List<String> opts = voting.options();
+                    optionsList.setItems(FXCollections.observableArrayList(opts));
+
+                    statusLabel.setText("Voting geladen: ID " + voting.id());
+                }
+        );
     }
 
     @FXML
     private void onCastVote() {
-        try {
-            Voting selected = openVotingsList.getSelectionModel().getSelectedItem();
-            if (selected == null) {
-                throw new IllegalArgumentException("Bitte zuerst eine Abstimmung auswählen.");
-            }
-
-            String option = optionsList.getSelectionModel().getSelectedItem();
-            if (option == null) {
-                throw new IllegalArgumentException("Bitte eine Option auswählen.");
-            }
-
-            String voterKey = voterKeyField.getText();
-            if (voterKey == null || voterKey.isBlank()) {
-                throw new IllegalArgumentException("Bitte einen Voter-Key eingeben.");
-            }
-
-            CastVoteDto dto = new CastVoteDto(
-                    voterKey,
-                    selected.getId(),
-                    option
-            );
-
-            service.castVote(dto);
-
-            statusLabel.setText("Stimme für \"" + option + "\" erfolgreich abgegeben.");
-            // Auswahl beibehalten, nur Key löschen
-            voterKeyField.clear();
-
-        } catch (Exception e) {
-            showError("Fehler beim Abstimmen", e.getMessage());
-        }
-    }
-
-    // ---------- Hilfsmethoden ----------
-
-    private void refreshOpenVotings() {
-        List<Voting> open = service.getOpenVotings(Clock.systemDefaultZone());
-        openVotingsList.setItems(FXCollections.observableArrayList(open));
-
-        // Wenn es eine Auswahl gab, Details aktualisieren,
-        // sonst Details leeren
-        Voting selected = openVotingsList.getSelectionModel().getSelectedItem();
-        showVotingDetails(selected);
-    }
-
-    private void showVotingDetails(Voting voting) {
-        if (voting == null) {
-            selectedVotingTitle.setText("");
-            selectedVotingDates.setText("");
-            selectedVotingInfo.clear();
-            optionsList.setItems(FXCollections.emptyObservableList());
+        if (authSession.token().isEmpty()) {
+            showAlert(AlertType.ERROR, "Nicht eingeloggt", "Bitte zuerst einloggen.");
             return;
         }
 
-        selectedVotingTitle.setText(
-                String.format("ID %d – %s", voting.getId(), voting.getName())
-        );
-        selectedVotingDates.setText(
-                String.format("Zeitraum: %s bis %s", voting.getStartDate(), voting.getEndDate())
-        );
-        selectedVotingInfo.setText(voting.getInfo());
+        if (selectedVoting == null) {
+            showAlert(AlertType.ERROR, "Kein Voting ausgewählt", "Bitte zuerst eine Abstimmung auswählen.");
+            return;
+        }
 
-        optionsList.setItems(
-                FXCollections.observableArrayList(voting.getOptionTexts())
+        String selectedOption = optionsList.getSelectionModel().getSelectedItem();
+        if (selectedOption == null || selectedOption.isBlank()) {
+            showAlert(AlertType.ERROR, "Keine Option ausgewählt", "Bitte eine Option anklicken.");
+            return;
+        }
+
+        runAsync(
+                () -> {
+                    apiClient.castVote(selectedVoting.id(), selectedOption);
+                    return null;
+                },
+                ignored -> {
+                    statusLabel.setText("Stimme wurde abgegeben ✅");
+                    showAlert(AlertType.INFORMATION, "Abstimmen", "Stimme erfolgreich abgegeben.");
+                }
         );
     }
 
-    private void showError(String title, String message) {
-        statusLabel.setText("Fehler: " + message);
 
-        Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
-        alert.setTitle("Fehler");
-        alert.setHeaderText(title);
+    // -------------------------------------------------------
+    // Async Helper: blockt nicht den JavaFX-UI-Thread
+    // -------------------------------------------------------
+
+    private interface SupplierWithException<T> {
+        T get() throws Exception;
+    }
+
+    private <T> void runAsync(SupplierWithException<T> work, java.util.function.Consumer<T> onSuccess) {
+        new Thread(() -> {
+            try {
+                T result = work.get();
+                Platform.runLater(() -> onSuccess.accept(result));
+            } catch (Exception ex) {
+                Platform.runLater(() -> {
+                    statusLabel.setText("Fehler: " + ex.getMessage());
+                    showAlert(AlertType.ERROR, "Fehler", ex.getMessage());
+                });
+            }
+        }).start();
+    }
+
+    private void showAlert(AlertType type, String title, String message) {
+        Alert alert = new Alert(type, message, ButtonType.OK);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
         alert.showAndWait();
     }
 }

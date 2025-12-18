@@ -10,12 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 import com.evote.app.votingmanagement.interfaces.dto.*;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * REST-Controller für Voting-bezogene Endpoints.
@@ -101,16 +96,23 @@ public class VotingRestController {
      */
     @PostMapping("/{id}/votes")
     public void castVote(@PathVariable int id,
-                         @RequestBody CastVoteRequest request) {
+                         @RequestBody CastVoteRequest request,
+                         @RequestHeader("Authorization") String authorization) {
+
+        // "Bearer <jwt>" -> nur Token extrahieren
+        String token = authorization.startsWith("Bearer ")
+                ? authorization.substring(7)
+                : authorization;
 
         CastVoteDto dto = new CastVoteDto(
-                request.voterKey(), // vorläufig unser "Wähler"-Identifier
-                id,
+                token,      // voterKey/authToken (String)
+                id,         // votingId (aus Path)
                 request.optionId()
         );
 
         service.castVote(dto);
     }
+
 
     /**
      * Liefert die Anzahl Stimmen pro Option für ein Voting.
