@@ -1,13 +1,13 @@
 # eVote – Anwendung für E-Voting mit DDD, TDD, JavaFX & Spring
 
 ## ToDo
-- Shared Kernel mit Pseudonymtoken, so dass Abstimmung nicht Person auf Server zugewiesen werden kann
-- Domain Events implementieren 
-- Zentrale fetchAPI Klasse, optimalerweise async
-- Im Votingmanagement anfragen ans backend über REST
+- Security config zentral speichern
+- Domain Events implementieren
 - weitere AOP Einsatzmöglichkeiten außer Logging
 - Funktionale Programmierkonzepte (Übung 7)
 - SOLID-Prinzipien beim Code überprüfen
+- Übungsaufgaben Dokus
+- ggfs. Zentrale fetchAPI Klasse, optimalerweise async
 
 ## Projekt holen und starten
 
