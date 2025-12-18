@@ -1,5 +1,6 @@
 package voting_management.application;
 
+import com.evote.app.votingmanagement.application.port.AuthPort;
 import com.evote.app.votingmanagement.application.services.VotingApplicationService;
 import com.evote.app.votingmanagement.domain.model.Voting;
 import com.evote.app.votingmanagement.infrastructure.repositories.InMemoryVoteRepository;
@@ -20,6 +21,7 @@ public class VotingApplicationServiceTest {
 
     private InMemoryVotingRepository votingRepo;
     private InMemoryVoteRepository voteRepo;
+    private AuthPort authPort;
     private VotingApplicationService service;
     private Clock fixedClock;
     private LocalDate today;
@@ -29,7 +31,7 @@ public class VotingApplicationServiceTest {
         votingRepo = new InMemoryVotingRepository();
         voteRepo = new InMemoryVoteRepository();
 
-        service = new VotingApplicationService(votingRepo, voteRepo);
+        service = new VotingApplicationService(votingRepo, voteRepo, authPort);
 
         today = LocalDate.of(2030, 5, 10);
         fixedClock = Clock.fixed(

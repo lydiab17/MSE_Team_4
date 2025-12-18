@@ -1,129 +1,123 @@
-# EA1 Grundlagen Git
+# eVote – Anwendung für E-Voting mit DDD, TDD, JavaFX & Spring
 
-## Was ist Git und warum sollte es verwendet werden? (Lydia Boes)
-Git ist ein verteiltes Versionskontrollsystem (= Distributed Version Control System). Mithilfe von Git ist es möglich, Änderungen an Softwareprojekten (z.B. an Quellcode oder Dateien) zu verfolgen und nachzuvollziehen. Zum Beispiel lassen sich damit die folgenden Fragen beantworten:
-- Wer hat etwas geändert?
-- Wann wurde etwas geändert?
-- Was wurde geändert?
-- Wo wurde etwas geändert?
-- Warum wurde etwas geändert?
+## ToDo
+- Security config zentral speichern
+- Domain Events implementieren
+- weitere AOP Einsatzmöglichkeiten außer Logging
+- Funktionale Programmierkonzepte (Übung 7)
+- SOLID-Prinzipien beim Code überprüfen
+- Übungsaufgaben Dokus
+- Checkstyle überprüfen und Anpassen
+- Testabdeckung 80%
+- ggfs. Zentrale fetchAPI Klasse, optimalerweise async
 
-Git bietet die Möglichkeit mit mehreren Entwicklern gleichzeitig am selben Softwareprojekt zu arbeiten. Auf dieser Grundlage sind die Entwickler in der Lage zwischen verschiedenen Versionen zu wechseln oder eigene Versionen mit denen der Teammitglieder zusammenzuführen (mergen).
+## Projekt holen und starten
 
-Heutzutage gilt Git als Standard in der Softwareentwicklung. 
+```bash
+git clone https://github.com/lydiab17/MSE_Team_4.git
+cd MSE_Team_4/code/app
+mvn clean verify
+mvn clean javafx:run
+```
 
-## Grundlegende Git-Befehle (z. B. git init, git add, git commit, git push) (Malinda Riebenstahl)
-[Git-Befehle.pdf](https://github.com/user-attachments/files/22888931/Git-Befehle.pdf)
+## Voraussetzungen
 
-| Git-Befehl | Description / Erklärung |
-| --- | --- |
-|$ git help add	| Öffnet die Browser-Dokumentation für den Befehl add als HTML.|
-|$ git init	| Erstellt im aktuellen Verzeichnis ein neues Git-Repository; alle nötigen Dateien unter .git werden angelegt.|
-|$ git init mydir	| Erstellt ein neues Verzeichnis mydir und initialisiert dort ein Git-Repository. |
-|$ git clone httpsLink | Erstellt eine lokale Kopie eines entfernten Repositories. |
-|$ git status	| Zeigt den aktuellen Status des Repositories: welche Dateien geändert, gestaged oder untracked sind. |
-|$ git commit	| Speichert alle Änderungen, die gestagt wurden als einen neuen Commit im lokalen Repository. |
-|$ git diff | Unterschiede zwischen Arbeitsverzeichnis und Staging (nicht gestagte Änderungen) werden aufgezeigt. |
-|$ git diff --cached	| Unterschiede zwischen Staging und letztem Commit (bereit zum Commit) werden gezeigt. |
-|$ git diff HEAD	| Unterschiede zwischen Arbeitsverzeichnis und letztem Commit werden gezeigt. |
-|$ git add file(s)	| Fügt einzelne Dateien dem Staging hinzu. |
-|$ git add README.md	| Fügt die Datei README.md dem Staging hinzu. |
-|$ git add *.java	| Fügt alle .java-Dateien dem Staging hinzu. |
-|$ git add SecretFolder |	Fügt den gesamten Ordner SecretFolder rekursiv dem Staging hinzu. |
-|$ git add .	| Fügt im aktuellen Verzeichnis alle neuen bzw. geänderten Dateien dem Staging hinzu. |
-|$ git commit -a -m "Nachricht"	| Erstellt einen Commit aller geänderten Dateien (ohne neue Dateien) mit einer Nachricht. |
-|$ git push <repository>	| Auf das entfernte Repository werden alle lokalen Commits übertragen. |
-|$ git pull --rebase <remote> <branch>	| Änderungen werden vom Remote-Repository gezogen und in den aktuellen Branch eingefügt, dabei werden lokale Commits "neu angewendet" (Rebase).|
-|$ git rm useless.md	| Entfernt die Datei useless.md aus dem Arbeitsverzeichnis und dem Staging-Bereich. |
-|$ git log	| Commit-History des aktuellen Branches wird angezeigt.|
-|$ git log -p [-2]	| Commit-Historie wird angezeigt sowie die Änderungen (Patch); optional nur die letzten 2 Commits.|
-|$ git branch	| Zeigt bzw. listet alle lokalen Branches auf. |
-|$ git branch <branch name>	| Erstellt einen neuen Branch mit dem angegebenen Namen.|
-|$ git checkout -b <branch name>	| Erstellt einen neuen Branch und wechselt sofort zu diesem Branch.|
-|$ git branch -d <branch name>	| Löscht den angegebenen Branch lokal.|
+- Java 21 (Temurin / OpenJDK)
+- Maven 3.9+
+- Git
 
 
-## Branches und ihre Nutzung, Umgang mit Merge-Konflikten (Ulli Smitmans)
+Dieses Projekt implementiert ein vereinfachtes elektronisches Abstimmungssystem (**eVote**) als Unterrichtsbeispiel für:
 
-Damit Teammitglieder in der Softwareentwicklung gleichzeitig, aber unabhängig voneinander arbeiten können,  
-ohne sich gegenseitig zu behindern, wird in Versionsverwaltungssystemen wie **Git** mit **Branches** gearbeitet.
-
-Ein **Branch** ist eine Abzweigung von einem bestimmten Zustand des Repositories (also der Projektdateien) zu einem bestimmten Zeitpunkt.  
-Wenn beispielsweise ein neuer Branch `feature_123` von dem Branch `development` abzweigt, übernimmt `feature_123` den aktuellen Stand des Repositories von `development`.
+- Domain Driven Design (DDD)
+- Test Driven Development (TDD)
+- Java & Spring Boot (Backend)
+- JavaFX (Desktop-UI)
+- CI/CD mit GitHub Actions
+- Code-Qualität (Checkstyle, JaCoCo)
+- Aspect Oriented Programming (Logging mit AOP)
 
 ---
 
-### 🔧 Beispiel: Arbeiten mit Branches
+## 1. Fachlicher Überblick
 
-1. **Überprüfen, auf welchem Branch du dich befindest:**
-   ```shell git branch --show-current```
+Ziel des Systems ist es, einfache Online-Abstimmungen zu ermöglichen:
 
-2. Neuen Branch 'Ulli' erstellen und direkt wechseln:
-   ```git checkout -b Ulli```
+- **Abstimmungen (Votings)** anlegen, mit:
+  - Titel, Beschreibung, Zeitraum
+  - 2–10 Antwortoptionen
+- **Abstimmungen öffnen/schließen**
+- **Stimmen abgeben** (Vote)
+- **Ergebnisse** pro Option zählen
+- **Bürger / Citizen Management** (separater Bounded Context, u. a. für Registrierung & Authentifizierung – noch in Arbeit)
 
-3. Unterschiede zwischen Branches anzeigen lassen:
-   ```git diff main```
+---
 
-Keine Ausgabe bedeutet: keine Unterschiede.
+## 2. Architektur & Bounded Contexts
 
-![create-branch.png](assets/create-branch.png)
+### 2.1 Bounded Contexts
 
+Aktuell werden hauptsächlich zwei Bounded Contexts verwendet:
 
-### Simuliertes Beispiel mit mehreren Entwicklern
+1. **`votingmanagement`**
+   - gesamte Abstimmungslogik:
+     - Voting-Erstellung, Öffnen/Schließen
+     - Stimmabgabe
+     - Ergebnisermittlung
+   - JavaFX-UI für Voting-Verwaltung & Stimmabgabe
+   - REST-API (`/api/votings/...`)
 
-Um das oben genannte Beispiel umzusetzen, wird der Branch `feature_123` als Quellbranch genutzt.
-Auf diesem Branch wird eine einfache Textdatei mit einem Satz erstellt.
+2. **`citizen_management`**
+   - Verantwortlich für Bürgerdaten:
+     - Name, E-Mail, Passwort, CitizenID
+   - Dient perspektivisch der Authentifizierung & Pseudonymisierung
+   - Wird später als „Shared Kernel“ für Pseudonym-Token etc. angebunden
 
-Nun simulieren wir die Weiterentwicklung durch zwei Entwickler.
-Diese erstellen sich jeweils eigene Branches:
+> Hinweis: Der ehemals separate `vote`-Bounded-Context wurde konzeptionell in `votingmanagement` integriert, um fachliche Doppelung zu vermeiden (Feedback aus Zwischenpräsentation).
 
-`feature_123_edit_1`
+### 2.2 Schichten (DDD)
 
-`feature_123_edit_2`
+Im Bounded Context `votingmanagement` wird eine typische DDD-Schichtung verwendet:
 
-In beiden Branches wird dieselbe Textdatei verändert.
-Wenn nun beide Branches per Merge Request (MR) oder Pull Request (PR) wieder in den ursprünglichen Branch `feature_123` gemergt werden sollen,
-erscheint eine Merge-Conflict-Warnung.
+- **Domain (`domain`)**
+  - `Voting`, `Vote` (Aggregates)
+  - Value Objects: `VotingName`, `VotingInfo`, `OptionLabel`, ggf. später PseudonymToken
+  - `VotingRepository`, `VoteRepository` (Ports)
 
-![merge-conflict-warnung.png](assets/merge-conflict-warnung.png)
+- **Application (`application.services`, `application.dto`)**
+  - `VotingApplicationService` – zentrale Anwendungslogik:
+    - Voting-Use-Cases (create, open, close, getOpen, getNotOpen, getResults…)
+    - Vote-Use-Case (`castVote`)
+  - DTOs für interne Use-Cases (`CastVoteDto`, `OptionResult` etc.)
 
+- **Interfaces**
+  - `interfaces.rest`:
+    - `VotingRestController` mit Endpoints unter `/api/votings`
+  - `votingmanagement.ui.controller`:
+    - JavaFX-Controller für Voting-Verwaltung & Stimmabgabe
 
-### Merge-Konflikte verstehen
+- **Infrastructure**
+  - `InMemoryVotingRepository`, `InMemoryVoteRepository`
+  - AOP-Aspekte (Logging)
+  - ggf. spätere Adapter (Datenbank, Messaging…)
 
-Ein Merge Conflict bedeutet, dass dieselbe Datei im Zielbranch (`feature_123`) bereits verändert wurde,
-und Git nicht automatisch entscheiden kann, welche Version korrekt ist.
+---
 
-In diesem Fall müssen die Entwickler den Konflikt manuell lösen — also festlegen,
-welcher Inhalt der Datei im finalen Merge bestehen bleiben soll.
+## 3. Technologiestack
 
-![merge-conflict-aufoesen.png](assets/merge-conflict-aufoesen.png)
+- **Sprache:** Java 21
+- **Build Tool:** Maven
+- **Frameworks:**
+  - Spring Boot 3.5.x (Core & Web)
+  - JavaFX 21 (UI)
+  - ControlsFX für komfortablere UI-Controls
+- **Testing:**
+  - JUnit 5
+  - Spring Boot Test
+- **Qualität / Tools:**
+  - JaCoCo (Test Coverage)
+  - Checkstyle (Google Java Style)
+  - Spring AOP + AspectJ (z. B. LoggingAspect)
 
+---
 
-
-## Git mit IntelliJ/PyCharm benutzen: Local Repository und Remote Repository (Fabian Schmitz)
-1. **Git muss auf dem Rechner installiert sein.**  
-   Um zu prüfen, ob IntelliJ den richtigen Pfad findet:  
-   `File → Settings → Version Control → Git`  
-   Hier kann man überprüfen, ob der Git-Pfad korrekt ist.
-
-   ![Git Path prüfen](assets/Settings_Menu_IntelliJ.png)
-   ![Git Path prüfen](assets/Git_Path_IntelliJ.png)
-   
-2. **Über das Menü VCS können Git-Befehle auch ohne Konsole ausgeführt werden.**
-
-   a. **Beispiel: Ein neues Git-Repository erstellen:**  
-   `VCS → Create Git Repository → (Projektordner auswählen)`
-
-   ![Git Repository erstellen](assets/Create_Git_Repo_IntelliJ.png)
-
-   b. **Einen Commit erstellen:**  
-   Über Menü `Git → Commit`.  
-   ![Commit erstellen](assets/Commit_IntelliJ1.png)
-
-   Dort auswählen, welche Dateien committed werden sollen, und eine Commit Message schreiben.  
-   Die Commits können bei Bedarf auch direkt gepusht werden. Danach erscheint unten rechts eine Erfolgsmeldung.
-
-   ![Commit erstellen](assets/Commit_IntelliJ2.png)
-
-
-## Nützliche Git-Tools und Pla ormen (z. B. GitHub) 

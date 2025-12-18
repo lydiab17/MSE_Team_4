@@ -41,7 +41,7 @@ public class InMemoryVoteRepository implements VoteRepository {
   }
 
   @Override
-  public boolean existsByVotingIdAndVoterKey(int votingId, String voterKey) {
+  public boolean existsByVotingIdAndPseudonym(int votingId, String voterKey) {
       return store.values().stream()
               .anyMatch(v -> v.getVotingId() == votingId
                       && voterKey.equals(v.getVoterKey()));

@@ -1,5 +1,6 @@
 package com.evote.app.citizen_management.ui.controller;
 
+import com.evote.app.sharedkernel.AuthSession;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
@@ -32,29 +33,32 @@ public class LoginController {
     private Button registerbutton;
 
     private final CitizenApiClient apiClient = new CitizenApiClient();
+    private final AuthSession authSession;
+
+    public LoginController(AuthSession authSession) {
+        this.authSession = authSession;
+    }
 
     @FXML
     private void loginAction(ActionEvent e1) {
 
         if (isAnyFieldEmpty()) {
             System.out.println("Es wurden nicht alle Felder ausgefüllt.");
-        } else {
-            System.out.println("Es wurden alle Felder ausgefüllt.");
+            return;
         }
 
         String mail = email.getText();
         String pw = password.getText();
 
-        boolean success = apiClient.loginCitizen(mail, pw);
+        var tokenOpt = apiClient.loginAndGetToken(mail, pw);
 
-        if (success) {
+        if (tokenOpt.isPresent()) {
+            authSession.setToken(tokenOpt.get()); // <-- Token merken
             showAlert("Login", "Erfolgreich eingeloggt!", AlertType.CONFIRMATION);
             MainController.getInstance().changeView("vote-view");
-
         } else {
             showAlert("Login", "Login fehlgeschlagen!", AlertType.ERROR);
         }
-
     }
 
     @FXML

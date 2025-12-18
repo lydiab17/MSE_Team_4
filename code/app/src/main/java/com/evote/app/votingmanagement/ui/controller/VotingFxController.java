@@ -1,13 +1,21 @@
 package com.evote.app.votingmanagement.ui.controller;
 
-import com.evote.app.votingmanagement.application.services.VotingApplicationService;
-import com.evote.app.votingmanagement.domain.model.Voting;
-import java.time.Clock;
+import com.evote.app.citizen_management.ui.controller.MainController;
+import com.evote.app.sharedkernel.AuthSession;
+import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
+import com.evote.app.votingmanagement.interfaces.dto.OptionResultResponse;
+import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
+import com.evote.app.votingmanagement.interfaces.dto.VotingResultsResponse;
+import com.evote.app.votingmanagement.ui.api.VotingApiClient;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javafx.application.Platform;
+import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -15,20 +23,19 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.springframework.stereotype.Component;
 
-/**
- * JavaFX-Controller für die Voting-Oberfläche.
- * Oben: Voting anlegen.
- * Unten links: nicht offene Votings.
- * Unten rechts: offene Votings.
- */
 @Component
 public class VotingFxController {
 
-    private final VotingApplicationService service;
+    private final VotingApiClient apiClient;
+    private final AuthSession authSession;
+
+    private VotingResponse selectedVoting;
 
     @FXML
     private TextField idField;
@@ -49,24 +56,33 @@ public class VotingFxController {
     private TextField optionsField;
 
     @FXML
-    private ListView<Voting> openVotingsList;
+    private ListView<VotingResponse> openVotingsList;
 
     @FXML
-    private ListView<Voting> notOpenVotingsList;
+    private ListView<VotingResponse> notOpenVotingsList;
 
     @FXML
     private Label statusLabel;
 
-    public VotingFxController(VotingApplicationService service) {
-        this.service = service;
+    @FXML
+    private TableView<OptionResultResponse> resultsTable;
+
+    @FXML
+    private TableColumn<OptionResultResponse, String> optionColumn;
+
+    @FXML
+    private TableColumn<OptionResultResponse, Long> countColumn;
+
+    public VotingFxController(VotingApiClient apiClient, AuthSession authSession) {
+        this.apiClient = apiClient;
+        this.authSession = authSession;
     }
 
     @FXML
     private void initialize() {
-        // hübsche Darstellung in beiden Listen
         openVotingsList.setCellFactory(lv -> new ListCell<>() {
             @Override
-            protected void updateItem(Voting item, boolean empty) {
+            protected void updateItem(VotingResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? null : formatVoting(item));
             }
@@ -74,19 +90,50 @@ public class VotingFxController {
 
         notOpenVotingsList.setCellFactory(lv -> new ListCell<>() {
             @Override
-            protected void updateItem(Voting item, boolean empty) {
+            protected void updateItem(VotingResponse item, boolean empty) {
                 super.updateItem(item, empty);
                 setText(empty || item == null ? null : formatVoting(item));
             }
         });
 
+        // Wenn links/rechts ausgewählt wird: selectedVoting setzen + Ergebnis-Tabelle leeren
+        openVotingsList.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
+            if (n != null) {
+                notOpenVotingsList.getSelectionModel().clearSelection();
+                onVotingSelected(n);
+            }
+        });
+
+        notOpenVotingsList.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
+            if (n != null) {
+                openVotingsList.getSelectionModel().clearSelection();
+                onVotingSelected(n);
+            }
+        });
+
+        // TableColumns für Record-DTOs korrekt setzen
+        optionColumn.setCellValueFactory(cell ->
+                new ReadOnlyStringWrapper(cell.getValue().option()));
+        countColumn.setCellValueFactory(cell ->
+                new ReadOnlyObjectWrapper<>(cell.getValue().count()));
+
         refreshVotingLists();
     }
 
-    // --------- Aktionen aus dem FXML ---------
+    private void onVotingSelected(VotingResponse voting) {
+        selectedVoting = voting;
+        resultsTable.getItems().clear();
+        fillFormFromVoting(voting);
+        statusLabel.setText("Ausgewählt: Voting " + voting.id());
+    }
 
     @FXML
     private void onCreateVoting() {
+        if (authSession.token().isEmpty()) {
+            showError("Nicht eingeloggt", "Bitte zuerst einloggen.");
+            return;
+        }
+
         try {
             int id = parseId();
             String name = nameField.getText();
@@ -95,11 +142,19 @@ public class VotingFxController {
             LocalDate end = endDatePicker.getValue();
             Set<String> options = parseOptions(optionsField.getText());
 
-            Voting voting = service.createVoting(id, name, info, start, end, options);
+            CreateVotingRequest req = new CreateVotingRequest(
+                    id, name, info, start, end, options.stream().toList()
+            );
 
-            statusLabel.setText("Voting " + voting.getId() + " erfolgreich angelegt.");
-            clearForm();
-            refreshVotingLists();
+            runAsync(
+                    () -> apiClient.createVoting(req),
+                    created -> {
+                        statusLabel.setText("Voting " + created.id() + " erfolgreich angelegt.");
+                        clearForm();
+                        refreshVotingLists();
+                    }
+            );
+
         } catch (Exception e) {
             showError("Fehler beim Anlegen", e.getMessage());
         }
@@ -114,12 +169,11 @@ public class VotingFxController {
     @FXML
     private void onLoadSelectedVoting() {
         try {
-            Voting selected = getSelectedVoting();
+            VotingResponse selected = getSelectedVoting();
             if (selected == null) {
                 throw new IllegalArgumentException("Bitte ein Voting in einer Liste auswählen.");
             }
-            fillFormFromVoting(selected);
-            statusLabel.setText("Voting " + selected.getId() + " geladen.");
+            onVotingSelected(selected);
         } catch (Exception e) {
             showError("Fehler beim Laden", e.getMessage());
         }
@@ -127,35 +181,67 @@ public class VotingFxController {
 
     @FXML
     private void onOpenSelectedVoting() {
-        try {
-            Voting selected = notOpenVotingsList
-                    .getSelectionModel()
-                    .getSelectedItem();
-
-            if (selected == null) {
-                throw new IllegalArgumentException(
-                        "Bitte ein nicht geöffnetes Voting in der linken Liste auswählen.");
-            }
-
-            service.openVoting(selected.getId());
-            statusLabel.setText("Voting " + selected.getId() + " wurde geöffnet.");
-            refreshVotingLists();
-        } catch (Exception e) {
-            showError("Fehler beim Öffnen", e.getMessage());
+        if (authSession.token().isEmpty()) {
+            showError("Nicht eingeloggt", "Bitte zuerst einloggen.");
+            return;
         }
+
+        VotingResponse selected = notOpenVotingsList.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            showError("Fehler beim Öffnen", "Bitte ein nicht geöffnetes Voting links auswählen.");
+            return;
+        }
+
+        runAsync(
+                () -> {
+                    apiClient.openVoting(selected.id());
+                    return null;
+                },
+                ignored -> {
+                    statusLabel.setText("Voting " + selected.id() + " wurde geöffnet.");
+                    refreshVotingLists();
+                }
+        );
     }
 
     @FXML
     private void onRefreshVotingLists() {
-        try {
-            refreshVotingLists();
-            statusLabel.setText("Listen aktualisiert.");
-        } catch (Exception e) {
-            showError("Fehler beim Aktualisieren", e.getMessage());
-        }
+        refreshVotingLists();
     }
 
-    // ---------- Hilfsmethoden ----------
+    private void refreshVotingLists() {
+        runAsync(
+                () -> new Lists(apiClient.getOpenVotings(), apiClient.getNotOpenVotings()),
+                lists -> {
+                    openVotingsList.setItems(FXCollections.observableArrayList(lists.open));
+                    notOpenVotingsList.setItems(FXCollections.observableArrayList(lists.notOpen));
+                    statusLabel.setText("Listen aktualisiert.");
+                }
+        );
+    }
+
+    @FXML
+    private void onLoadResults() {
+        VotingResponse selected = selectedVoting != null ? selectedVoting : getSelectedVoting();
+        if (selected == null) {
+            statusLabel.setText("Bitte zuerst ein Voting auswählen.");
+            return;
+        }
+        selectedVoting = selected;
+
+        runAsync(
+                () -> apiClient.getResults(selectedVoting.id()),
+                (VotingResultsResponse resp) -> {
+                    resultsTable.getItems().setAll(resp.results());
+                    statusLabel.setText("Ergebnisse geladen ✅");
+                }
+        );
+    }
+
+    @FXML
+    private void onGoToVoteView() {
+        MainController.getInstance().changeView("vote-view");
+    }
 
     private int parseId() {
         String text = idField.getText();
@@ -186,16 +272,7 @@ public class VotingFxController {
         return set;
     }
 
-    private void refreshVotingLists() {
-        var open = service.getOpenVotings(Clock.systemDefaultZone());
-        var notOpen = service.getNotOpenVotings();
-
-        openVotingsList.setItems(FXCollections.observableArrayList(open));
-        notOpenVotingsList.setItems(FXCollections.observableArrayList(notOpen));
-    }
-
     private void clearForm() {
-        // ID lasse ich drin, damit man gezielt neue IDs vergeben kann
         nameField.clear();
         infoArea.clear();
         startDatePicker.setValue(null);
@@ -203,46 +280,70 @@ public class VotingFxController {
         optionsField.clear();
     }
 
-    private void fillFormFromVoting(Voting voting) {
-        idField.setText(String.valueOf(voting.getId()));
-        nameField.setText(voting.getName());
-        infoArea.setText(voting.getInfo());
-        startDatePicker.setValue(voting.getStartDate());
-        endDatePicker.setValue(voting.getEndDate());
-        optionsField.setText(
-                voting.getOptionTexts().stream().collect(Collectors.joining(", "))
-        );
+    private void fillFormFromVoting(VotingResponse voting) {
+        idField.setText(String.valueOf(voting.id()));
+        nameField.setText(voting.name());
+        infoArea.setText(voting.info());
+        startDatePicker.setValue(voting.startDate());
+        endDatePicker.setValue(voting.endDate());
+        optionsField.setText(voting.options().stream().collect(Collectors.joining(", ")));
     }
 
-    /**
-     * Nimmt zuerst Auswahl aus „nicht offene“, wenn dort nichts ausgewählt ist,
-     * dann aus „offene“ Liste.
-     */
-    private Voting getSelectedVoting() {
-        Voting selected = notOpenVotingsList.getSelectionModel().getSelectedItem();
+    private VotingResponse getSelectedVoting() {
+        VotingResponse selected = notOpenVotingsList.getSelectionModel().getSelectedItem();
         if (selected != null) {
             return selected;
         }
         return openVotingsList.getSelectionModel().getSelectedItem();
     }
 
-    private String formatVoting(Voting v) {
+    private String formatVoting(VotingResponse v) {
         return String.format(
                 "ID %d - %s [%s bis %s]%s",
-                v.getId(),
-                v.getName(),
-                v.getStartDate(),
-                v.getEndDate(),
-                v.isVotingStatus() ? " (offen)" : ""
+                v.id(),
+                v.name(),
+                v.startDate(),
+                v.endDate(),
+                v.open() ? " (offen)" : ""
         );
     }
 
     private void showError(String title, String message) {
         statusLabel.setText("Fehler: " + message);
-
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Fehler");
         alert.setHeaderText(title);
         alert.showAndWait();
+    }
+
+    private <T> void runAsync(ThrowingSupplier<T> work, UiConsumer<T> onSuccess) {
+        Task<T> task = new Task<>() {
+            @Override
+            protected T call() throws Exception {
+                return work.get();
+            }
+        };
+
+        task.setOnSucceeded(e -> onSuccess.accept(task.getValue()));
+        task.setOnFailed(e -> Platform.runLater(() ->
+                showError("REST-Fehler", task.getException().getMessage()))
+        );
+
+        Thread t = new Thread(task);
+        t.setDaemon(true);
+        t.start();
+    }
+
+    private record Lists(java.util.List<VotingResponse> open,
+                         java.util.List<VotingResponse> notOpen) {}
+
+    @FunctionalInterface
+    private interface ThrowingSupplier<T> {
+        T get() throws Exception;
+    }
+
+    @FunctionalInterface
+    private interface UiConsumer<T> {
+        void accept(T t);
     }
 }

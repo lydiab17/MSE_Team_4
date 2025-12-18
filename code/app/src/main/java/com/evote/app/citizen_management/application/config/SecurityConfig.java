@@ -28,6 +28,7 @@ public class SecurityConfig {
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/citizens/register", "/api/citizens/login").permitAll()
+                    .requestMatchers("/api/votings/**").permitAll()
                     .anyRequest().authenticated()
             )
             .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
