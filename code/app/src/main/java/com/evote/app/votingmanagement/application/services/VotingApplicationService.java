@@ -11,12 +11,14 @@ import com.evote.app.votingmanagement.domain.model.Voting;
 import com.evote.app.votingmanagement.domain.model.VotingRepository;
 import com.evote.app.votingmanagement.events.VotingOpenedEvent;
 import org.springframework.context.ApplicationEventPublisher;
+
 import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
 import org.springframework.stereotype.Service;
 
 /**
@@ -41,8 +43,8 @@ public class VotingApplicationService {
    * Erstellt den Anwendungsschicht-Service.
    *
    * @param votingRepository Repository für Votings
-   * @param voteRepository Repository für Votes
-   * @param authPort Port zur Authentifizierung/Pseudonymisierung
+   * @param voteRepository   Repository für Votes
+   * @param authPort         Port zur Authentifizierung/Pseudonymisierung
    */
   public VotingApplicationService(VotingRepository votingRepository,
                                   VoteRepository voteRepository,
@@ -71,6 +73,8 @@ public class VotingApplicationService {
                              LocalDate endDate,
                              Set<String> options) {
 
+    System.out.println("Create Voting wird aufgerufen... Name: " + name + "Info: "
+            + info + "startDate: " + startDate + "endDate: " + endDate + "options: " + options);
     // Domain kümmert sich um alle Regeln / Validierung
     Voting voting = Voting.create(id, name, info, startDate, endDate, options);
 

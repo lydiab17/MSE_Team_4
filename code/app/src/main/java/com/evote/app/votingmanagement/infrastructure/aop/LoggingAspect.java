@@ -55,7 +55,7 @@ public class LoggingAspect {
               ex.toString(),
               duration
       );
-      throw ex;  // wichtig: Exception weiterwerfen
+      throw ex;
     }
   }
 }

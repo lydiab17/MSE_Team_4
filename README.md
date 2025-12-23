@@ -1,15 +1,21 @@
 # eVote – Anwendung für E-Voting mit DDD, TDD, JavaFX & Spring
 
+@Lydia habe eine RateLimiter Klasse importiert. Wenn du das in deinem BC nutzen willst, musst du einfach nur in 
+der application.yml (/main/resources/application.yml) eine Action dafür Anlegen in der du entscheidest wie viele 
+Anfragen pro Zeiteinheit erlaubt sind und dann in deinem Rest-Controller eine Annotation
+@RateLimiter(name = "voteAction") über den Endpunkt schreiben, wo das Ratelimit gelten soll.
+
 ## ToDo
+- Main Controller in Shared bc
 - Security config zentral speichern
 - Domain Events implementieren
-- weitere AOP Einsatzmöglichkeiten außer Logging
 - Funktionale Programmierkonzepte (Übung 7)
 - SOLID-Prinzipien beim Code überprüfen
 - Übungsaufgaben Dokus
 - Checkstyle überprüfen und Anpassen
 - Testabdeckung 80%
 - ggfs. Zentrale fetchAPI Klasse, optimalerweise async
+- (weitere AOP Einsatzmöglichkeiten außer Logging)
 
 ## Projekt holen und starten
 
