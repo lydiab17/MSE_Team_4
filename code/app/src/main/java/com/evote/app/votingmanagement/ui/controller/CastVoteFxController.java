@@ -121,13 +121,13 @@ public class CastVoteFxController {
         }
 
         if (selectedVoting == null) {
-            showAlert(AlertType.ERROR, "Kein Voting ausgewählt", "Bitte zuerst eine Abstimmung auswählen.");
+            showAlert(AlertType.ERROR, "Kein Voting ausgewählt", "Bitte wählen Sie zuerst eine Abstimmung aus.");
             return;
         }
 
         String selectedOption = optionsList.getSelectionModel().getSelectedItem();
         if (selectedOption == null || selectedOption.isBlank()) {
-            showAlert(AlertType.ERROR, "Keine Option ausgewählt", "Bitte eine Option anklicken.");
+            showAlert(AlertType.ERROR, "Keine Option ausgewählt", "Bitte wählen Sie zuerst eine Option aus.");
             return;
         }
 
@@ -138,7 +138,7 @@ public class CastVoteFxController {
                 },
                 ignored -> {
                     statusLabel.setText("Stimme wurde abgegeben ✅");
-                    showAlert(AlertType.INFORMATION, "Abstimmen", "Stimme erfolgreich abgegeben.");
+                    showAlert(AlertType.INFORMATION, "Abstimmen", "Sie haben erfolgreich Ihre Stimme abgegeben.");
                 }
         );
     }

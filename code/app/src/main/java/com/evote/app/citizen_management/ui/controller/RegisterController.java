@@ -68,7 +68,7 @@ public class RegisterController {
         boolean success = apiClient.registerCitizen(first, last, mail, pw);
 
         if (success) {
-            showAlert("Registrierung", "Erfolgreich registriert!", AlertType.CONFIRMATION);
+            showAlert("Registrierung", "Sie haben sich erfolgreich registriert. Nun können Sie sich einloggen.", AlertType.INFORMATION);
             MainController.getInstance().changeView("login");
         } else {
             showAlert("Registrierung", "Registrierung fehlgeschlagen!", AlertType.ERROR);
@@ -95,12 +95,12 @@ public class RegisterController {
         boolean hasError = false;
 
         if (text.isEmpty()) {
-            field.setStyle("-fx-border-color: red;");
+            field.setStyle("-fx-border-color: #CD2626");
             errorLabel.setText(emptyMsg);
             errorLabel.setVisible(true);
             hasError = true;
         } else if (!text.matches(regex)) {
-            field.setStyle("-fx-border-color: red;");
+            field.setStyle("-fx-border-color: #CD2626");
             errorLabel.setText(invalidMsg);
             errorLabel.setVisible(true);
             hasError = true;

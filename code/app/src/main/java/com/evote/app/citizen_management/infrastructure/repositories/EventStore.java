@@ -9,6 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Dies ist ein Repository zur Speicherung der Domainevents.
+ *
+ * @author Lydia Boes
+ * @version 1.0
+ */
 @Service
 public class EventStore {
     private Map<String, List<DomainEvent>> store = new HashMap<>();

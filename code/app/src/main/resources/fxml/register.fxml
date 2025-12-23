@@ -10,9 +10,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="575.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.evote.app.citizen_management.ui.controller.RegisterController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="484.0" prefWidth="575.0" style="-fx-background-color: lightblue;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.evote.app.citizen_management.ui.controller.RegisterController">
     <children>
-        <Label alignment="CENTER" prefHeight="70.0" prefWidth="704.0" text="Registrieren">
+        <Label alignment="CENTER" prefHeight="70.0" prefWidth="616.0" text="Registrieren bei eVote">
             <font>
                 <Font name="System Bold" size="18.0" />
             </font>
@@ -30,7 +30,7 @@
                 <Insets left="200.0" right="200.0" />
             </VBox.margin>
         </TextField>
-      <Label fx:id="firstNameError" prefHeight="14.0" prefWidth="250.0" text="Label" textFill="#ff0202" visible="false">
+      <Label fx:id="firstNameError" prefHeight="14.0" prefWidth="250.0" text="Label" textFill="#cd2626" visible="false">
          <font>
             <Font size="11.0" />
          </font>
@@ -51,7 +51,7 @@
             <Insets left="200.0" right="200.0" />
          </VBox.margin>
       </TextField>
-      <Label fx:id="lastNameError" prefHeight="14.0" prefWidth="250.0" text="Label" textFill="#ff0202" visible="false">
+      <Label fx:id="lastNameError" prefHeight="14.0" prefWidth="250.0" text="Label" textFill="#cd2626" visible="false">
          <font>
             <Font size="11.0" />
          </font>
@@ -72,7 +72,7 @@
             <Insets left="200.0" right="200.0" />
          </VBox.margin>
       </TextField>
-      <Label fx:id="emailError" prefHeight="14.0" prefWidth="230.0" text="Label" textFill="#ff0202" visible="false">
+      <Label fx:id="emailError" prefHeight="14.0" prefWidth="230.0" text="Label" textFill="#cd2626" visible="false">
          <font>
             <Font size="11.0" />
          </font>
@@ -93,7 +93,7 @@
                 <Insets left="200.0" right="200.0" />
             </VBox.margin>
         </PasswordField>
-      <Label fx:id="passwordError" prefHeight="14.0" prefWidth="250.0" text="Label" textFill="#ff0202" visible="false">
+      <Label fx:id="passwordError" prefHeight="14.0" prefWidth="250.0" text="Label" textFill="#cd2626" visible="false">
          <font>
             <Font size="11.0" />
          </font>
@@ -101,7 +101,7 @@
             <Insets left="200.0" right="100.0" />
          </VBox.margin>
       </Label>
-        <Button fx:id="registerButton" alignment="CENTER" mnemonicParsing="false" onAction="#registerAction" prefHeight="30.0" prefWidth="115.0" text="Registrieren">
+        <Button fx:id="registerButton" alignment="CENTER" mnemonicParsing="false" onAction="#registerAction" prefHeight="30.0" prefWidth="115.0" style="-fx-background-color: white;" text="Registrieren">
             <VBox.margin>
                 <Insets left="200.0" right="200.0" top="5.0" />
             </VBox.margin>
@@ -118,7 +118,7 @@
             <Insets left="200.0" right="200.0" top="30.0" />
          </VBox.margin>
       </Label>
-      <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" onAction="#loginAction" prefHeight="30.0" prefWidth="115.0" text="Login">
+      <Button fx:id="loginButton" alignment="CENTER" mnemonicParsing="false" onAction="#loginAction" prefHeight="30.0" prefWidth="76.0" style="-fx-background-color: white;" text="Login">
          <VBox.margin>
             <Insets left="200.0" right="200.0" />
          </VBox.margin>

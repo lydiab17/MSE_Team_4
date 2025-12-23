@@ -1,75 +1,125 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.evote.app.votingmanagement.ui.controller.VotingFxController">
+<BorderPane style="-fx-background-color: lightblue;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.evote.app.votingmanagement.ui.controller.VotingFxController">
 
     <!-- OBERER BEREICH: Voting anlegen -->
     <top>
         <VBox spacing="10.0">
             <padding>
-                <Insets top="10" right="10" bottom="10" left="10"/>
-            </padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding> <!-- Spacer -->
 
-            <Label text="Neues Voting anlegen" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+             <Button onAction="#onGoToVoteView" style="-fx-background-color: white;" text="Zurück zur Stimmabgabe">
+            <graphic>
+               <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                     <Image url="@../icons/arrow-left-solid.png" />
+                  </image>
+               </ImageView>
+            </graphic></Button>
+
+            <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Neues Voting anlegen" />
 
             <GridPane hgap="8.0" vgap="8.0">
                 <columnConstraints>
-                    <ColumnConstraints halignment="RIGHT" minWidth="100"/>
-                    <ColumnConstraints hgrow="ALWAYS"/>
+                    <ColumnConstraints halignment="RIGHT" minWidth="100" />
+                    <ColumnConstraints hgrow="ALWAYS" />
                 </columnConstraints>
 
                 <!-- ID -->
-                <Label text="ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-                <TextField fx:id="idField"
-                           GridPane.rowIndex="0" GridPane.columnIndex="1"
-                           promptText="z.B. 1"/>
+                <Label text="ID" GridPane.columnIndex="0" GridPane.rowIndex="0">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+                <TextField fx:id="idField" promptText="z.B. 1" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                 <!-- Name -->
-                <Label text="Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-                <TextField fx:id="nameField"
-                           GridPane.rowIndex="1" GridPane.columnIndex="1"
-                           promptText="Titel der Abstimmung"/>
+                <Label text="Name" GridPane.columnIndex="0" GridPane.rowIndex="1">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+                <TextField fx:id="nameField" promptText="Titel der Abstimmung" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
                 <!-- Info -->
-                <Label text="Beschreibung:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-                <TextArea fx:id="infoArea"
-                          GridPane.rowIndex="2" GridPane.columnIndex="1"
-                          prefRowCount="3"
-                          wrapText="true"/>
+                <Label text="Beschreibung" GridPane.columnIndex="0" GridPane.rowIndex="2">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+                <TextArea fx:id="infoArea" prefRowCount="3" promptText="Beschreibung der Abstimmung" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
                 <!-- Startdatum -->
-                <Label text="Startdatum:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-                <DatePicker fx:id="startDatePicker"
-                            GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+                <Label text="Startdatum" GridPane.columnIndex="0" GridPane.rowIndex="3">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+                <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                 <!-- Enddatum -->
-                <Label text="Enddatum:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-                <DatePicker fx:id="endDatePicker"
-                            GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+                <Label text="Enddatum" GridPane.columnIndex="0" GridPane.rowIndex="4">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+                <DatePicker fx:id="endDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
                 <!-- Optionen -->
-                <Label text="Optionen (kommagetrennt):" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-                <TextField fx:id="optionsField"
-                           GridPane.rowIndex="5" GridPane.columnIndex="1"
-                           promptText="Ja, Nein, Enthaltung"/>
+                <Label text="Optionen (durch Komma trennen)" GridPane.columnIndex="0" GridPane.rowIndex="5">
+               <font>
+                  <Font name="System Bold" size="13.0" />
+               </font></Label>
+                <TextField fx:id="optionsField" promptText="Ja, Nein, Enthaltung" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <rowConstraints>
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+               <RowConstraints />
+            </rowConstraints>
             </GridPane>
 
             <HBox spacing="8.0">
-                <Button text="Voting anlegen" onAction="#onCreateVoting"/>
-                <Button text="Formular leeren" onAction="#onClearForm"/>
+                <Button onAction="#onCreateVoting" prefHeight="29.0" prefWidth="136.0" style="-fx-background-color: white;" text="Voting anlegen">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/plus-solid.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
+                <Button onAction="#onClearForm" style="-fx-background-color: white;" text="Formular leeren">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/trash-alt-solid.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
 
-                <Region HBox.hgrow="ALWAYS"/> <!-- Spacer -->
-
-                <Button text="Zur Stimmabgabe" onAction="#onGoToVoteView"/>
+                <Region HBox.hgrow="ALWAYS" />
             </HBox>
 
 
-            <Label fx:id="statusLabel"/>
+            <Label fx:id="statusLabel" />
         </VBox>
     </top>
 
@@ -77,37 +127,51 @@
     <center>
         <HBox spacing="10.0">
             <padding>
-                <Insets top="0" right="10" bottom="10" left="10"/>
+                <Insets bottom="10" left="10" right="10" top="0" />
             </padding>
 
             <!-- Nicht offene Votings -->
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label text="Nicht offene Votings" style="-fx-font-weight: bold;"/>
-                <ListView fx:id="notOpenVotingsList" prefHeight="200.0"/>
+                <Label style="-fx-font-weight: bold;" text="Nicht offene Votings" />
+                <ListView fx:id="notOpenVotingsList" prefHeight="140.0" prefWidth="248.0" />
 
                 <HBox spacing="8.0">
-                    <Button text="Ausgewähltes Voting öffnen" onAction="#onOpenSelectedVoting"/>
+                    <Button onAction="#onOpenSelectedVoting" prefHeight="26.0" prefWidth="206.0" style="-fx-background-color: white;" text="Ausgewähltes Voting öffnen">
+                  <graphic>
+                     <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../icons/unlock-alt-solid.png" />
+                        </image>
+                     </ImageView>
+                  </graphic></Button>
                 </HBox>
             </VBox>
 
             <!-- Offene Votings -->
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label text="Offene Votings" style="-fx-font-weight: bold;"/>
-                <ListView fx:id="openVotingsList" prefHeight="200.0"/>
+                <Label style="-fx-font-weight: bold;" text="Offene Votings" />
+                <ListView fx:id="openVotingsList" prefHeight="140.0" prefWidth="248.0" />
             </VBox>
 
             <!-- Ergebnisse -->
-            <VBox spacing="5.0" prefWidth="280.0">
-                <Label text="Ergebnisse (Stimmen pro Option)" style="-fx-font-weight: bold;"/>
+            <VBox prefWidth="280.0" spacing="5.0">
+                <Label style="-fx-font-weight: bold;" text="Ergebnisse (Stimmen pro Option)" />
 
-                <TableView fx:id="resultsTable" prefHeight="180.0">
+                <TableView fx:id="resultsTable" prefHeight="140.0">
                     <columns>
-                        <TableColumn fx:id="optionColumn" text="Option" prefWidth="220"/>
-                        <TableColumn fx:id="countColumn" text="Stimmen" prefWidth="120"/>
+                        <TableColumn fx:id="optionColumn" prefWidth="137.0" text="Option" />
+                        <TableColumn fx:id="countColumn" prefWidth="141.0" text="Stimmen" />
                     </columns>
                 </TableView>
 
-                <Button text="Ergebnisse laden" onAction="#onLoadResults"/>
+                <Button onAction="#onLoadResults" style="-fx-background-color: white;" text="Ergebnisse laden">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icons/sync-solid.png" />
+                     </image>
+                  </ImageView>
+               </graphic></Button>
             </VBox>
 
         </HBox>
