@@ -9,7 +9,10 @@ import com.evote.app.votingmanagement.domain.model.Vote;
 import com.evote.app.votingmanagement.domain.model.VoteRepository;
 import com.evote.app.votingmanagement.domain.model.Voting;
 import com.evote.app.votingmanagement.domain.model.VotingRepository;
+import com.evote.app.votingmanagement.events.VotingOpenedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +34,8 @@ public class VotingApplicationService {
   private final VotingRepository votingRepository;
   private final VoteRepository voteRepository;
   private final AuthPort authPort;
+  private final ApplicationEventPublisher eventPublisher;
+  private final Clock clock;
 
   /**
    * Erstellt den Anwendungsschicht-Service.
@@ -41,10 +46,15 @@ public class VotingApplicationService {
    */
   public VotingApplicationService(VotingRepository votingRepository,
                                   VoteRepository voteRepository,
-                                  AuthPort authPort) {
+                                  AuthPort authPort,
+                                  ApplicationEventPublisher eventPublisher,
+                                  Clock clock
+  ) {
     this.votingRepository = votingRepository;
     this.voteRepository = voteRepository;
     this.authPort = authPort;
+    this.eventPublisher = eventPublisher;
+    this.clock = clock;
   }
 
   // =========================================================
@@ -80,6 +90,8 @@ public class VotingApplicationService {
 
     voting.setVotingStatus(true);
     votingRepository.save(voting);
+
+    eventPublisher.publishEvent(new VotingOpenedEvent(id, Instant.now(clock)));
   }
 
   /**

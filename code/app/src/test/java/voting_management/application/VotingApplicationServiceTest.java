@@ -7,6 +7,7 @@ import com.evote.app.votingmanagement.infrastructure.repositories.InMemoryVoteRe
 import com.evote.app.votingmanagement.infrastructure.repositories.InMemoryVotingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.Clock;
 import java.time.LocalDate;
@@ -21,6 +22,7 @@ public class VotingApplicationServiceTest {
 
     private InMemoryVotingRepository votingRepo;
     private InMemoryVoteRepository voteRepo;
+    private ApplicationEventPublisher eventPublisher;
     private AuthPort authPort;
     private VotingApplicationService service;
     private Clock fixedClock;
@@ -31,7 +33,7 @@ public class VotingApplicationServiceTest {
         votingRepo = new InMemoryVotingRepository();
         voteRepo = new InMemoryVoteRepository();
 
-        service = new VotingApplicationService(votingRepo, voteRepo, authPort);
+        service = new VotingApplicationService(votingRepo, voteRepo, authPort, eventPublisher, fixedClock);
 
         today = LocalDate.of(2030, 5, 10);
         fixedClock = Clock.fixed(
