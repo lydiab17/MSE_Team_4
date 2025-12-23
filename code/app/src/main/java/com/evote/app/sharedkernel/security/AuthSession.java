@@ -10,17 +10,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class AuthSession {
 
-    private String token; // "raw" JWT ohne "Bearer "
+  private String token; // "raw" JWT ohne "Bearer "
 
-    public void setToken(String token) {
-        this.token = token;
-    }
+  public void setToken(String token) {
+    this.token = token;
+  }
 
-    public Optional<String> token() {
-        return Optional.ofNullable(token);
-    }
+  public Optional<String> token() {
+    return Optional.ofNullable(token);
+  }
 
-    public void clear() {
-        token = null;
-    }
+  public void clear() {
+    token = null;
+  }
 }

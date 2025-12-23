@@ -22,8 +22,12 @@ public final class PseudonymToken {
     return new PseudonymToken(UUID.randomUUID().toString());
   }
 
-  public String value() { return token; }
+  public String value() {
+    return token;
+  }
 
   @Override
-  public String toString() { return token; }
+  public String toString() {
+    return token;
+  }
 }
