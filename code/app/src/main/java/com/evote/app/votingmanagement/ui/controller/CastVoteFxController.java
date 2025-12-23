@@ -1,8 +1,7 @@
 package com.evote.app.votingmanagement.ui.controller;
 
 import com.evote.app.citizen_management.ui.controller.MainController;
-import com.evote.app.sharedkernel.AuthSession;
-import com.evote.app.votingmanagement.interfaces.dto.CastVoteRequest;
+import com.evote.app.sharedkernel.security.AuthSession;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
 import com.evote.app.votingmanagement.ui.api.VotingApiClient;
 import javafx.application.Platform;

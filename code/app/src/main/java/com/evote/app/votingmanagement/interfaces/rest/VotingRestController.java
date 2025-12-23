@@ -11,6 +11,7 @@ import java.util.Set;
 
 import com.evote.app.votingmanagement.interfaces.dto.*;
 import org.springframework.web.bind.annotation.*;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 
 /**
  * REST-Controller für Voting-bezogene Endpoints.
@@ -35,6 +36,7 @@ public class VotingRestController {
      * @return das angelegte Voting als Response-DTO
      */
     @PostMapping
+    @RateLimiter(name = "voteAction")
     public VotingResponse create(@RequestBody CreateVotingRequest request) {
         Set<String> options = new LinkedHashSet<>(request.options());
         Voting v = service.createVoting(

@@ -1,7 +1,7 @@
 package com.evote.app.votingmanagement.application.services;
 
-import com.evote.app.sharedkernel.AuthToken;
-import com.evote.app.sharedkernel.PseudonymToken;
+import com.evote.app.sharedkernel.security.AuthToken;
+import com.evote.app.sharedkernel.security.PseudonymToken;
 import com.evote.app.votingmanagement.application.dto.CastVoteDto;
 import com.evote.app.votingmanagement.application.dto.OptionResult;
 import com.evote.app.votingmanagement.application.port.AuthPort;
@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.stereotype.Service;
+
+
 
 /**
  * Anwendungsschicht-Service rund um Votings und Votes.

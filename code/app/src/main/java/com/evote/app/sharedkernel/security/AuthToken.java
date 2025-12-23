@@ -1,4 +1,4 @@
-package com.evote.app.sharedkernel;
+package com.evote.app.sharedkernel.security;
 
 import java.util.Objects;
 

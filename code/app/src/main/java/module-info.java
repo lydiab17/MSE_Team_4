@@ -23,6 +23,8 @@ open module com.evote.app {
     requires spring.security.core;
     requires spring.security.config;
     requires spring.security.web;
+    requires io.github.resilience4j.annotations;
+    requires io.github.resilience4j.ratelimiter;
 
     exports com.evote.app;
 }

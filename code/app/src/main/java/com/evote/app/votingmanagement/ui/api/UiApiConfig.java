@@ -1,6 +1,6 @@
 package com.evote.app.votingmanagement.ui.api;
 
-import com.evote.app.sharedkernel.AuthSession;
+import com.evote.app.sharedkernel.security.AuthSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 

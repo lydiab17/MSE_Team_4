@@ -1,6 +1,6 @@
 package com.evote.app.citizen_management.application.services;
 
-import com.evote.app.sharedkernel.PseudonymToken;
+import com.evote.app.sharedkernel.security.PseudonymToken;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.stereotype.Service;
