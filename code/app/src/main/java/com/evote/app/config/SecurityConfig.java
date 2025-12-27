@@ -1,4 +1,4 @@
-package com.evote.app.citizen_management.application.config;
+package com.evote.app.config;
 
 import com.evote.app.citizen_management.infrastructure.AuthFilter;
 import org.springframework.context.annotation.Bean;

@@ -1,8 +1,8 @@
 package com.evote.app.citizen_management.infrastructure.adapters;
 
 import com.evote.app.citizen_management.application.services.TokenService;
-import com.evote.app.sharedkernel.AuthToken;
-import com.evote.app.sharedkernel.PseudonymToken;
+import com.evote.app.sharedkernel.security.AuthToken;
+import com.evote.app.sharedkernel.security.PseudonymToken;
 import com.evote.app.votingmanagement.application.port.AuthPort;
 import java.util.Optional;
 import org.springframework.stereotype.Component;

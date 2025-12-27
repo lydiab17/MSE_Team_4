@@ -1,6 +1,7 @@
 package com.evote.app.citizen_management.ui.controller;
 
 import com.evote.app.citizen_management.infrastructure.CitizenApiClient;
+import com.evote.app.ui.controller.MainController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
