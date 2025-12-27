@@ -1,4 +1,4 @@
-package com.evote.app.citizen_management.ui.controller;
+package com.evote.app.controller;
 
 import com.evote.app.HelloApplication;
 import javafx.fxml.FXML;
