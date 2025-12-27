@@ -1,6 +1,7 @@
 package voting_management.ui.controller;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import com.evote.app.sharedkernel.security.AuthSession;
 import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
@@ -38,6 +39,13 @@ class VotingFxControllerTest {
   private StubVotingApiClient api;
   private AuthSession auth;
   private VotingFxController controller;
+
+  @BeforeAll
+  static void requireDisplay() {
+    // Linux CI: DISPLAY nicht gesetzt -> JavaFX kann nicht starten
+    String display = System.getenv("DISPLAY");
+    assumeTrue(display != null && !display.isBlank(), "Skipping JavaFX tests: no DISPLAY available");
+  }
 
   @BeforeAll
   static void initJavaFx() {
