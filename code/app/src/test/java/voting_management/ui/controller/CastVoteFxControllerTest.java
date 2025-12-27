@@ -41,23 +41,27 @@ class CastVoteFxControllerTest {
   private CastVoteFxController controller;
 
   @BeforeAll
-  static void requireDisplay() {
-    // Linux CI: DISPLAY nicht gesetzt -> JavaFX kann nicht starten
+  static void initJavaFxOrSkip() {
+    // Linux CI: häufig kein DISPLAY (X11) bzw. ggf. nur Wayland
     String display = System.getenv("DISPLAY");
-    assumeTrue(display != null && !display.isBlank(), "Skipping JavaFX tests: no DISPLAY available");
-  }
+    String wayland = System.getenv("WAYLAND_DISPLAY");
 
-  @BeforeAll
-  static void initJavaFxToolkit() throws Exception {
+    assumeTrue(
+            (display != null && !display.isBlank()) || (wayland != null && !wayland.isBlank()),
+            "Skipping JavaFX tests: no DISPLAY/WAYLAND_DISPLAY available"
+    );
+
     try {
       // Toolkit nur einmal starten
       Platform.startup(() -> { /* noop */ });
     } catch (IllegalStateException alreadyStarted) {
       // ok
     }
+
     // sorgt dafür, dass die FX-Plattform nicht wieder “ausgeht”
     Platform.setImplicitExit(false);
   }
+
 
   @AfterEach
   void cleanupWindows() throws Exception {

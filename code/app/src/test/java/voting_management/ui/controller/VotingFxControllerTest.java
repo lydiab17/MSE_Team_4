@@ -41,14 +41,16 @@ class VotingFxControllerTest {
   private VotingFxController controller;
 
   @BeforeAll
-  static void requireDisplay() {
-    // Linux CI: DISPLAY nicht gesetzt -> JavaFX kann nicht starten
+  static void initJavaFxOrSkip() {
+    // Linux CI: häufig kein DISPLAY -> JavaFX (GTK) kann nicht starten
     String display = System.getenv("DISPLAY");
-    assumeTrue(display != null && !display.isBlank(), "Skipping JavaFX tests: no DISPLAY available");
-  }
+    String wayland = System.getenv("WAYLAND_DISPLAY");
 
-  @BeforeAll
-  static void initJavaFx() {
+    assumeTrue(
+            (display != null && !display.isBlank()) || (wayland != null && !wayland.isBlank()),
+            "Skipping JavaFX tests: no DISPLAY/WAYLAND_DISPLAY available"
+    );
+
     try {
       Platform.startup(() -> {});
     } catch (IllegalStateException alreadyStarted) {
@@ -56,6 +58,7 @@ class VotingFxControllerTest {
     }
     Platform.setImplicitExit(false);
   }
+
 
   @AfterEach
   void closeWindows() throws Exception {
