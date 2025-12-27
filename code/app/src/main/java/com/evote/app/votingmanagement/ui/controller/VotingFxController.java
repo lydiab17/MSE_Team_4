@@ -1,6 +1,6 @@
 package com.evote.app.votingmanagement.ui.controller;
 
-import com.evote.app.citizen_management.ui.controller.MainController;
+import com.evote.app.ui.controller.MainController;
 import com.evote.app.sharedkernel.security.AuthSession;
 import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
 import com.evote.app.votingmanagement.interfaces.dto.OptionResultResponse;
@@ -155,8 +155,11 @@ public class VotingFxController {
                 statusLabel.setText("Voting " + created.id() + " erfolgreich angelegt.");
                 clearForm();
                 refreshVotingLists();
-              }
+              },
+              ex -> showError("Fehler beim Anlegen", ex.getMessage())
       );
+
+
 
     } catch (Exception e) {
       showError("Fehler beim Anlegen", e.getMessage());
@@ -203,8 +206,10 @@ public class VotingFxController {
             ignored -> {
               statusLabel.setText("Voting " + selected.id() + " wurde geöffnet.");
               refreshVotingLists();
-            }
+            },
+            ex -> showError("REST-Fehler", ex.getMessage())
     );
+
   }
 
   @FXML
@@ -219,8 +224,10 @@ public class VotingFxController {
               openVotingsList.setItems(FXCollections.observableArrayList(lists.open));
               notOpenVotingsList.setItems(FXCollections.observableArrayList(lists.notOpen));
               statusLabel.setText("Listen aktualisiert.");
-            }
+            },
+            ex -> showError("REST-Fehler", ex.getMessage())
     );
+
   }
 
   @FXML
@@ -237,8 +244,10 @@ public class VotingFxController {
             (VotingResultsResponse resp) -> {
               resultsTable.getItems().setAll(resp.results());
               statusLabel.setText("Ergebnisse geladen ✅");
-            }
+            },
+            ex -> showError("REST-Fehler", ex.getMessage())
     );
+
   }
 
   @FXML
@@ -319,7 +328,7 @@ public class VotingFxController {
     alert.showAndWait();
   }
 
-  private <T> void runAsync(ThrowingSupplier<T> work, UiConsumer<T> onSuccess) {
+  private <T> void runAsync(ThrowingSupplier<T> work, UiConsumer<T> onSuccess, UiConsumer<Throwable> onError) {
     Task<T> task = new Task<>() {
       @Override
       protected T call() throws Exception {
@@ -328,14 +337,17 @@ public class VotingFxController {
     };
 
     task.setOnSucceeded(e -> onSuccess.accept(task.getValue()));
-    task.setOnFailed(e -> Platform.runLater(() ->
-            showError("REST-Fehler", task.getException().getMessage()))
-    );
+
+    task.setOnFailed(e -> {
+      Throwable ex = task.getException();
+      Platform.runLater(() -> onError.accept(ex));
+    });
 
     Thread t = new Thread(task);
     t.setDaemon(true);
     t.start();
   }
+
 
   private record Lists(java.util.List<VotingResponse> open,
                        java.util.List<VotingResponse> notOpen) {

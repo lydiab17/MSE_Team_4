@@ -1,8 +1,6 @@
 # eVote – Anwendung für E-Voting mit DDD, TDD, JavaFX & Spring
 
 ## ToDo
-- Main Controller in Shared bc
-- Security config zentral speichern
 - Domain Events implementieren
 - Funktionale Programmierkonzepte (Übung 7)
 - SOLID-Prinzipien beim Code überprüfen
