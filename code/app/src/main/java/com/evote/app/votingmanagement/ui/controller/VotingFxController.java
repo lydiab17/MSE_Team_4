@@ -285,6 +285,7 @@ public class VotingFxController {
   }
 
   private void clearForm() {
+    idField.clear();
     nameField.clear();
     infoArea.clear();
     startDatePicker.setValue(null);

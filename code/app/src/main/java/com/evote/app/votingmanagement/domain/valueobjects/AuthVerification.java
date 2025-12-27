@@ -23,13 +23,5 @@ public final class AuthVerification {
       this.verified = verified;
       this.pseudonym = pseudonym;
     }
-
-    public boolean isVerified() {
-      return verified;
-    }
-
-    public String getPseudonym() {
-      return pseudonym;
-    }
   }
 }
