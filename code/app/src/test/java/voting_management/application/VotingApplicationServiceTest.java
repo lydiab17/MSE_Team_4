@@ -445,15 +445,16 @@ public class VotingApplicationServiceTest {
     );
     service.openVoting(30);
 
-    Voting voting = votingRepo.findById(30).orElseThrow();
-    String optionId = firstOptionIdFromVoting(voting);
+    String option = firstOptionText(30);
 
-    service.castVote(new CastVoteDto("token-1", 30, optionId));
+    service.castVote(new CastVoteDto("token-1", 30, option));
 
     var votes = voteRepo.findByVotingId(30);
     assertEquals(1, votes.size());
     assertTrue(voteRepo.existsByVotingIdAndPseudonym(30, "p-1"));
+    assertEquals(option, votes.get(0).getOptionId()); // optionId == Text
   }
+
 
 
   @Test
@@ -522,93 +523,20 @@ public class VotingApplicationServiceTest {
     );
     service.openVoting(34);
 
-    Voting voting = votingRepo.findById(34).orElseThrow();
-    String optionId = firstOptionIdFromVoting(voting);
+    String option = firstOptionText(34);
 
-    service.castVote(new CastVoteDto("token-1", 34, optionId));
+    service.castVote(new CastVoteDto("token-1", 34, option));
+
     assertThrows(IllegalStateException.class, () ->
-            service.castVote(new CastVoteDto("token-1", 34, optionId))
+            service.castVote(new CastVoteDto("token-1", 34, option))
     );
   }
 
 
-  private String firstOptionIdFromVoting(Voting voting) {
-    // Versuche gängige Getter/Strukturen: getOptions(), options(), getOptionMap() etc.
-    try {
-      // 1) Methode "getOptions" / "options"
-      for (String mName : List.of("getOptions", "options")) {
-        try {
-          var m = voting.getClass().getMethod(mName);
-          Object optionsObj = m.invoke(voting);
-          String id = extractFirstOptionId(optionsObj);
-          if (id != null) return id;
-        } catch (NoSuchMethodException ignored) {
-        }
-      }
-
-      // 2) Methode "getOptionLabels" / "getOptionSet" (falls so benannt)
-      for (String mName : List.of("getOptionLabels", "getOptionSet", "getVotingOptions")) {
-        try {
-          var m = voting.getClass().getMethod(mName);
-          Object optionsObj = m.invoke(voting);
-          String id = extractFirstOptionId(optionsObj);
-          if (id != null) return id;
-        } catch (NoSuchMethodException ignored) {
-        }
-      }
-
-      // 3) Feld-Fallback
-      for (String fName : List.of("options", "votingOptions", "optionMap")) {
-        try {
-          var f = voting.getClass().getDeclaredField(fName);
-          f.setAccessible(true);
-          Object optionsObj = f.get(voting);
-          String id = extractFirstOptionId(optionsObj);
-          if (id != null) return id;
-        } catch (NoSuchFieldException ignored) {
-        }
-      }
-
-    } catch (Exception e) {
-      throw new RuntimeException("Konnte OptionId nicht aus Voting lesen", e);
-    }
-
-    throw new AssertionError("Keine OptionId im Voting gefunden (Option-Struktur anders als erwartet).");
+  private String firstOptionText(int votingId) {
+    Voting v = votingRepo.findById(votingId).orElseThrow();
+    return v.getOptionTexts().get(0);
   }
 
-  @SuppressWarnings("unchecked")
-  private String extractFirstOptionId(Object optionsObj) {
-    if (optionsObj == null) return null;
-
-    // a) Map<id, label> oder Map<label, id>
-    if (optionsObj instanceof Map<?, ?> map && !map.isEmpty()) {
-      Object firstKey = map.keySet().iterator().next();
-      Object firstVal = map.values().iterator().next();
-      // Heuristik: wenn key String ist und "id-artig", nimm key, sonst val
-      if (firstKey instanceof String sKey) return sKey;
-      if (firstVal instanceof String sVal) return sVal;
-    }
-
-    // b) Collection von Objekten (Option-Objekte)
-    if (optionsObj instanceof Collection<?> col && !col.isEmpty()) {
-      Object first = col.iterator().next();
-      if (first instanceof String s) return s; // z.B. schon IDs
-      // Option-Objekt: versuche id()/getId()
-      try {
-        var m = first.getClass().getMethod("id");
-        Object id = m.invoke(first);
-        if (id != null) return id.toString();
-      } catch (Exception ignored) {
-      }
-      try {
-        var m = first.getClass().getMethod("getId");
-        Object id = m.invoke(first);
-        if (id != null) return id.toString();
-      } catch (Exception ignored) {
-      }
-    }
-
-    return null;
-  }
 
 }
