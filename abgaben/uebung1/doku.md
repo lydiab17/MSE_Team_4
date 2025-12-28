@@ -66,7 +66,7 @@ Wenn beispielsweise ein neuer Branch `feature_123` von dem Branch `development` 
 
 Keine Ausgabe bedeutet: keine Unterschiede.
 
-![create-branch.png](../../assets/create-branch.png)
+![create-branch.png](./assets/create-branch.png)
 
 
 ### Simuliertes Beispiel mit mehreren Entwicklern
@@ -85,7 +85,7 @@ In beiden Branches wird dieselbe Textdatei verändert.
 Wenn nun beide Branches per Merge Request (MR) oder Pull Request (PR) wieder in den ursprünglichen Branch `feature_123` gemergt werden sollen,
 erscheint eine Merge-Conflict-Warnung.
 
-![merge-conflict-warnung.png](../../assets/merge-conflict-warnung.png)
+![merge-conflict-warnung.png](./assets/merge-conflict-warnung.png)
 
 
 ### Merge-Konflikte verstehen
@@ -96,7 +96,7 @@ und Git nicht automatisch entscheiden kann, welche Version korrekt ist.
 In diesem Fall müssen die Entwickler den Konflikt manuell lösen — also festlegen,
 welcher Inhalt der Datei im finalen Merge bestehen bleiben soll.
 
-![merge-conflict-aufoesen.png](../../assets/merge-conflict-aufoesen.png)
+![merge-conflict-aufoesen.png](./assets/merge-conflict-aufoesen.png)
 
 
 
@@ -106,24 +106,24 @@ welcher Inhalt der Datei im finalen Merge bestehen bleiben soll.
    `File → Settings → Version Control → Git`  
    Hier kann man überprüfen, ob der Git-Pfad korrekt ist.
 
-   ![Git Path prüfen](../../assets/Settings_Menu_IntelliJ.png)
-   ![Git Path prüfen](../../assets/Git_Path_IntelliJ.png)
+   ![Git Path prüfen](./assets/Settings_Menu_IntelliJ.png)
+   ![Git Path prüfen](./assets/Git_Path_IntelliJ.png)
    
 2. **Über das Menü VCS können Git-Befehle auch ohne Konsole ausgeführt werden.**
 
    a. **Beispiel: Ein neues Git-Repository erstellen:**  
    `VCS → Create Git Repository → (Projektordner auswählen)`
 
-   ![Git Repository erstellen](../../assets/Create_Git_Repo_IntelliJ.png)
+   ![Git Repository erstellen](./assets/Create_Git_Repo_IntelliJ.png)
 
    b. **Einen Commit erstellen:**  
    Über Menü `Git → Commit`.  
-   ![Commit erstellen](../../assets/Commit_IntelliJ1.png)
+   ![Commit erstellen](./assets/Commit_IntelliJ1.png)
 
    Dort auswählen, welche Dateien committed werden sollen, und eine Commit Message schreiben.  
    Die Commits können bei Bedarf auch direkt gepusht werden. Danach erscheint unten rechts eine Erfolgsmeldung.
 
-   ![Commit erstellen](../../assets/Commit_IntelliJ2.png)
+   ![Commit erstellen](./assets/Commit_IntelliJ2.png)
 
 
 ## Nützliche Git-Tools und Pla ormen (z. B. GitHub) 
