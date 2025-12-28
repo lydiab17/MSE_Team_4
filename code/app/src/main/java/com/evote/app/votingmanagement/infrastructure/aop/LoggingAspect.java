@@ -52,7 +52,7 @@ public class LoggingAspect {
       log.error(
               "xxx {} threw {} after {} ms",
               methodName,
-              ex.toString(),
+              ex,
               duration
       );
       throw ex;

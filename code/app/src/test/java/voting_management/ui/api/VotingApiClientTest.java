@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
 import com.evote.app.votingmanagement.ui.api.VotingApiClient;
+import com.evote.app.votingmanagement.ui.api.exceptions.VotingApiException;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
@@ -153,40 +154,52 @@ class VotingApiClientTest {
   // ------------------------------------------------------------
 
   @Test
-  void getById_onHttpError_throwsIllegalState_withBody() {
+  void getById_onHttpError_throwsVotingApiException_withBodyIncluded() {
     // Arrange
     responses.put("/api/votings/1", StubResponse.status(404, "not found"));
 
     VotingApiClient client = new VotingApiClient(() -> Optional.empty());
 
     // Act
-    IllegalStateException ex = assertThrows(IllegalStateException.class, () -> client.getById(1));
-    assertEquals("not found", ex.getMessage());
+    VotingApiException ex = assertThrows(VotingApiException.class, () -> client.getById(1));
+
+    // Assert: neuer Client liefert Status + Kontext + Body in der Message
+    assertTrue(ex.getMessage().contains("HTTP 404"), "Message sollte den HTTP-Status enthalten");
+    assertTrue(ex.getMessage().contains("not found"), "Message sollte den Response-Body enthalten");
+    assertTrue(ex.getMessage().contains("/api/votings/1"), "Message sollte den Pfad/URI enthalten");
   }
 
   @Test
-  void openVoting_onHttpError_throwsIllegalState_withBody() {
+  void openVoting_onHttpError_throwsVotingApiException_withBodyIncluded() {
     // Arrange
     responses.put("/api/votings/2/open", StubResponse.status(400, "bad request"));
 
     VotingApiClient client = new VotingApiClient(() -> Optional.empty());
 
     // Act
-    IllegalStateException ex = assertThrows(IllegalStateException.class, () -> client.openVoting(2));
-    assertEquals("bad request", ex.getMessage());
+    VotingApiException ex = assertThrows(VotingApiException.class, () -> client.openVoting(2));
+
+    // Assert
+    assertTrue(ex.getMessage().contains("HTTP 400"), "Message sollte den HTTP-Status enthalten");
+    assertTrue(ex.getMessage().contains("bad request"), "Message sollte den Response-Body enthalten");
+    assertTrue(ex.getMessage().contains("/api/votings/2/open"), "Message sollte den Pfad/URI enthalten");
   }
 
   @Test
-  void castVote_onHttpError_throwsIllegalState_withHttpPrefix() {
+  void castVote_onHttpError_throwsVotingApiException_withHttpStatusAndBody() {
     // Arrange
     responses.put("/api/votings/3/votes", StubResponse.status(500, "boom"));
 
     VotingApiClient client = new VotingApiClient(() -> Optional.empty());
 
     // Act
-    IllegalStateException ex = assertThrows(IllegalStateException.class, () -> client.castVote(3, "Ja"));
-    assertTrue(ex.getMessage().startsWith("HTTP 500: "), "castVote nutzt spezielles Message-Format");
-    assertTrue(ex.getMessage().contains("boom"));
+    VotingApiException ex = assertThrows(VotingApiException.class, () -> client.castVote(3, "Ja"));
+
+    // Assert: altes spezielles Prefix ("HTTP 500: ") gibt es nicht mehr,
+    // stattdessen Status + Kontext + Body
+    assertTrue(ex.getMessage().contains("HTTP 500"), "Message sollte den HTTP-Status enthalten");
+    assertTrue(ex.getMessage().contains("boom"), "Message sollte den Response-Body enthalten");
+    assertTrue(ex.getMessage().contains("/api/votings/3/votes"), "Message sollte den Pfad/URI enthalten");
   }
 
   // ------------------------------------------------------------
@@ -201,14 +214,14 @@ class VotingApiClientTest {
     VotingApiClient client = new VotingApiClient(() -> Optional.empty());
 
     // CreateVotingRequest ist bei dir vorhanden, aber Signatur kann variieren -> robust via reflection
-    Object req = newCreateVotingRequestReflectively(
-            42,
-            "Abstimmung 2030",
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            LocalDate.of(2030, 5, 10),
-            LocalDate.of(2030, 5, 20),
-            List.of("Ja", "Nein")
-    );
+    Object req =
+            newCreateVotingRequestReflectively(
+                    42,
+                    "Abstimmung 2030",
+                    "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+                    LocalDate.of(2030, 5, 10),
+                    LocalDate.of(2030, 5, 20),
+                    List.of("Ja", "Nein"));
 
     // Act
     VotingResponse created = client.createVoting((CreateVotingRequest) req);
@@ -232,9 +245,11 @@ class VotingApiClientTest {
 
     String body = readAll(ex.getRequestBody());
     Map<String, String> headers = new HashMap<>();
-    ex.getRequestHeaders().forEach((k, v) -> {
-      if (!v.isEmpty()) headers.put(k.toLowerCase(Locale.ROOT), v.get(0));
-    });
+    ex.getRequestHeaders()
+            .forEach(
+                    (k, v) -> {
+                      if (!v.isEmpty()) headers.put(k.toLowerCase(Locale.ROOT), v.get(0));
+                    });
 
     last.set(new CapturedRequest(method, path, headers, body));
 
@@ -260,12 +275,18 @@ class VotingApiClientTest {
     // VotingResponse record:
     // id, name, info, startDate, endDate, open, options
     return "{"
-            + "\"id\":" + id + ","
-            + "\"name\":\"Voting " + id + "\","
+            + "\"id\":"
+            + id
+            + ","
+            + "\"name\":\"Voting "
+            + id
+            + "\","
             + "\"info\":\"Beschreibung Mit Mindestens Dreißig Zeichen Länge.\","
             + "\"startDate\":\"2030-01-01\","
             + "\"endDate\":\"2030-01-10\","
-            + "\"open\":" + open + ","
+            + "\"open\":"
+            + open
+            + ","
             + "\"options\":[\"Ja\",\"Nein\"]"
             + "}";
   }
@@ -275,13 +296,7 @@ class VotingApiClientTest {
   // ============================================================
 
   private static Object newCreateVotingRequestReflectively(
-          int id,
-          String name,
-          String info,
-          LocalDate start,
-          LocalDate end,
-          List<String> options
-  ) {
+          int id, String name, String info, LocalDate start, LocalDate end, List<String> options) {
     try {
       Class<?> clazz = CreateVotingRequest.class;
 
