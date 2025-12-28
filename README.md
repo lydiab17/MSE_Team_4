@@ -1,12 +1,11 @@
 # eVote – Anwendung für E-Voting mit DDD, TDD, JavaFX & Spring
 
 ## ToDo
-- Domain Events implementieren
-- Funktionale Programmierkonzepte (Übung 7)
+- Funktionale Programmierkonzepte (Übung 7 inkl. Doku)
 - SOLID-Prinzipien beim Code überprüfen
-- Übungsaufgaben Dokus
 - Checkstyle überprüfen und Anpassen
 - Testabdeckung 80%
+- SonarQube Maintainability Vorschläge umsetzen
 
 ## Projekt holen und starten
 
