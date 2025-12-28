@@ -587,7 +587,7 @@ class VotingFxControllerTest {
 
   // ---------- waiting helpers ----------
 
-  private static void waitUntil(BooleanSupplier cond, int seconds) throws Exception {
+  private static void waitUntil(BooleanSupplier cond, int seconds) {
     long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(seconds);
     while (System.nanoTime() < deadline) {
       if (cond.getAsBoolean()) return;

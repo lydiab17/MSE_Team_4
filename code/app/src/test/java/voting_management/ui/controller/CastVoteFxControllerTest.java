@@ -333,7 +333,7 @@ class CastVoteFxControllerTest {
 
     StubVotingApiClient() {
       // ctor erwartet Supplier<Optional<String>> (session::token in Config)
-      super(() -> Optional.empty());
+      super(Optional::empty);
     }
 
     @Override
