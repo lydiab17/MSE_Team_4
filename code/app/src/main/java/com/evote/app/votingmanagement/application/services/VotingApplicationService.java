@@ -75,9 +75,7 @@ public class VotingApplicationService {
                              LocalDate startDate,
                              LocalDate endDate,
                              Set<String> options) {
-
-    System.out.println("Create Voting wird aufgerufen... Name: " + name + "Info: "
-            + info + "startDate: " + startDate + "endDate: " + endDate + "options: " + options);
+    
     // Domain kümmert sich um alle Regeln / Validierung
     Voting voting = Voting.create(id, name, info, startDate, endDate, options);
 
