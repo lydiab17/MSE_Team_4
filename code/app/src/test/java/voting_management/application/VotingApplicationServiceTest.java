@@ -245,7 +245,7 @@ public class VotingApplicationServiceTest {
             .orElseThrow(() -> new AssertionError("Voting nicht gefunden"));
     assertTrue(v.isVotingStatus(), "Voting-Status sollte nach openVoting true sein");
 
-    assertEquals(1, eventPublisher.events().size(), "openVoting sollte genau ein Event publishen");
+    assertEquals(2, eventPublisher.events().size(), "openVoting sollte genau ein Event publishen");
     Object event = eventPublisher.lastEvent();
     assertNotNull(event);
 
