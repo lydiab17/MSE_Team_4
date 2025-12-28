@@ -9,6 +9,9 @@ import com.evote.app.votingmanagement.domain.model.Vote;
 import com.evote.app.votingmanagement.domain.model.VoteRepository;
 import com.evote.app.votingmanagement.domain.model.Voting;
 import com.evote.app.votingmanagement.domain.model.VotingRepository;
+import com.evote.app.votingmanagement.events.VoteSubmittedEvent;
+import com.evote.app.votingmanagement.events.VotingClosedEvent;
+import com.evote.app.votingmanagement.events.VotingCreatedEvent;
 import com.evote.app.votingmanagement.events.VotingOpenedEvent;
 import org.springframework.context.ApplicationEventPublisher;
 
@@ -81,6 +84,8 @@ public class VotingApplicationService {
     // dann speichern wir es über das Repository
     votingRepository.save(voting);
 
+    eventPublisher.publishEvent(new VotingCreatedEvent(id, name, startDate, endDate));
+
     return voting;
   }
 
@@ -107,6 +112,7 @@ public class VotingApplicationService {
                     "Voting mit ID " + id + " nicht gefunden"));
 
     voting.setVotingStatus(false);
+    eventPublisher.publishEvent(new VotingClosedEvent(id, Instant.now(clock)));
     votingRepository.save(voting);
   }
 
@@ -215,7 +221,10 @@ public class VotingApplicationService {
     // 5) Vote erstellen (Domain) – statt voterKey jetzt pseudonym
     Vote vote = Vote.createNew(dto.votingId, dto.optionId, pseudonym.value());
 
-    // 6) Persistieren
+    // 6) Event publishen
+    eventPublisher.publishEvent(new VoteSubmittedEvent(dto.votingId, dto.optionId, pseudonym.value(), Instant.now(clock)));
+
+    // 7) Persistieren
     voteRepository.save(vote);
   }
 
