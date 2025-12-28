@@ -47,15 +47,13 @@ public class LoggingAspect {
       log.info("<<< {} returned={} ({} ms)", methodName, result, duration);
 
       return result;
-    } catch (Throwable ex) {
+    } catch (Exception ex) {
       long duration = System.currentTimeMillis() - start;
-      log.error(
-              "xxx {} threw {} after {} ms",
-              methodName,
-              ex,
-              duration
-      );
-      throw ex;
+      String msg = String.format("%s failed after %d ms", methodName, duration);
+
+      log.error("xxx {} failed after {} ms", methodName, duration, ex);
+
+      throw new IllegalStateException(msg, ex);
     }
   }
 }

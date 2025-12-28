@@ -37,9 +37,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class VotingFxController {
 
+  private static final String ERRORMESSAGE = "REST-Fehler";
   private final VotingApiClient apiClient;
   private final AuthSession authSession;
-  private final String errorMessage = "REST-Fehler";
+
 
   private VotingResponse selectedVoting;
 
@@ -209,7 +210,7 @@ public class VotingFxController {
               statusLabel.setText("Voting " + selected.id() + " wurde geöffnet.");
               refreshVotingLists();
             },
-            ex -> showError(errorMessage, ex.getMessage())
+            ex -> showError(ERRORMESSAGE, ex.getMessage())
     );
 
   }
@@ -227,7 +228,7 @@ public class VotingFxController {
               notOpenVotingsList.setItems(FXCollections.observableArrayList(lists.notOpen));
               statusLabel.setText("Listen aktualisiert.");
             },
-            ex -> showError(errorMessage, ex.getMessage())
+            ex -> showError(ERRORMESSAGE, ex.getMessage())
     );
 
   }
@@ -247,7 +248,7 @@ public class VotingFxController {
               resultsTable.getItems().setAll(resp.results());
               statusLabel.setText("Ergebnisse geladen ✅");
             },
-            ex -> showError(errorMessage, ex.getMessage())
+            ex -> showError(ERRORMESSAGE, ex.getMessage())
     );
 
   }
