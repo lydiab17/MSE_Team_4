@@ -58,7 +58,7 @@ class VotingApiClientTest {
   // ------------------------------------------------------------
 
   @Test
-  void getOpenVotings_withoutTokenSupplier_doesNotSendAuthorizationHeader() throws Exception {
+  void getOpenVotings_withoutTokenSupplier_doesNotSendAuthorizationHeader() {
     // Arrange
     responses.put("/api/votings/open", StubResponse.okJson("[]"));
 
@@ -76,7 +76,7 @@ class VotingApiClientTest {
   }
 
   @Test
-  void getById_withTokenSupplier_sendsBearerAuthorizationHeader() throws Exception {
+  void getById_withTokenSupplier_sendsBearerAuthorizationHeader() {
     // Arrange
     responses.put("/api/votings/5", StubResponse.okJson(votingResponseJson(5, true)));
 
@@ -95,7 +95,7 @@ class VotingApiClientTest {
   }
 
   @Test
-  void tokenSupplier_returnsNull_optional_isHandledGracefully() throws Exception {
+  void tokenSupplier_returnsNull_optional_isHandledGracefully() {
     // Arrange
     responses.put("/api/votings/open", StubResponse.okJson("[]"));
 
@@ -115,11 +115,11 @@ class VotingApiClientTest {
   // ------------------------------------------------------------
 
   @Test
-  void openVoting_postsToCorrectEndpoint() throws Exception {
+  void openVoting_postsToCorrectEndpoint() {
     // Arrange
     responses.put("/api/votings/7/open", StubResponse.noContent());
 
-    VotingApiClient client = new VotingApiClient(() -> Optional.empty());
+    VotingApiClient client = new VotingApiClient(Optional::empty);
 
     // Act
     client.openVoting(7);
@@ -131,7 +131,7 @@ class VotingApiClientTest {
   }
 
   @Test
-  void castVote_postsToVotesEndpoint_andSendsJsonBody() throws Exception {
+  void castVote_postsToVotesEndpoint_andSendsJsonBody() {
     // Arrange
     responses.put("/api/votings/9/votes", StubResponse.noContent());
 
@@ -158,7 +158,7 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings/1", StubResponse.status(404, "not found"));
 
-    VotingApiClient client = new VotingApiClient(() -> Optional.empty());
+    VotingApiClient client = new VotingApiClient(Optional::empty);
 
     // Act
     VotingApiException ex = assertThrows(VotingApiException.class, () -> client.getById(1));
@@ -174,7 +174,7 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings/2/open", StubResponse.status(400, "bad request"));
 
-    VotingApiClient client = new VotingApiClient(() -> Optional.empty());
+    VotingApiClient client = new VotingApiClient(Optional::empty);
 
     // Act
     VotingApiException ex = assertThrows(VotingApiException.class, () -> client.openVoting(2));
@@ -190,7 +190,7 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings/3/votes", StubResponse.status(500, "boom"));
 
-    VotingApiClient client = new VotingApiClient(() -> Optional.empty());
+    VotingApiClient client = new VotingApiClient(Optional::empty);
 
     // Act
     VotingApiException ex = assertThrows(VotingApiException.class, () -> client.castVote(3, "Ja"));
@@ -207,11 +207,11 @@ class VotingApiClientTest {
   // ------------------------------------------------------------
 
   @Test
-  void createVoting_success_returnsParsedVotingResponse() throws Exception {
+  void createVoting_success_returnsParsedVotingResponse() {
     // Arrange
     responses.put("/api/votings", StubResponse.okJson(votingResponseJson(42, false)));
 
-    VotingApiClient client = new VotingApiClient(() -> Optional.empty());
+    VotingApiClient client = new VotingApiClient(Optional::empty);
 
     // CreateVotingRequest ist bei dir vorhanden, aber Signatur kann variieren -> robust via reflection
     Object req =

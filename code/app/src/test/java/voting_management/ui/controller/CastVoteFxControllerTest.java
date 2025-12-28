@@ -366,10 +366,6 @@ class CastVoteFxControllerTest {
     private AutoCloseAlerts() {
       t = new Thread(() -> {
         while (running) {
-          try {
-            Thread.sleep(50);
-          } catch (InterruptedException ignored) {
-          }
           Platform.runLater(() -> {
             for (Window w : new ArrayList<>(Window.getWindows())) {
               if (w.isShowing()) w.hide();
@@ -446,7 +442,6 @@ class CastVoteFxControllerTest {
       AtomicReference<Boolean> ok = new AtomicReference<>(false);
       runOnFxThreadAndWait(() -> ok.set(condition.getAsBoolean()));
       if (ok.get()) return;
-      Thread.sleep(30);
     }
     fail("Timeout waiting for FX condition");
   }
@@ -491,6 +486,7 @@ class CastVoteFxControllerTest {
       try {
         return cur.getDeclaredField(name);
       } catch (NoSuchFieldException ignored) {
+        // Exception ignored
       }
     }
     throw new NoSuchFieldException(name);

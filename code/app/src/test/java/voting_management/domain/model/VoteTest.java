@@ -3,7 +3,6 @@ package voting_management.domain.model;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.lang.reflect.Constructor;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
 

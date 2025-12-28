@@ -507,7 +507,7 @@ class VotingFxControllerTest {
     AtomicReference<CreateVotingRequest> lastCreateRequest = new AtomicReference<>();
 
     StubVotingApiClient() {
-      super(() -> Optional.empty());
+      super(Optional::empty);
     }
 
     @Override
@@ -565,9 +565,6 @@ class VotingFxControllerTest {
     private AutoCloseAlerts() {
       t = new Thread(() -> {
         while (running) {
-          try {
-            Thread.sleep(50);
-          } catch (InterruptedException ignored) {}
           Platform.runLater(() -> {
             for (Window w : new ArrayList<>(Window.getWindows())) {
               if (w.isShowing()) w.hide();
@@ -594,7 +591,6 @@ class VotingFxControllerTest {
     long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(seconds);
     while (System.nanoTime() < deadline) {
       if (cond.getAsBoolean()) return;
-      Thread.sleep(25);
     }
     fail("Timeout waiting for condition");
   }
@@ -605,7 +601,6 @@ class VotingFxControllerTest {
       AtomicReference<Boolean> ok = new AtomicReference<>(false);
       runOnFxThreadAndWait(() -> ok.set(condition.getAsBoolean()));
       if (ok.get()) return;
-      Thread.sleep(30);
     }
     fail("Timeout waiting for FX condition");
   }
@@ -716,7 +711,9 @@ class VotingFxControllerTest {
     for (Class<?> cur = c; cur != null && cur != Object.class; cur = cur.getSuperclass()) {
       try {
         return cur.getDeclaredField(name);
-      } catch (NoSuchFieldException ignored) {}
+      } catch (NoSuchFieldException ignored) {
+        // Exception ignored
+      }
     }
     throw new NoSuchFieldException(name);
   }

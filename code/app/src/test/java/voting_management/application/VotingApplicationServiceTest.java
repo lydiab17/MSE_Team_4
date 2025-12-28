@@ -150,6 +150,7 @@ public class VotingApplicationServiceTest {
         m.setAccessible(true);
         return m.invoke(obj);
       } catch (Exception ignored) {
+        // Exception wird nicht weiter behandelt
       }
 
       // 2) getName()
@@ -159,6 +160,7 @@ public class VotingApplicationServiceTest {
         m.setAccessible(true);
         return m.invoke(obj);
       } catch (Exception ignored) {
+        // Exception wird nicht weiter behandelt
       }
 
       // 3) field
@@ -167,6 +169,7 @@ public class VotingApplicationServiceTest {
         f.setAccessible(true);
         return f.get(obj);
       } catch (Exception ignored) {
+        // Exception wird nicht weiter behandelt
       }
     }
     throw new AssertionError("Property nicht gefunden: " + Arrays.toString(candidates)
@@ -214,17 +217,18 @@ public class VotingApplicationServiceTest {
 
   @Test
   void createVoting_invalidName_throwsException() {
+    int id = 2;
+    String name = "zuKurz";
+    String info = "Beschreibung Mit Mindestens Dreißig Zeichen Länge.";
+    var start = today;
+    var end = today.plusDays(1);
+    var options = opts("Ja", "Nein");
+
     assertThrows(IllegalArgumentException.class, () ->
-            service.createVoting(
-                    2,
-                    "zuKurz",
-                    "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-                    today,
-                    today.plusDays(1),
-                    opts("Ja", "Nein")
-            )
+            service.createVoting(id, name, info, start, end, options)
     );
   }
+
 
   // ---------------- Tests: openVoting ----------------
 
@@ -456,7 +460,6 @@ public class VotingApplicationServiceTest {
   }
 
 
-
   @Test
   void castVote_authFails_throwsIllegalState() {
     AuthPort failingAuth = token -> Optional.empty();
@@ -473,64 +476,86 @@ public class VotingApplicationServiceTest {
     );
     svc.openVoting(31);
 
-    assertThrows(IllegalStateException.class, () -> svc.castVote(newDto(31, "Ja", "bad-token")));
+    var dto = newDto(31, "Ja", "bad-token");
+
+    assertThrows(IllegalStateException.class, () -> svc.castVote(dto));
   }
+
 
   @Test
   void castVote_votingNotFound_throwsIllegalArgument() {
-    assertThrows(IllegalArgumentException.class, () -> service.castVote(newDto(9999, "Ja", "token-1")));
+    var dto = newDto(9999, "Ja", "token-1");
+    assertThrows(IllegalArgumentException.class, () -> service.castVote(dto));
   }
+
 
   @Test
   void castVote_votingNotOpened_throwsIllegalState() {
+    var start = today.minusDays(1);
+    var end = today.plusDays(1);
+    var options = opts("Ja", "Nein");
+
     service.createVoting(
             32,
             "Abstimmung Closed",
             "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today.minusDays(1),
-            today.plusDays(1),
-            opts("Ja", "Nein")
+            start,
+            end,
+            options
     );
     // nicht geöffnet
 
-    assertThrows(IllegalStateException.class, () -> service.castVote(newDto(32, "Ja", "token-1")));
+    var dto = newDto(32, "Ja", "token-1");
+
+    assertThrows(IllegalStateException.class, () -> service.castVote(dto));
   }
 
   @Test
   void castVote_optionNotInVoting_throwsIllegalArgument() {
+    var start = today.minusDays(1);
+    var end = today.plusDays(1);
+    var options = opts("Ja", "Nein");
+
     service.createVoting(
             33,
             "Abstimmung Option",
             "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today.minusDays(1),
-            today.plusDays(1),
-            opts("Ja", "Nein")
+            start,
+            end,
+            options
     );
     service.openVoting(33);
 
-    assertThrows(IllegalArgumentException.class, () -> service.castVote(newDto(33, "Vielleicht", "token-1")));
+    var dto = newDto(33, "Vielleicht", "token-1");
+
+    assertThrows(IllegalArgumentException.class, () -> service.castVote(dto));
   }
 
   @Test
   void castVote_doubleVote_throwsIllegalState() {
+    var start = today.minusDays(1);
+    var end = today.plusDays(1);
+    var options = opts("Ja", "Nein");
+
     service.createVoting(
             34,
             "Abstimmung Double",
             "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today.minusDays(1),
-            today.plusDays(1),
-            opts("Ja", "Nein")
+            start,
+            end,
+            options
     );
     service.openVoting(34);
 
     String option = firstOptionText(34);
+    var firstVote = new CastVoteDto("token-1", 34, option);
+    var secondVote = new CastVoteDto("token-1", 34, option);
 
-    service.castVote(new CastVoteDto("token-1", 34, option));
+    service.castVote(firstVote);
 
-    assertThrows(IllegalStateException.class, () ->
-            service.castVote(new CastVoteDto("token-1", 34, option))
-    );
+    assertThrows(IllegalStateException.class, () -> service.castVote(secondVote));
   }
+
 
 
   private String firstOptionText(int votingId) {

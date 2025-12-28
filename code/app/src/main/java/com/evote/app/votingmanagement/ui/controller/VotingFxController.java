@@ -7,10 +7,12 @@ import com.evote.app.votingmanagement.interfaces.dto.OptionResultResponse;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResultsResponse;
 import com.evote.app.votingmanagement.ui.api.VotingApiClient;
+
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
@@ -37,6 +39,7 @@ public class VotingFxController {
 
   private final VotingApiClient apiClient;
   private final AuthSession authSession;
+  private final String errorMessage = "REST-Fehler";
 
   private VotingResponse selectedVoting;
 
@@ -160,7 +163,6 @@ public class VotingFxController {
       );
 
 
-
     } catch (Exception e) {
       showError("Fehler beim Anlegen", e.getMessage());
     }
@@ -207,7 +209,7 @@ public class VotingFxController {
               statusLabel.setText("Voting " + selected.id() + " wurde geöffnet.");
               refreshVotingLists();
             },
-            ex -> showError("REST-Fehler", ex.getMessage())
+            ex -> showError(errorMessage, ex.getMessage())
     );
 
   }
@@ -225,7 +227,7 @@ public class VotingFxController {
               notOpenVotingsList.setItems(FXCollections.observableArrayList(lists.notOpen));
               statusLabel.setText("Listen aktualisiert.");
             },
-            ex -> showError("REST-Fehler", ex.getMessage())
+            ex -> showError(errorMessage, ex.getMessage())
     );
 
   }
@@ -245,7 +247,7 @@ public class VotingFxController {
               resultsTable.getItems().setAll(resp.results());
               statusLabel.setText("Ergebnisse geladen ✅");
             },
-            ex -> showError("REST-Fehler", ex.getMessage())
+            ex -> showError(errorMessage, ex.getMessage())
     );
 
   }

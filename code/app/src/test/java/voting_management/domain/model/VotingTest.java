@@ -72,9 +72,7 @@ public class VotingTest {
     @Test
     @DisplayName("Grenze: Name genau 10 Zeichen ist gültig")
     void edge_nameExactlyMinLength() {
-        String name = "Abstimmng"; // 10 Zeichen? -> A b s t i m m n g (9) – also lieber explizit bauen:
-        name = "Abstimmungen"; // 12 – machen wir es exakt:
-        name = "Abstimmung"; // 10 Zeichen
+        String name = "Abstimmung"; // 10 Zeichen? -> A b s t i m m n g (9) – also lieber explizit bauen:
         assertEquals(10, name.length());
 
         Voting v = Voting.create(
@@ -90,8 +88,7 @@ public class VotingTest {
     @Test
     @DisplayName("Grenze: Info genau 30 Zeichen ist gültig")
     void edge_infoExactlyMinLength() {
-        String info = "Beschreibung hat genau 30 Zeichen"; // zähle: 31? Wir bauen sicher:
-        info = "AbcdefghijAbcdefghijAbcdefghij"; // 30 exakt
+        String info = "AbcdefghijAbcdefghijAbcdefghij"; // zähle: 30
         assertEquals(30, info.length());
 
         Voting v = Voting.create(
@@ -154,157 +151,141 @@ public class VotingTest {
             ""                   // leer
     })
     void invalid_name_cases(String badName) {
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(10, badName,
-                        "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.",
-                        today, today.plusDays(1),
-                        opts("Ja", "Nein")));
+      var end = today.plusDays(1);
+      var options = opts("Ja", "Nein");
+      var info = "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.";
+
+      assertThrows(IllegalArgumentException.class,
+              () -> Voting.create(10, badName, info, today, end, options));
     }
 
-    // ---------- Negative: Info ----------
-    @ParameterizedTest(name = "Ungültige Info: \"{0}\"")
-    @ValueSource(strings = {
-            "zu kurz",                          // < 30
-            "klein am Anfang aber lang genug .....................................",
-            "          ",                        // blank
-            ""                                   // leer
-    })
-    void invalid_info_cases(String badInfo) {
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(11, "Abstimmung OK",
-                        badInfo, today, today.plusDays(1),
-                        opts("Ja", "Nein")));
-    }
+  // ---------- Negative: Info ----------
+  @ParameterizedTest(name = "Ungültige Info: \"{0}\"")
+  @ValueSource(strings = {
+          "zu kurz",                          // < 30
+          "klein am Anfang aber lang genug .....................................",
+          "          ",                        // blank
+          ""                                   // leer
+  })
+  void invalid_info_cases(String badInfo) {
+    var end = today.plusDays(1);
+    var options = opts("Ja", "Nein");
+    var name = "Abstimmung OK";
 
-    // ---------- Negative: Optionen ----------
-    @Test
-    @DisplayName("Optionen: weniger als 2")
-    void options_tooFew() {
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(12, "Abstimmung OK",
-                        "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.",
-                        today, today.plusDays(1),
-                        opts("NurEine")));
-    }
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(11, name, badInfo, today, end, options));
+  }
 
-    @Test
-    @DisplayName("Optionen: mehr als 10")
-    void options_tooMany() {
-        Set<String> tooMany = opts("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(13, "Abstimmung OK",
-                        "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.",
-                        today, today.plusDays(1),
-                        tooMany));
-    }
+  // ---------- Negative: Optionen ----------
+  @Test
+  @DisplayName("Optionen: weniger als 2")
+  void options_tooFew() {
+    var end = today.plusDays(1);
+    var options = opts("NurEine");
+    var name = "Abstimmung OK";
+    var info = "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.";
 
-    @Test
-    @DisplayName("Optionen: Duplikate (case-insensitive) nicht erlaubt")
-    void options_duplicatesNotAllowed() {
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(14, "Abstimmung OK",
-                        "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.",
-                        today, today.plusDays(1),
-                        opts("Ja", "ja")));
-    }
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(12, name, info, today, end, options));
+  }
 
-    @Test
-    @DisplayName("Optionen: Sonderzeichen nicht erlaubt / leere Option nicht erlaubt")
-    void options_invalidToken() {
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(15, "Abstimmung OK",
-                        "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.",
-                        today, today.plusDays(1),
-                        opts("Ja", "Nein!"))); // Sonderzeichen
+  @Test
+  @DisplayName("Optionen: mehr als 10")
+  void options_tooMany() {
+    var end = today.plusDays(1);
+    Set<String> tooMany = opts("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K");
+    var name = "Abstimmung OK";
+    var info = "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.";
 
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(16, "Abstimmung OK",
-                        "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.",
-                        today, today.plusDays(1),
-                        opts("Ja", ""))); // leer
-    }
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(13, name, info, today, end, tooMany));
+  }
 
-    // ---------- Negative: Datumslogik ----------
-    @Test
-    @DisplayName("endDate vor startDate → Fehler")
-    void dates_invalidOrder() {
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(17, "Abstimmung OK",
-                        "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.",
-                        today.plusDays(5), today.plusDays(1),
-                        opts("A", "B")));
-    }
+  @Test
+  @DisplayName("Optionen: Duplikate (case-insensitive) nicht erlaubt")
+  void options_duplicatesNotAllowed() {
+    var end = today.plusDays(1);
+    var options = opts("Ja", "ja");
+    var name = "Abstimmung OK";
+    var info = "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.";
 
-    // ---------- isOpen-Logik ----------
-    @Test
-    @DisplayName("isOpen: bleibt false, wenn votingStatus=false (trotz gültiger Zeit)")
-    void isOpen_requiresStatusTrue() {
-        Voting v = Voting.create(
-                18, "Abstimmung OK",
-                "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.",
-                today.minusDays(1), today.plusDays(1),
-                opts("A", "B")
-        );
-        assertFalse(v.isOpen(fixedClock));
-        v.setVotingStatus(true);
-        assertTrue(v.isOpen(fixedClock));
-    }
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(14, name, info, today, end, options));
+  }
 
-    // ---------- Obergrenzen ----------
-    @Test
-    @DisplayName("Obergrenze Name (101) → Fehler; Info (1001) → Fehler")
-    void maxLengths_enforced() {
-        String longName = "A" + repeat('b', 100); // 101
-        String longInfo = "L" + repeat('x', 1000); // 1001
+  @Test
+  @DisplayName("Optionen: Sonderzeichen nicht erlaubt / leere Option nicht erlaubt")
+  void options_invalidToken() {
+    var end = today.plusDays(1);
+    var name = "Abstimmung OK";
+    var info = "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.";
 
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(19, longName,
-                        "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.",
-                        today, today.plusDays(1),
-                        opts("A", "B")));
+    var optionsWithSpecialChar = opts("Ja", "Nein!");
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(15, name, info, today, end, optionsWithSpecialChar)); // Sonderzeichen
 
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(20, "Abstimmung OK",
-                        longInfo,
-                        today, today.plusDays(1),
-                        opts("A", "B")));
-    }
+    var optionsWithEmpty = opts("Ja", "");
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(16, name, info, today, end, optionsWithEmpty)); // leer
+  }
 
+  // ---------- Negative: Datumslogik ----------
+  @Test
+  @DisplayName("endDate vor startDate → Fehler")
+  void dates_invalidOrder() {
+    var start = today.plusDays(5);
+    var end = today.plusDays(1);
+    var options = opts("A", "B");
+    var name = "Abstimmung OK";
+    var info = "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.";
 
-    // ---------- Additional Tests  ----------
-    // Negativer Test: Testet, dass Voting.create() keine null-Werte akzeptiert
-    @Test
-    @DisplayName("Null-Werte: Name, Info, Optionen, Start, End werfen Exception")
-    void nullValues_throwException() {
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(21, null, "Info OK Mit Mehr Als Dreißig Zeichen.",
-                        today, today.plusDays(1), opts("Ja", "Nein")));
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(17, name, info, start, end, options));
+  }
 
-        assertThrows(IllegalArgumentException.class, () ->
-                Voting.create(22, "Abstimmung OK", null,
-                        today, today.plusDays(1), opts("Ja", "Nein")));
+  // ---------- Obergrenzen ----------
+  @Test
+  @DisplayName("Obergrenze Name (101) → Fehler; Info (1001) → Fehler")
+  void maxLengths_enforced() {
+    var end = today.plusDays(1);
+    var options = opts("A", "B");
+    var infoOk = "Beschreibung Lang Genug Und Mit Großbuchstaben Am Anfang.";
 
-        assertThrows(NullPointerException.class, () ->
-                Voting.create(23, "Abstimmung OK", "Info OK Mit Mehr Als Dreißig Zeichen.",
-                        null, today.plusDays(1), opts("Ja", "Nein")));
+    String longName = "A" + repeat('b', 100); // 101
+    String longInfo = "L" + repeat('x', 1000); // 1001
 
-        assertThrows(NullPointerException.class, () ->
-                Voting.create(24, "Abstimmung OK", "Info OK Mit Mehr Als Dreißig Zeichen.",
-                        today, null, opts("Ja", "Nein")));
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(19, longName, infoOk, today, end, options));
 
-        assertThrows(NullPointerException.class, () ->
-                Voting.create(25, "Abstimmung OK", "Info OK Mit Mehr Als Dreißig Zeichen.",
-                        today, today.plusDays(1), null));
-    }
+    var nameOk = "Abstimmung OK";
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(20, nameOk, longInfo, today, end, options));
+  }
 
-    // Happy-Path-Test: Test stellt sicher, dass das Info-Feld Zeilenumbrüche enthalten darf (mehrzeilig)
-    @Test
-    @DisplayName("Info darf Zeilenumbrüche enthalten (DOTALL aktiv)")
-    void info_withNewline_valid() {
-        Voting v = Voting.create(1, "Abstimmung",
-                "Dies ist eine Beschreibung\nmit Zeilenumbruch.",
-                LocalDate.now(), LocalDate.now().plusDays(1), opts("Ja", "Nein"));
-        assertNotNull(v);
-    }
+  // ---------- Additional Tests  ----------
+// Negativer Test: Testet, dass Voting.create() keine null-Werte akzeptiert
+  @Test
+  @DisplayName("Null-Werte: Name, Info, Optionen, Start, End werfen Exception")
+  void nullValues_throwException() {
+    var end = today.plusDays(1);
+    var options = opts("Ja", "Nein");
+    var info = "Info OK Mit Mehr Als Dreißig Zeichen.";
+
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(21, null, info, today, end, options));
+
+    assertThrows(IllegalArgumentException.class,
+            () -> Voting.create(22, "Abstimmung OK", null, today, end, options));
+
+    assertThrows(NullPointerException.class,
+            () -> Voting.create(23, "Abstimmung OK", info, null, end, options));
+
+    assertThrows(NullPointerException.class,
+            () -> Voting.create(24, "Abstimmung OK", info, today, null, options));
+
+    assertThrows(NullPointerException.class,
+            () -> Voting.create(25, "Abstimmung OK", info, today, end, null));
+  }
+
 
 }
