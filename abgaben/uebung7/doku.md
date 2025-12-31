@@ -36,7 +36,7 @@ Header, zusätzliche Leerzeichen, leere Tokens) werden konsistent und können se
 
 ![CastVoteNachher](./assets/CastVote_Nachher.png)
 
-## Filterlogik als Predicate ausdrücken 
+## Filterlogik als Predicate ausdrücken
 
 Im ursprünglichen Code wurden offene und nicht offene Votings jeweils direkt über Inline-Lambdas im Stream gefiltert.
 Die Filterlogik war dadurch zwar kurz, aber fachlich nicht ganz konsistent (für „open“ wurde eine Methode mit Uhr
@@ -53,3 +53,50 @@ ist und nicht nur als Inline-Ausdruck in der Lambdafunktion existiert. Ein Nacht
 generell mehr LoC als vorher, was wir aber zwecks Lesbarkeit in Kauf genommen haben.
 
 ![OpenVotingsNachher](./assets/OpenVotingsNachher.png)
+
+## Collection Processing
+
+Im ursprünglichen getResultsForVoting werden die Stimmen pro Option berechnet, indem über alle im Voting definierten
+Optionen iteriert wird. Dabei wird für jede Option erneut die komplette Vote-Liste gefiltert und gezählt. Das ist zwar
+gut nachvollziehbar, führt aber zu mehrfacher Iteration über dieselben Daten (für jede Option einmal) und nutzt keine
+expliziten funktionalen Sammeloperationen wie Gruppierung oder Aggregation.
+
+![getResultsForVotingVorher](./assets/getResultsForVotingVorher.png)
+
+In der überarbeiteten Version wird die Vote-Liste einmalig per Stream verarbeitet und mittels groupingBy und counting zu
+einer Map “Option → Stimmenanzahl” aggregiert. Anschließend wird diese Aggregation wieder auf die definierte
+Optionsliste gemappt, sodass alle Optionen (auch solche mit 0 Stimmen) als OptionResult ausgegeben werden. Dadurch wird
+der Code funktionaler (explizite Gruppierung/Aggregation, klare Transformationen), effizienter (nur ein Durchlauf über
+die Votes) und leichter erweiterbar.
+
+![getResultsForVotingNachher](./assets/getResultsForVotingNachher.png)
+
+# Reflexion
+
+Wir als Gruppe sind alle durch das Grundstudium durchaus mit Java vertraut, haben bisher aber kaum richtige
+Softwareprojekte damit umgesetzt. Komplexere Java-Funktionen (Streams, Maps, Gruppierungen etc.) sind uns deshalb zwar
+bekannt, aber für uns deutlich schwieriger zu lesen als einfache if-Statements. Die Nachteile der funktionalen
+Programmierung waren für uns also eindeutig die komplexere Lesbarkeit aufgrund des fortschrittlicheren Codes. Vorteile
+der funktionalen Implementierung sind häufig, dass der Code effizienter ausgeführt wird, wie beim Collection Processing,
+und dass Methoden oft verschlankt werden können.
+
+Wir haben den Code mittels ChatGPT 5.2 analysieren lassen, um Code-Stellen zu identifizieren, die von funktionaler
+Programmierung profitieren würden. Ebenfalls hat ChatGPT dabei geholfen, Vorschläge für funktionale Programmierung an
+diesen Stellen zu machen. Wir haben dabei nicht alle Stellen, die ChatGPT vorgeschlagen hat, umgesetzt, da dies
+teilweise zu Kompromissen an anderen Stellen geführt hätte (z.B. dass Code-Doppelungen auftreten). ChatGPT wurde
+ebenfalls dazu verwendet, schwierige Code-Abschnitte im Detail zu erklären.
+
+Allgemein kann man sagen, dass sich die Codequalität und Effizienz unseres Codes durch FP stark verbessert hat. Bei der
+Lesbarkeit hängt es tatsächlich stark vom Leser ab, inwiefern sich die Lesbarkeit verbessert. Für einen erfahrenen
+Java-Entwickler werden die umgesetzten Maßnahmen die Lesbarkeit deutlich verbessert haben. Für den Laien eher
+verschlechtert, aufgrund der komplexeren Funktionen.
+
+Herausforderungen bei der Umsetzung waren vor allem, das Konzept hinter funktionaler Programmierung wirklich zu
+verstehen und es korrekt auf unseren bestehenden Code anzuwenden. Zusätzlich war es für uns nicht immer offensichtlich,
+welche Refactorings „nur schöner“ sind und welche tatsächlich einen Mehrwert bringen, ohne dabei andere Nachteile zu
+erzeugen. Außerdem war es teilweise herausfordernd, funktionale Änderungen mit bestehenden Tests und der UI-Ausgabe
+abzugleichen, weil sich Verhalten (z.B. Fehlermeldungs-Handling) indirekt ändern kann, wenn man Logik umstrukturiert.
+
+Lessons Learned für uns ist, dass es sich lohnen kann, funktionale Programmierung umzusetzen, da dies viele Vorteile
+haben kann, siehe oben, auch wenn es zunächst anstrengend ist, den Code zu lesen. Gleichzeitig hilft es dem eigenen
+Code-Selbstbewusstsein, solche Stellen in den eigenen Code einzubauen und wirklich zu verstehen.

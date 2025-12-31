@@ -19,9 +19,12 @@ import java.time.Clock;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -159,12 +162,16 @@ public class VotingApplicationService {
     // Alle Votes zu diesem Voting laden
     var votes = voteRepository.findByVotingId(votingId);
 
-    // Für jede Option die Anzahl der Stimmen zählen
+    // Gruppierung + Aggregation: Stimmen pro OptionId zählen (case-insensitive)
+    Map<String, Long> countsByOption = votes.stream()
+            .map(v -> v.getOptionId().trim().toLowerCase()) // Normalisierung
+            .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
+
+    // Mapping: Für jede definierte Option ein OptionResult bauen (inkl. 0 Stimmen)
     return voting.getOptionTexts().stream()
             .map(option -> {
-              long count = votes.stream()
-                      .filter(v -> v.getOptionId().equalsIgnoreCase(option))
-                      .count();
+              String key = option.trim().toLowerCase();
+              long count = countsByOption.getOrDefault(key, 0L);
               return new OptionResult(option, count);
             })
             .toList();
