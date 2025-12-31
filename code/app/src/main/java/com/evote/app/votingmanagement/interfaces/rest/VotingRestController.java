@@ -10,10 +10,13 @@ import com.evote.app.votingmanagement.interfaces.dto.OptionResultResponse;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResultsResponse;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+
 import java.time.Clock;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -106,21 +109,30 @@ public class VotingRestController {
   @PostMapping("/{id}/votes")
   public void castVote(@PathVariable int id,
                        @RequestBody CastVoteRequest request,
-                       @RequestHeader("Authorization") String authorization) {
-
-    // "Bearer <jwt>" -> nur Token extrahieren
-    String token = authorization.startsWith("Bearer ")
-            ? authorization.substring(7)
-            : authorization;
+                       @RequestHeader(value = "Authorization", required = false) String authorization) {
 
     CastVoteDto dto = new CastVoteDto(
-            token,
+            extractBearerToken(authorization),
             id,
             request.optionId()
     );
 
     service.castVote(dto);
   }
+
+  /**
+   * Pure Function: Header -> Token (ohne Side-Effects).
+   * Robust gegen null/Leerzeichen/"Bearer" Prefix.
+   */
+  static String extractBearerToken(String authorization) {
+    return Optional.ofNullable(authorization)
+            .map(String::trim)
+            .filter(s -> !s.isBlank())
+            .map(s -> s.regionMatches(true, 0, "Bearer ", 0, 7) ? s.substring(7).trim() : s)
+            .filter(s -> !s.isBlank())
+            .orElseThrow(() -> new IllegalArgumentException("Authorization Header fehlt oder ist leer"));
+  }
+
 
   /**
    * Liefert die Anzahl Stimmen pro Option für ein Voting.
@@ -152,7 +164,7 @@ public class VotingRestController {
    */
   @GetMapping("/not-open")
   public List<VotingResponse> getNotOpen() {
-    return service.getNotOpenVotings().stream()
+    return service.getNotOpenVotings(Clock.systemDefaultZone()).stream()
             .map(VotingResponse::fromDomain)
             .toList();
   }

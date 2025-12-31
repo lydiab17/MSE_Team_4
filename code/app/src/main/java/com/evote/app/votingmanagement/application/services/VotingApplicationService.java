@@ -21,6 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import org.springframework.stereotype.Service;
 
@@ -126,8 +127,9 @@ public class VotingApplicationService {
    * (hier nehmen wir die System-Uhr; in Tests könntest du eine andere Uhr verwenden)
    */
   public List<Voting> getOpenVotings(Clock clock) {
+    Predicate<Voting> isOpen = v -> v.isOpen(clock);
     return votingRepository.findAll().stream()
-            .filter(v -> v.isOpen(clock))
+            .filter(isOpen)
             .toList();
   }
 
@@ -135,9 +137,10 @@ public class VotingApplicationService {
    * Beispiel: Alle nicht offenen Votings holen.
    * (hier nehmen wir die System-Uhr; in Tests könntest du eine andere Uhr verwenden)
    */
-  public List<Voting> getNotOpenVotings() {
+  public List<Voting> getNotOpenVotings(Clock clock) {
+    Predicate<Voting> isOpen = v -> v.isOpen(clock);
     return votingRepository.findAll().stream()
-            .filter(v -> !v.isVotingStatus())
+            .filter(isOpen.negate())
             .toList();
   }
 

@@ -207,7 +207,7 @@ class VotingRestControllerTest {
     Voting v2 = createValidVoting(11);
     v2.setVotingStatus(false);
 
-    when(service.getNotOpenVotings()).thenReturn(List.of(v1, v2));
+    when(service.getNotOpenVotings(any())).thenReturn(List.of(v1, v2));
 
     List<VotingResponse> responses = controller.getNotOpen();
 
@@ -217,7 +217,7 @@ class VotingRestControllerTest {
     assertFalse(responses.get(0).open());
     assertFalse(responses.get(1).open());
 
-    verify(service).getNotOpenVotings();
+    verify(service).getNotOpenVotings(any());
   }
 
   // ---------- castVote(...) ----------

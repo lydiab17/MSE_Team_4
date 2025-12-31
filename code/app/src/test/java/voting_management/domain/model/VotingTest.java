@@ -271,7 +271,7 @@ public class VotingTest {
     var options = opts("Ja", "Nein");
     var info = "Info OK Mit Mehr Als Dreißig Zeichen.";
 
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(NullPointerException.class,
             () -> Voting.create(21, null, info, today, end, options));
 
     assertThrows(IllegalArgumentException.class,

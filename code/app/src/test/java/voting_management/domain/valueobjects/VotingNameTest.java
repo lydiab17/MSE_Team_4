@@ -58,9 +58,9 @@ class VotingNameTest {
     // ---------- Negative: null / leer / nur Spaces ----------
 
     @Test
-    @DisplayName("Null-Wert: wirft IllegalArgumentException")
+    @DisplayName("Null-Wert: wirft NullPointerException")
     void nullValue_throwsException() {
-        assertThrows(IllegalArgumentException.class,
+        assertThrows(NullPointerException.class,
                 () -> new VotingName(null));
     }
 

@@ -393,7 +393,7 @@ public class VotingApplicationServiceTest {
     closed.setVotingStatus(false);
     votingRepo.save(closed);
 
-    var notOpen = service.getNotOpenVotings();
+    var notOpen = service.getNotOpenVotings(fixedClock);
     assertEquals(1, notOpen.size());
     assertEquals(8, notOpen.get(0).getId());
   }
