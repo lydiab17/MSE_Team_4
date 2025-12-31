@@ -1,11 +1,11 @@
 # eVote – Anwendung für E-Voting mit DDD, TDD, JavaFX & Spring
 
 ## ToDo
-- Funktionale Programmierkonzepte (Übung 7 inkl. Doku)
 - SOLID-Prinzipien beim Code überprüfen
 - Checkstyle überprüfen und Anpassen
 - Testabdeckung 80%
 - SonarQube Maintainability Vorschläge umsetzen
+- Funktionale Programmierung in anderen Value Objekten umsetzen (optional)
 
 ## Projekt holen und starten
 
