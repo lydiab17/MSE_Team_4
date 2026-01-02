@@ -8,7 +8,9 @@ import javafx.application.Platform;
 import javafx.scene.Parent;
 import org.junit.jupiter.api.*;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.junit.jupiter.api.Tag;
 
+@Tag("javafx")
 class HelloApplicationTest {
 
   private static boolean javafxStarted = false;
