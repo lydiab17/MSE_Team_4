@@ -1,11 +1,14 @@
 # eVote – Anwendung für E-Voting mit DDD, TDD, JavaFX & Spring
 
 ## ToDo
-- SOLID-Prinzipien beim Code überprüfen
+
+- Begründung für BC-Struktur dokumentieren
+- Architekturdokumentation erweitern
+- Persistenzstrategie dokumentieren
+- Frontend-Architektur-Dokumentation
 - Checkstyle überprüfen und Anpassen
 - Testabdeckung 80%
-- SonarQube Maintainability Vorschläge umsetzen
-- Funktionale Programmierung in anderen Value Objekten umsetzen (optional)
+- SonarQube Maintainability Vorschläge umsetzen (optional)
 
 ## Projekt holen und starten
 
