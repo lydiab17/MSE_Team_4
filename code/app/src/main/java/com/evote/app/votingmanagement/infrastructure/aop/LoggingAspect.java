@@ -26,12 +26,10 @@ public class LoggingAspect {
    * Around-Advice für alle öffentlichen Methoden im VotingApplicationService.
    *
    * <p>Pointcut:
-   * execution(public * com.evote.app.votingmanagement.application.services.VotingApplicationService.*(..))
+   * execution(public * com.evote.app.votingmanagement.application.services.*.*(..))
    */
   @Around(
-          "execution(public * "
-                  + "com.evote.app.votingmanagement.application.services."
-                  + "VotingApplicationService.*(..))"
+          "execution(public * com.evote.app.votingmanagement.application.services.*.*(..))\n"
   )
   public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
     String methodName = joinPoint.getSignature().toShortString();
