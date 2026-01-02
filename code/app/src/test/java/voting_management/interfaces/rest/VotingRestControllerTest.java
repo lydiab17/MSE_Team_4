@@ -6,20 +6,21 @@ import static org.mockito.Mockito.*;
 
 import com.evote.app.votingmanagement.application.dto.CastVoteDto;
 import com.evote.app.votingmanagement.application.dto.OptionResult;
-import com.evote.app.votingmanagement.application.services.VotingApplicationService;
+import com.evote.app.votingmanagement.application.services.VoteCastingService;
+import com.evote.app.votingmanagement.application.services.VotingCommandService;
+import com.evote.app.votingmanagement.application.services.VotingQueryService;
 import com.evote.app.votingmanagement.domain.model.Voting;
 import com.evote.app.votingmanagement.interfaces.dto.CastVoteRequest;
 import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
 import com.evote.app.votingmanagement.interfaces.dto.OptionResultResponse;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResultsResponse;
+import com.evote.app.votingmanagement.interfaces.rest.VotingRestController;
 import java.time.LocalDate;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
-import com.evote.app.votingmanagement.interfaces.rest.VotingRestController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +33,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class VotingRestControllerTest {
 
   @Mock
-  private VotingApplicationService service;
+  private VotingCommandService commandService;
+
+  @Mock
+  private VotingQueryService queryService;
+
+  @Mock
+  private VoteCastingService voteCastingService;
 
   @InjectMocks
   private VotingRestController controller;
@@ -53,7 +60,7 @@ class VotingRestControllerTest {
   // ---------- create(...) ----------
 
   @Test
-  @DisplayName("create: ruft Service korrekt auf und mappt Response")
+  @DisplayName("create: ruft commandService korrekt auf und mappt Response")
   void create_callsServiceAndMapsResponse() {
     LocalDate start = LocalDate.of(2030, 5, 10);
     LocalDate end = start.plusDays(7);
@@ -69,7 +76,7 @@ class VotingRestControllerTest {
 
     Voting voting = createValidVoting(1);
 
-    when(service.createVoting(
+    when(commandService.createVoting(
             anyInt(),
             anyString(),
             anyString(),
@@ -88,7 +95,7 @@ class VotingRestControllerTest {
     assertEquals(voting.isVotingStatus(), response.open());
     assertEquals(voting.getOptionTexts(), response.options());
 
-    verify(service).createVoting(
+    verify(commandService).createVoting(
             eq(1),
             eq(request.name()),
             eq(request.info()),
@@ -115,7 +122,7 @@ class VotingRestControllerTest {
 
     Voting voting = createValidVoting(2);
 
-    when(service.createVoting(anyInt(), anyString(), anyString(), any(LocalDate.class), any(LocalDate.class), anySet()))
+    when(commandService.createVoting(anyInt(), anyString(), anyString(), any(LocalDate.class), any(LocalDate.class), anySet()))
             .thenReturn(voting);
 
     controller.create(request);
@@ -123,7 +130,7 @@ class VotingRestControllerTest {
     @SuppressWarnings("unchecked")
     ArgumentCaptor<Set<String>> optionsCaptor = ArgumentCaptor.forClass(Set.class);
 
-    verify(service).createVoting(
+    verify(commandService).createVoting(
             eq(2),
             eq(request.name()),
             eq(request.info()),
@@ -141,10 +148,10 @@ class VotingRestControllerTest {
   // ---------- open(...) ----------
 
   @Test
-  @DisplayName("open: delegiert an service.openVoting")
+  @DisplayName("open: delegiert an commandService.openVoting")
   void open_delegatesToService() {
     controller.open(5);
-    verify(service).openVoting(5);
+    verify(commandService).openVoting(5);
   }
 
   // ---------- getById(...) ----------
@@ -153,7 +160,7 @@ class VotingRestControllerTest {
   @DisplayName("getById: Voting gefunden -> Response")
   void getById_found_returnsResponse() {
     Voting voting = createValidVoting(2);
-    when(service.getVotingById(2)).thenReturn(Optional.of(voting));
+    when(queryService.getVotingById(2)).thenReturn(Optional.of(voting));
 
     VotingResponse response = controller.getById(2);
 
@@ -169,9 +176,10 @@ class VotingRestControllerTest {
   @Test
   @DisplayName("getById: Voting nicht gefunden -> IllegalArgumentException")
   void getById_notFound_throwsException() {
-    when(service.getVotingById(99)).thenReturn(Optional.empty());
+    when(queryService.getVotingById(99)).thenReturn(Optional.empty());
 
-    IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> controller.getById(99));
+    IllegalArgumentException ex =
+            assertThrows(IllegalArgumentException.class, () -> controller.getById(99));
     assertEquals("Voting nicht gefunden", ex.getMessage());
   }
 
@@ -185,8 +193,7 @@ class VotingRestControllerTest {
     Voting v2 = createValidVoting(2);
     v2.setVotingStatus(true);
 
-    when(service.getOpenVotings(any()))
-            .thenReturn(List.of(v1, v2));
+    when(queryService.getOpenVotings()).thenReturn(List.of(v1, v2));
 
     List<VotingResponse> responses = controller.getOpen();
 
@@ -194,7 +201,7 @@ class VotingRestControllerTest {
     assertEquals(1, responses.get(0).id());
     assertEquals(2, responses.get(1).id());
 
-    verify(service).getOpenVotings(any());
+    verify(queryService).getOpenVotings();
   }
 
   // ---------- getNotOpen() ----------
@@ -207,7 +214,7 @@ class VotingRestControllerTest {
     Voting v2 = createValidVoting(11);
     v2.setVotingStatus(false);
 
-    when(service.getNotOpenVotings(any())).thenReturn(List.of(v1, v2));
+    when(queryService.getNotOpenVotings()).thenReturn(List.of(v1, v2));
 
     List<VotingResponse> responses = controller.getNotOpen();
 
@@ -217,25 +224,25 @@ class VotingRestControllerTest {
     assertFalse(responses.get(0).open());
     assertFalse(responses.get(1).open());
 
-    verify(service).getNotOpenVotings(any());
+    verify(queryService).getNotOpenVotings();
   }
 
   // ---------- castVote(...) ----------
 
   @Test
-  @DisplayName("castVote: extrahiert Token aus 'Bearer <jwt>' und delegiert an service.castVote")
+  @DisplayName("castVote: extrahiert Token aus 'Bearer <jwt>' und delegiert an voteCastingService.castVote")
   void castVote_stripsBearerPrefix_andCallsService() {
     CastVoteRequest request = new CastVoteRequest("Ja");
 
     controller.castVote(7, request, "Bearer jwt-abc");
 
     ArgumentCaptor<CastVoteDto> captor = ArgumentCaptor.forClass(CastVoteDto.class);
-    verify(service).castVote(captor.capture());
+    verify(voteCastingService).castVote(captor.capture());
 
     CastVoteDto dto = captor.getValue();
-    assertEquals("jwt-abc", dto.authToken);
-    assertEquals(7, dto.votingId);
-    assertEquals("Ja", dto.optionId);
+    assertEquals("jwt-abc", dto.authToken());
+    assertEquals(7, dto.votingId());
+    assertEquals("Ja", dto.optionId());
   }
 
   @Test
@@ -246,12 +253,12 @@ class VotingRestControllerTest {
     controller.castVote(8, request, "raw-token");
 
     ArgumentCaptor<CastVoteDto> captor = ArgumentCaptor.forClass(CastVoteDto.class);
-    verify(service).castVote(captor.capture());
+    verify(voteCastingService).castVote(captor.capture());
 
     CastVoteDto dto = captor.getValue();
-    assertEquals("raw-token", dto.authToken);
-    assertEquals(8, dto.votingId);
-    assertEquals("Nein", dto.optionId);
+    assertEquals("raw-token", dto.authToken());
+    assertEquals(8, dto.votingId());
+    assertEquals("Nein", dto.optionId());
   }
 
   // ---------- getResults(...) ----------
@@ -259,7 +266,7 @@ class VotingRestControllerTest {
   @Test
   @DisplayName("getResults: mappt OptionResult-Liste zu VotingResultsResponse")
   void getResults_mapsOptionResults() {
-    when(service.getResultsForVoting(3)).thenReturn(List.of(
+    when(queryService.getResultsForVoting(3)).thenReturn(List.of(
             new OptionResult("Ja", 10),
             new OptionResult("Nein", 3)
     ));
@@ -278,6 +285,13 @@ class VotingRestControllerTest {
     assertEquals("Nein", r1.option());
     assertEquals(3L, r1.count());
 
-    verify(service).getResultsForVoting(3);
+    verify(queryService).getResultsForVoting(3);
   }
+
+  @Test
+  void castVote_missingAuthorization_throwsIllegalArgumentException() {
+    assertThrows(IllegalArgumentException.class,
+            () -> controller.castVote(1, new CastVoteRequest("Ja"), null));
+  }
+
 }

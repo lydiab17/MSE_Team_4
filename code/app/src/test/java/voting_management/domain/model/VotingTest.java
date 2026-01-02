@@ -274,7 +274,7 @@ public class VotingTest {
     assertThrows(NullPointerException.class,
             () -> Voting.create(21, null, info, today, end, options));
 
-    assertThrows(IllegalArgumentException.class,
+    assertThrows(NullPointerException.class,
             () -> Voting.create(22, "Abstimmung OK", null, today, end, options));
 
     assertThrows(NullPointerException.class,

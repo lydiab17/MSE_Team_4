@@ -2,7 +2,9 @@ package com.evote.app.votingmanagement.interfaces.rest;
 
 import com.evote.app.votingmanagement.application.dto.CastVoteDto;
 import com.evote.app.votingmanagement.application.dto.OptionResult;
-import com.evote.app.votingmanagement.application.services.VotingApplicationService;
+import com.evote.app.votingmanagement.application.services.VoteCastingService;
+import com.evote.app.votingmanagement.application.services.VotingCommandService;
+import com.evote.app.votingmanagement.application.services.VotingQueryService;
 import com.evote.app.votingmanagement.domain.model.Voting;
 import com.evote.app.votingmanagement.interfaces.dto.CastVoteRequest;
 import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
@@ -10,13 +12,10 @@ import com.evote.app.votingmanagement.interfaces.dto.OptionResultResponse;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResultsResponse;
 import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
-
-import java.time.Clock;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,10 +31,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/votings")
 public class VotingRestController {
 
-  private final VotingApplicationService service;
+  private final VotingCommandService commandService;
+  private final VotingQueryService queryService;
+  private final VoteCastingService voteCastingService;
 
-  public VotingRestController(VotingApplicationService service) {
-    this.service = service;
+  public VotingRestController(
+          VotingCommandService commandService,
+          VotingQueryService queryService,
+          VoteCastingService voteCastingService
+  ) {
+    this.commandService = commandService;
+    this.queryService = queryService;
+    this.voteCastingService = voteCastingService;
   }
 
   // --- Endpoints ---
@@ -50,7 +57,7 @@ public class VotingRestController {
   @RateLimiter(name = "voteAction")
   public VotingResponse create(@RequestBody CreateVotingRequest request) {
     Set<String> options = new LinkedHashSet<>(request.options());
-    Voting v = service.createVoting(
+    Voting v = commandService.createVoting(
             request.id(),
             request.name(),
             request.info(),
@@ -68,7 +75,7 @@ public class VotingRestController {
    */
   @PostMapping("/{id}/open")
   public void open(@PathVariable int id) {
-    service.openVoting(id);
+    commandService.openVoting(id);
   }
 
   /**
@@ -79,7 +86,7 @@ public class VotingRestController {
    */
   @GetMapping("/{id}")
   public VotingResponse getById(@PathVariable int id) {
-    return service.getVotingById(id)
+    return queryService.getVotingById(id)
             .map(VotingResponse::fromDomain)
             .orElseThrow(() -> new IllegalArgumentException("Voting nicht gefunden"));
   }
@@ -91,7 +98,7 @@ public class VotingRestController {
    */
   @GetMapping("/open")
   public List<VotingResponse> getOpen() {
-    return service.getOpenVotings(Clock.systemDefaultZone()).stream()
+    return queryService.getOpenVotings().stream()
             .map(VotingResponse::fromDomain)
             .toList();
   }
@@ -107,17 +114,18 @@ public class VotingRestController {
    * }
    */
   @PostMapping("/{id}/votes")
-  public void castVote(@PathVariable int id,
-                       @RequestBody CastVoteRequest request,
-                       @RequestHeader(value = "Authorization", required = false) String authorization) {
-
+  public void castVote(
+          @PathVariable int id,
+          @RequestBody CastVoteRequest request,
+          @RequestHeader(value = "Authorization", required = false) String authorization
+  ) {
     CastVoteDto dto = new CastVoteDto(
             extractBearerToken(authorization),
             id,
             request.optionId()
     );
 
-    service.castVote(dto);
+    voteCastingService.castVote(dto);
   }
 
   /**
@@ -133,22 +141,12 @@ public class VotingRestController {
             .orElseThrow(() -> new IllegalArgumentException("Authorization Header fehlt oder ist leer"));
   }
 
-
   /**
    * Liefert die Anzahl Stimmen pro Option für ein Voting.
-   *
-   * <p>Beispiel-Response:
-   * {
-   * "votingId": 1,
-   * "results": [
-   * { "option": "Ja",  "count": 10 },
-   * { "option": "Nein","count": 3  }
-   * ]
-   * }
    */
   @GetMapping("/{id}/results")
   public VotingResultsResponse getResults(@PathVariable int id) {
-    List<OptionResult> optionResults = service.getResultsForVoting(id);
+    List<OptionResult> optionResults = queryService.getResultsForVoting(id);
 
     List<OptionResultResponse> responseList = optionResults.stream()
             .map(OptionResultResponse::fromOptionResult)
@@ -164,7 +162,7 @@ public class VotingRestController {
    */
   @GetMapping("/not-open")
   public List<VotingResponse> getNotOpen() {
-    return service.getNotOpenVotings(Clock.systemDefaultZone()).stream()
+    return queryService.getNotOpenVotings().stream()
             .map(VotingResponse::fromDomain)
             .toList();
   }
