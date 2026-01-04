@@ -13,6 +13,7 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
+
 /**
  * Die Klasse repräsentiert die Entität Voting.
  *

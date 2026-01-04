@@ -2,15 +2,27 @@ package com.evote.app.votingmanagement.interfaces.rest;
 
 import com.evote.app.votingmanagement.application.dto.CastVoteDto;
 import com.evote.app.votingmanagement.application.dto.OptionResult;
-import com.evote.app.votingmanagement.application.services.VotingApplicationService;
+import com.evote.app.votingmanagement.application.services.VoteCastingService;
+import com.evote.app.votingmanagement.application.services.VotingCommandService;
+import com.evote.app.votingmanagement.application.services.VotingQueryService;
 import com.evote.app.votingmanagement.domain.model.Voting;
-
+import com.evote.app.votingmanagement.interfaces.dto.CastVoteRequest;
+import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
+import com.evote.app.votingmanagement.interfaces.dto.OptionResultResponse;
+import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
+import com.evote.app.votingmanagement.interfaces.dto.VotingResultsResponse;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
-
-import com.evote.app.votingmanagement.interfaces.dto.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * REST-Controller für Voting-bezogene Endpoints.
@@ -19,131 +31,139 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/votings")
 public class VotingRestController {
 
-    private final VotingApplicationService service;
+  private final VotingCommandService commandService;
+  private final VotingQueryService queryService;
+  private final VoteCastingService voteCastingService;
 
-    public VotingRestController(VotingApplicationService service) {
-        this.service = service;
-    }
+  public VotingRestController(
+          VotingCommandService commandService,
+          VotingQueryService queryService,
+          VoteCastingService voteCastingService
+  ) {
+    this.commandService = commandService;
+    this.queryService = queryService;
+    this.voteCastingService = voteCastingService;
+  }
 
+  // --- Endpoints ---
 
-    // --- Endpoints ---
+  /**
+   * Legt ein neues Voting an.
+   *
+   * @param request Daten für das neue Voting
+   * @return das angelegte Voting als Response-DTO
+   */
+  @PostMapping
+  @RateLimiter(name = "voteAction")
+  public VotingResponse create(@RequestBody CreateVotingRequest request) {
+    Set<String> options = new LinkedHashSet<>(request.options());
+    Voting v = commandService.createVoting(
+            request.id(),
+            request.name(),
+            request.info(),
+            request.startDate(),
+            request.endDate(),
+            options
+    );
+    return VotingResponse.fromDomain(v);
+  }
 
-    /**
-     * Legt ein neues Voting an.
-     *
-     * @param request Daten für das neue Voting
-     * @return das angelegte Voting als Response-DTO
-     */
-    @PostMapping
-    public VotingResponse create(@RequestBody CreateVotingRequest request) {
-        Set<String> options = new LinkedHashSet<>(request.options());
-        Voting v = service.createVoting(
-                request.id(),
-                request.name(),
-                request.info(),
-                request.startDate(),
-                request.endDate(),
-                options
-        );
-        return VotingResponse.fromDomain(v);
-    }
+  /**
+   * Öffnet (aktiviert) ein Voting.
+   *
+   * @param id die ID des Votings
+   */
+  @PostMapping("/{id}/open")
+  public void open(@PathVariable int id) {
+    commandService.openVoting(id);
+  }
 
-    /**
-     * Öffnet (aktiviert) ein Voting.
-     *
-     * @param id die ID des Votings
-     */
-    @PostMapping("/{id}/open")
-    public void open(@PathVariable int id) {
-        service.openVoting(id);
-    }
+  /**
+   * Liefert ein Voting zu einer gegebenen ID.
+   *
+   * @param id die ID des Votings
+   * @return Voting als Response-DTO
+   */
+  @GetMapping("/{id}")
+  public VotingResponse getById(@PathVariable int id) {
+    return queryService.getVotingById(id)
+            .map(VotingResponse::fromDomain)
+            .orElseThrow(() -> new IllegalArgumentException("Voting nicht gefunden"));
+  }
 
-    /**
-     * Liefert ein Voting zu einer gegebenen ID.
-     *
-     * @param id die ID des Votings
-     * @return Voting als Response-DTO
-     */
-    @GetMapping("/{id}")
-    public VotingResponse getById(@PathVariable int id) {
-        return service.getVotingById(id)
-                .map(VotingResponse::fromDomain)
-                .orElseThrow(() -> new IllegalArgumentException("Voting nicht gefunden"));
-    }
+  /**
+   * Liefert alle aktuell offenen Votings.
+   *
+   * @return Liste offener Votings als Response-DTO
+   */
+  @GetMapping("/open")
+  public List<VotingResponse> getOpen() {
+    return queryService.getOpenVotings().stream()
+            .map(VotingResponse::fromDomain)
+            .toList();
+  }
 
-    /**
-     * Liefert alle aktuell offenen Votings.
-     *
-     * @return Liste offener Votings als Response-DTO
-     */
-    @GetMapping("/open")
-    public List<VotingResponse> getOpen() {
-        // hier nehmen wir die System-Uhr, nicht fixedClock
-        return service.getOpenVotings(java.time.Clock.systemDefaultZone()).stream()
-                .map(VotingResponse::fromDomain)
-                .toList();
-    }
+  /**
+   * Gibt eine Stimme für ein Voting ab.
+   *
+   * <p>Beispiel-Request:
+   * POST /api/votings/1/votes
+   * {
+   * "voterKey": "abc123",
+   * "optionId": "Ja"
+   * }
+   */
+  @PostMapping("/{id}/votes")
+  public void castVote(
+          @PathVariable int id,
+          @RequestBody CastVoteRequest request,
+          @RequestHeader(value = "Authorization", required = false) String authorization
+  ) {
+    CastVoteDto dto = new CastVoteDto(
+            extractBearerToken(authorization),
+            id,
+            request.optionId()
+    );
 
-    /**
-     * Gibt eine Stimme für ein Voting ab.
-     *
-     * Beispiel-Request:
-     * POST /api/votings/1/votes
-     * {
-     *   "voterKey": "abc123",
-     *   "optionId": "Ja"
-     * }
-     */
-    @PostMapping("/{id}/votes")
-    public void castVote(@PathVariable int id,
-                         @RequestBody CastVoteRequest request,
-                         @RequestHeader("Authorization") String authorization) {
+    voteCastingService.castVote(dto);
+  }
 
-        // "Bearer <jwt>" -> nur Token extrahieren
-        String token = authorization.startsWith("Bearer ")
-                ? authorization.substring(7)
-                : authorization;
+  /**
+   * Pure Function: Header -> Token (ohne Side-Effects).
+   * Robust gegen null/Leerzeichen/"Bearer" Prefix.
+   */
+  static String extractBearerToken(String authorization) {
+    return Optional.ofNullable(authorization)
+            .map(String::trim)
+            .filter(s -> !s.isBlank())
+            .map(s -> s.regionMatches(true, 0, "Bearer ", 0, 7) ? s.substring(7).trim() : s)
+            .filter(s -> !s.isBlank())
+            .orElseThrow(() -> new IllegalArgumentException("Authorization Header fehlt oder ist leer"));
+  }
 
-        CastVoteDto dto = new CastVoteDto(
-                token,      // voterKey/authToken (String)
-                id,         // votingId (aus Path)
-                request.optionId()
-        );
+  /**
+   * Liefert die Anzahl Stimmen pro Option für ein Voting.
+   */
+  @GetMapping("/{id}/results")
+  public VotingResultsResponse getResults(@PathVariable int id) {
+    List<OptionResult> optionResults = queryService.getResultsForVoting(id);
 
-        service.castVote(dto);
-    }
+    List<OptionResultResponse> responseList = optionResults.stream()
+            .map(OptionResultResponse::fromOptionResult)
+            .toList();
 
+    return new VotingResultsResponse(id, responseList);
+  }
 
-    /**
-     * Liefert die Anzahl Stimmen pro Option für ein Voting.
-     *
-     * Beispiel-Response:
-     * {
-     *   "votingId": 1,
-     *   "results": [
-     *     { "option": "Ja",  "count": 10 },
-     *     { "option": "Nein","count": 3  }
-     *   ]
-     * }
-     */
-    @GetMapping("/{id}/results")
-    public VotingResultsResponse getResults(@PathVariable int id) {
-        List<OptionResult> optionResults = service.getResultsForVoting(id);
-
-        List<OptionResultResponse> responseList = optionResults.stream()
-                .map(OptionResultResponse::fromOptionResult)
-                .toList();
-
-        return new VotingResultsResponse(id, responseList);
-    }
-
-    // in VotingRestController
-
-    @GetMapping("/not-open")
-    public List<VotingResponse> getNotOpen() {
-        return service.getNotOpenVotings().stream()
-                .map(VotingResponse::fromDomain)
-                .toList();
-    }
-
+  /**
+   * Liefert alle aktuell nicht offenen Votings.
+   *
+   * @return Liste nicht offener Votings als Response-DTO
+   */
+  @GetMapping("/not-open")
+  public List<VotingResponse> getNotOpen() {
+    return queryService.getNotOpenVotings().stream()
+            .map(VotingResponse::fromDomain)
+            .toList();
+  }
 }

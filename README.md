@@ -1,15 +1,14 @@
 # eVote – Anwendung für E-Voting mit DDD, TDD, JavaFX & Spring
 
 ## ToDo
-- Security config zentral speichern
-- Domain Events implementieren
-- weitere AOP Einsatzmöglichkeiten außer Logging
-- Funktionale Programmierkonzepte (Übung 7)
-- SOLID-Prinzipien beim Code überprüfen
-- Übungsaufgaben Dokus
+
+- Begründung für BC-Struktur dokumentieren
+- Architekturdokumentation erweitern
+- Persistenzstrategie dokumentieren
+- Frontend-Architektur-Dokumentation
 - Checkstyle überprüfen und Anpassen
 - Testabdeckung 80%
-- ggfs. Zentrale fetchAPI Klasse, optimalerweise async
+- SonarQube Maintainability Vorschläge umsetzen (optional)
 
 ## Projekt holen und starten
 

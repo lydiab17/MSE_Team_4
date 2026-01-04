@@ -1,5 +1,9 @@
 package com.evote.app.votingmanagement.domain.valueobjects;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Predicate;
+
 /**
  * Repräsentiert den Namen/Titel einer Abstimmung.
  *
@@ -15,16 +19,28 @@ package com.evote.app.votingmanagement.domain.valueobjects;
  *
  * <p>Ungültige Werte führen im Konstruktor zu einer {@link IllegalArgumentException}.
  */
-public class VotingName {
+public final class VotingName {
 
   private final String value;
 
   private static final int MIN_LENGTH = 10;
   private static final int MAX_LENGTH = 100;
-  // \\p{Lu} -> ein Großbuchstabe (Unicode Uppercase Letter, z.B. A–Z, Ä, Ö, Ü)
-  // \\p{L} -> irgendein Buchstabe (Letter, auch Umlaute, andere Sprachen etc.)
-  // \\p{Nd}-> Dezimalziffer (Number, decimal digit, 0–9)
+
+  // \p{Lu} -> ein Großbuchstabe (Unicode Uppercase Letter, z.B. A–Z, Ä, Ö, Ü)
+  // \p{L}  -> irgendein Buchstabe (Letter, auch Umlaute, andere Sprachen etc.)
+  // \p{Nd} -> Dezimalziffer (Number, decimal digit, 0–9)
   private static final String PATTERN = "^[\\p{Lu}][\\p{L}\\p{Nd} ]*$";
+
+  /**
+   * Regeln als Daten (funktionaler Stil): Jede Regel ist eine Predicate+Message-Kombination.
+   * Fail-fast: wirft beim ersten Verstoß eine IllegalArgumentException.
+   */
+  private static final List<Rule> RULES = List.of(
+          new Rule(s -> !s.isEmpty(), "Name darf nicht leer sein"),
+          new Rule(VotingName::isValidLength, "Name muss zwischen 10 und 100 Zeichen lang sein"),
+          new Rule(VotingName::matchesPattern,
+                  "Name muss mit Großbuchstaben beginnen und darf nur Buchstaben, Ziffern und Leerzeichen enthalten")
+  );
 
   /**
    * Erstellt ein neues {@code VotingName}-Objekt und validiert den Namen.
@@ -33,35 +49,30 @@ public class VotingName {
    * @throws IllegalArgumentException wenn der Name ungültig ist
    */
   public VotingName(String raw) {
-    if (raw == null) {
-      throw new IllegalArgumentException("Name darf nicht null sein");
-    }
+    Objects.requireNonNull(raw, "Name darf nicht null sein");
 
     String trimmed = raw.trim();
-    if (trimmed.isEmpty()) {
-      throw new IllegalArgumentException("Name darf nicht leer sein");
-    }
 
-    int length = trimmed.length();
-    if (length < 10) {
-      throw new IllegalArgumentException("Name muss mindestens 10 Zeichen haben");
-    }
-    if (length > 100) {
-      throw new IllegalArgumentException("Name darf höchstens 100 Zeichen haben");
-    }
-    int len = trimmed.length();
-    if (len < MIN_LENGTH || len > MAX_LENGTH) {
-      throw new IllegalArgumentException("Name muss zwischen 10 und 100 Zeichen lang sein");
-    }
-
-    if (!trimmed.matches(PATTERN)) {
-      throw new IllegalArgumentException(
-              "Name muss mit Großbuchstaben beginnen und darf nur Buchstaben,"
-                      + " Ziffern und Leerzeichen enthalten");
-    }
+    RULES.stream()
+            .filter(rule -> !rule.predicate().test(trimmed))
+            .findFirst()
+            .ifPresent(rule -> {
+              throw new IllegalArgumentException(rule.message());
+            });
 
     this.value = trimmed;
   }
+
+  private static boolean isValidLength(String s) {
+    int len = s.length();
+    return len >= MIN_LENGTH && len <= MAX_LENGTH;
+  }
+
+  private static boolean matchesPattern(String s) {
+    return s.matches(PATTERN);
+  }
+
+  private record Rule(Predicate<String> predicate, String message) {}
 
   public String getValue() {
     return value;

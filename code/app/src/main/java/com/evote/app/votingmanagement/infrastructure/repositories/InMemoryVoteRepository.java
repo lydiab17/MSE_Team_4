@@ -1,14 +1,13 @@
 package com.evote.app.votingmanagement.infrastructure.repositories;
 
+import com.evote.app.votingmanagement.domain.model.Vote;
+import com.evote.app.votingmanagement.domain.model.VoteRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
-
-import com.evote.app.votingmanagement.domain.model.Vote;
-import com.evote.app.votingmanagement.domain.model.VoteRepository;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -42,11 +41,10 @@ public class InMemoryVoteRepository implements VoteRepository {
 
   @Override
   public boolean existsByVotingIdAndPseudonym(int votingId, String voterKey) {
-      return store.values().stream()
-              .anyMatch(v -> v.getVotingId() == votingId
-                      && voterKey.equals(v.getVoterKey()));
+    return store.values().stream()
+            .anyMatch(v -> v.getVotingId() == votingId
+                    && voterKey.equals(v.getVoterKey()));
   }
-
 
   /**
    * Helper: clear repository (useful in tests).

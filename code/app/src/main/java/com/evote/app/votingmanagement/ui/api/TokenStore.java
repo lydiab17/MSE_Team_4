@@ -2,20 +2,27 @@ package com.evote.app.votingmanagement.ui.api;
 
 import java.util.Optional;
 
+/**
+ * Einfacher, globaler Token-Speicher für den Prototyp.
+ *
+ * <p>Speichert ein JWT im Speicher der laufenden Anwendung. Nicht für produktive Nutzung gedacht.
+ */
 public class TokenStore {
-    private static volatile String jwt; // simple für Prototyp
 
-    private TokenStore() {}
+  private static volatile String jwt; // simple für Prototyp
 
-    public static void setJwt(String token) {
-        jwt = token;
-    }
+  private TokenStore() {
+  }
 
-    public static Optional<String> getJwt() {
-        return Optional.ofNullable(jwt);
-    }
+  public static void setJwt(String token) {
+    jwt = token;
+  }
 
-    public static void clear() {
-        jwt = null;
-    }
+  public static Optional<String> getJwt() {
+    return Optional.ofNullable(jwt);
+  }
+
+  public static void clear() {
+    jwt = null;
+  }
 }

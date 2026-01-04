@@ -2,6 +2,6 @@
 
 <?import javafx.scene.layout.StackPane?>
 
-<StackPane fx:id="viewHolder" style="-fx-background-color: lightblue;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.evote.app.citizen_management.ui.controller.MainController">
+<StackPane fx:id="viewHolder" style="-fx-background-color: lightblue;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.evote.app.ui.controller.MainController">
     <fx:include source="login.fxml" />
 </StackPane>
