@@ -1,5 +1,51 @@
 # AOP Analyse
 
+## Grundlagen zu AOP
+
+### Prinzip von AOP
+- Separation of concerns: Klassen und Methoden sollen nur das tun, wofür sie verantwortlich sind
+
+### Vorteile von AOP
+- Sauberer Code (Methode erfüllt nur ihre Kernfunktionalität)
+- bessere Lesbarkeit
+- bessere Wartbarkeit
+- Wiederverwendbarkeit
+- keine Duplikate
+
+### Nachteile von AOP
+- erschwertes Debugging
+- für die Entwickler ist nicht mehr sichtbar, das etwas passiert und was überhaupt passiert
+
+### Anwendungsgebiete von AOP
+- Performance-Test
+- Security
+- Logging
+- Testen
+
+### Aspekt
+- ein Codestück bzw. dessen Aufgabe, die es zu erledigen gilt (= Concern)
+- **Code-Level-Concerns:** Kernfunktionalität (funktionale Anforderungen)
+- **System-Level-Concerns:** sonstige Funktionalität (nicht-funktionale Anforderungen)
+
+### Cross-cutting Concerns
+- Querschnittsfunktionalitäten, die sich durch viele Teile einer Anwendung ziehen, aber nicht zur eigentlichen Fachlogik gehören
+- erzeugen echte Modularität
+
+### Advice
+- der auszuführende Code (System-Level-Concern), der in die Core-Level Methode hineingewoben wird
+- **Before:** Wird vor einem Join Point ausgeführt
+- **After:** Wird nach einem Join Point ausgeführt (unabhängig davon, ob er erfolgreich war oder eine Exception geworfen hat)
+- **Around:** Umschließt den Join Point und kann dessen Ausführung kontrollieren, verzögern, verändern oder sogar ersetzen
+
+### Pointcut
+- Definition der Orte, an denen tatsächlich hineingewoben wird
+
+### Join-Point
+- konkrete Punkt, an dem das Aufrufereignis stattfindet
+
+### Weaving
+- Vorgang des Hineinwebens der fachfremden Concerns in den Zielcode
+
 ## 1) Überblick: Cross-cutting Concerns
 
 In unserem Projekt lassen sich mehrere **Querschnittsbelange (Cross-cutting Concerns)** identifizieren. Damit sind
