@@ -49,7 +49,7 @@ public class CitizenRestController {
         return ResponseEntity.ok(token);
     }
 
-    @GetMapping("/user")
+    @GetMapping("/citizen")
     public CitizenResponseDto getLoggedInCitizen (HttpServletRequest request) {
         return CitizenResponseDto.fromDomain(citizenService.getCurrentLoggedInCitizen());
 

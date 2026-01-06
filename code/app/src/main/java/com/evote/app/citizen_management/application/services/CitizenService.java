@@ -5,6 +5,7 @@ import com.evote.app.citizen_management.application.dto.CitizenDto;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationRequestDto;
 import com.evote.app.citizen_management.domain.commands.CitizenRegistrationCommand;
 import com.evote.app.citizen_management.domain.events.CitizenCreatedEvent;
+import com.evote.app.citizen_management.domain.events.DomainEvent;
 import com.evote.app.citizen_management.domain.model.Citizen;
 import com.evote.app.citizen_management.domain.valueobjects.Email;
 import com.evote.app.citizen_management.exceptions.UserAlreadyExistsException;
@@ -38,7 +39,8 @@ public class CitizenService {
      */
     public Citizen registerCitizen(CitizenRegistrationRequestDto registrationInput) throws UserAlreadyExistsException {
         CitizenRegistrationCommand citizenRegistrationCommand = new CitizenRegistrationCommand(registrationInput.firstName(), registrationInput.lastName(), registrationInput.email(), registrationInput.password());
-        return this.citizenProjector.apply((CitizenCreatedEvent) this.citizenAggregator.handle(citizenRegistrationCommand).get(0));
+        DomainEvent event = this.citizenAggregator.handle(citizenRegistrationCommand).get(0);
+        return this.citizenProjector.apply((CitizenCreatedEvent) event);
     }
 
     /**

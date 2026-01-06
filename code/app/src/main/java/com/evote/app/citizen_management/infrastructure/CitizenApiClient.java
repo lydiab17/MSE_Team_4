@@ -1,6 +1,9 @@
 package com.evote.app.citizen_management.infrastructure;
 
 import com.evote.app.citizen_management.application.dto.CitizenLoginRequestDto;
+import com.evote.app.citizen_management.domain.model.Citizen;
+import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationRequestDto;
 import org.springframework.stereotype.Component;
@@ -9,6 +12,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -40,6 +44,30 @@ public class CitizenApiClient {
             return false;
         }
     }
+
+    public Citizen getLoggedInUser(String authToken) {
+        try {
+            HttpClient client = HttpClient.newHttpClient();
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(URI.create(BASE_URL + "/login"))
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + authToken)
+                    .build();
+
+            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            System.out.println("Hier: " + response.statusCode());
+            if (response.statusCode() == 200) {
+                return null;
+            }
+
+            return null;
+
+        } catch(Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
 
     public boolean registerCitizen(String firstName, String lastName, String email, String password) {
         try {

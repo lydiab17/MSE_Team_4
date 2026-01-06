@@ -1,5 +1,51 @@
 # AOP Analyse
 
+## Grundlagen zu AOP
+
+### Prinzip von AOP
+- Separation of concerns: Klassen und Methoden sollen nur das tun, wofür sie verantwortlich sind
+
+### Vorteile von AOP
+- Sauberer Code (Methode erfüllt nur ihre Kernfunktionalität)
+- bessere Lesbarkeit
+- bessere Wartbarkeit
+- Wiederverwendbarkeit
+- keine Duplikate
+
+### Nachteile von AOP
+- erschwertes Debugging
+- für die Entwickler ist nicht mehr sichtbar, das etwas passiert und was überhaupt passiert
+
+### Anwendungsgebiete von AOP
+- Performance-Test
+- Security
+- Logging
+- Testen
+
+### Aspekt
+- ein Codestück bzw. dessen Aufgabe, die es zu erledigen gilt (= Concern)
+- **Code-Level-Concerns:** Kernfunktionalität (funktionale Anforderungen)
+- **System-Level-Concerns:** sonstige Funktionalität (nicht-funktionale Anforderungen)
+
+### Cross-cutting Concerns
+- Querschnittsfunktionalitäten, die sich durch viele Teile einer Anwendung ziehen, aber nicht zur eigentlichen Fachlogik gehören
+- erzeugen echte Modularität
+
+### Advice
+- der auszuführende Code (System-Level-Concern), der in die Core-Level Methode hineingewoben wird
+- **Before:** Wird vor einem Join Point ausgeführt
+- **After:** Wird nach einem Join Point ausgeführt (unabhängig davon, ob er erfolgreich war oder eine Exception geworfen hat)
+- **Around:** Umschließt den Join Point und kann dessen Ausführung kontrollieren, verzögern, verändern oder sogar ersetzen
+
+### Pointcut
+- Definition der Orte, an denen tatsächlich hineingewoben wird
+
+### Join-Point
+- konkrete Punkt, an dem das Aufrufereignis stattfindet
+
+### Weaving
+- Vorgang des Hineinwebens der fachfremden Concerns in den Zielcode
+
 ## 1) Überblick: Cross-cutting Concerns
 
 In unserem Projekt lassen sich mehrere **Querschnittsbelange (Cross-cutting Concerns)** identifizieren. Damit sind
@@ -67,6 +113,49 @@ Zusätzlich nutzen wir **Resilience4j Rate Limiting**, das intern ebenfalls AOP-
 -Annotation kann die Anzahl von Aufrufen pro Zeitraum begrenzt werden, um den Server vor Überlastung zu schützen.
 
 ![RateLimiter](./assets/RateLimiter.png)
+
+---
+
+## 6) AOP beim CitizenManagement
+
+ChatGPT hat mir mehrere Vorschläge gemacht, wie AOP im Projekt eingesetzt werden könnte. Dazu gehörten unter anderem:
+- AOP beim erfolgreichen oder nicht erfolgreichen Login
+- AOP bei der erfolgreichen oder nicht erfolgreichen Registrierung
+- Rate Limiting bzw. Brute-Force-Schutz beim Login
+
+Ich habe mich entschieden, AOP beim Login umzusetzen, da sich dieses Beispiel gut eignet, um das Grundkonzept von AOP zu verstehen. Der grundlegende Code für diese Lösung wurde von ChatGPT erzeugt. Anschließend habe ich den Code selbst überarbeitet und an meine Bedürfnisse angepasst. Dabei habe ich unter anderem:
+- den Methodennamen zur Log-Ausgabe hinzugefügt,
+- Kommentare ergänzt, um den Code besser verständlich zu machen,
+- sowie ternäre Operatoren durch normale if-else-Anweisungen ersetzt, da diese für mich leichter lesbar sind.
+
+```java
+@AfterReturning(
+            pointcut = "execution(boolean com.evote.app.citizen_management.application.services.CitizenService.loginCitizen(..))",
+            returning = "success"
+    )
+    public void logLoginAttempt(JoinPoint joinPoint, boolean success) {
+
+        Object[] args = joinPoint.getArgs();
+        String email;
+        String methodName = joinPoint.getSignature().getName();
+
+        if (args != null && args.length > 0) {
+            email = String.valueOf(args[0]);
+        } else {
+            email = "unknown";
+        }
+
+        if (success) {
+            log.info("Methode {}: Login erfolgreich (email={})", methodName, email);
+        } else {
+            log.warn("Methode {}: Login fehlgeschlagen (email={})", methodName, email);
+        }
+    }
+```
+
+Im Anschluss habe ich die Implementierung getestet. Dabei wurden bei fehlgeschlagenem und erfolgreichem Login entsprechende Log-Ausgaben in der Konsole erzeugt:
+- 2026-01-06T13:56:24.793+01:00  WARN 82242 --- [nio-8080-exec-1] c.e.a.c.i.aspects.LoggingAspectCitizen   : Methode loginCitizen: Login fehlgeschlagen (email=ddsa@dsd.de)
+- 2026-01-06T13:58:49.877+01:00  INFO 82242 --- [nio-8080-exec-4] c.e.a.c.i.aspects.LoggingAspectCitizen   : Methode loginCitizen: Login erfolgreich (email=lydia@email.de)
 
 ---
 

@@ -36,8 +36,13 @@
                   </ImageView>
                </graphic></Button>
             </HBox>
+             <Label fx:id="greetings" text="Text Text">
+            <font>
+               <Font size="16.0" />
+            </font>
+         </Label>
 
-            <Label text="Wähle eine offene Abstimmung, dann eine Option und sende deine Stimme ab." />
+            <Label text="Wählen Sie eine offene Abstimmung, entscheiden Sie sich für eine Option und senden Sie Ihre Stimme ab." />
         </VBox>
     </top>
 
