@@ -34,10 +34,9 @@ public class CitizenAggregator {
 
     public List<DomainEvent> handle(CitizenRegistrationCommand command) throws UserAlreadyExistsException {
         // Check if command can be executed
-        // TODO: Outsourcen vllt. in Citizen selber
         Citizen citizen = Citizen.create(new Name(command.vorname(), command.nachname()), new Email(command.email()), new Password(command.password()));
         if (citizenRepository.findByEmail(citizen.getEmail()).isPresent()) {
-            throw new UserAlreadyExistsException();
+            throw new UserAlreadyExistsException(command.email());
         }
 
         // Command can be executed, will be added as event

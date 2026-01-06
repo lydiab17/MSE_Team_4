@@ -2,6 +2,7 @@ package com.evote.app.citizen_management.infrastructure.repositories;
 
 import com.evote.app.citizen_management.domain.model.Citizen;
 import com.evote.app.citizen_management.domain.valueobjects.Email;
+import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
@@ -12,6 +13,11 @@ public interface CitizenRepository {
      * @param citizen citizen
      */
     void save(Citizen citizen);
+
+    /**
+     * Löscht alles
+     */
+    void clear();
 
     /**
      * Sucht einen Citizen anhand seiner eindeutigen CitizenID

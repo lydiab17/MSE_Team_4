@@ -1,5 +1,7 @@
 package com.evote.app.votingmanagement.ui.api;
 
+import com.evote.app.citizen_management.application.dto.CitizenRegistrationResponseDto;
+import com.evote.app.citizen_management.application.dto.CitizenResponseDto;
 import com.evote.app.votingmanagement.interfaces.dto.CastVoteRequest;
 import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
@@ -27,6 +29,7 @@ import java.util.function.Supplier;
 public class VotingApiClient {
 
   private static final String BASE_URL = "http://localhost:8080/api/votings";
+  private static final String BASE_URL_CITIZENS = "http://localhost:8080/api/citizens";
 
   private final HttpClient http;
   private final ObjectMapper om;
@@ -95,6 +98,17 @@ public class VotingApiClient {
     return fromJson(resp.body(), new TypeReference<List<VotingResponse>>() {}, request.uri());
   }
 
+  public CitizenResponseDto getCurrentUser() {
+      HttpRequest request = requestBuilderCitizens("/citizen")
+              .GET()
+              .build();
+
+      HttpResponse<String> resp = send(request);
+      throwIfError(request, resp);
+
+      return fromJson(resp.body(), new TypeReference<CitizenResponseDto>() {}, request.uri());
+  }
+
   /** Liefert alle aktuell nicht offenen Votings. */
   public List<VotingResponse> getNotOpenVotings() {
     HttpRequest request = requestBuilder("/not-open")
@@ -136,6 +150,14 @@ public class VotingApiClient {
 
   private HttpRequest.Builder requestBuilder(String pathSuffix) {
     URI uri = URI.create(BASE_URL + pathSuffix);
+    HttpRequest.Builder b = HttpRequest.newBuilder().uri(uri);
+
+    addAuthHeaderIfPresent(b);
+    return b;
+  }
+
+  private HttpRequest.Builder requestBuilderCitizens(String pathSuffix) {
+    URI uri = URI.create(BASE_URL_CITIZENS + pathSuffix);
     HttpRequest.Builder b = HttpRequest.newBuilder().uri(uri);
 
     addAuthHeaderIfPresent(b);

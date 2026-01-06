@@ -35,6 +35,9 @@ public class CastVoteFxController {
   private ListView<String> optionsList;
 
   @FXML
+  private Label greetings;
+
+  @FXML
   private Label selectedVotingTitle;
   @FXML
   private Label selectedVotingDates;
@@ -86,6 +89,7 @@ public class CastVoteFxController {
 
     optionsList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
+
     onRefreshOpenVotings();
   }
 
@@ -98,6 +102,11 @@ public class CastVoteFxController {
               statusLabel.setText("Offene Abstimmungen geladen: " + votings.size());
             }
     );
+
+    runAsync(apiClient::getCurrentUser,
+            citizenResponseDto -> {
+              greetings.setText(String.format("Hallo %s %s! ", citizenResponseDto.vorname(), citizenResponseDto.nachname()));
+            });
   }
 
   @FXML
