@@ -1,9 +1,9 @@
 package com.evote.app.citizen_management.application.services;
 
-import com.evote.app.citizen_management.aggregator.CitizenAggregator;
+import com.evote.app.citizen_management.application.CitizenAggregator;
 import com.evote.app.citizen_management.application.dto.CitizenDto;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationRequestDto;
-import com.evote.app.citizen_management.domain.commands.CitizenRegistrationCommand;
+import com.evote.app.citizen_management.application.commands.CitizenRegistrationCommand;
 import com.evote.app.citizen_management.domain.events.CitizenCreatedEvent;
 import com.evote.app.citizen_management.domain.events.DomainEvent;
 import com.evote.app.citizen_management.domain.model.Citizen;
@@ -15,8 +15,6 @@ import com.evote.app.citizen_management.infrastructure.repositories.EventStore;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class CitizenService {
 
@@ -25,7 +23,6 @@ public class CitizenService {
     private final CitizenProjector citizenProjector;
     private final CitizenAggregator citizenAggregator;
 
-    private Citizen logincitizen;
 
     public CitizenService(CitizenRepository citizenRepository, CitizenAggregator citizenAggregator, CitizenProjector citizenProjector, EventStore eventStore) {
         this.citizenRepository = citizenRepository;
@@ -47,22 +44,11 @@ public class CitizenService {
      * Use Case: Login
      */
     public boolean loginCitizen(String email, String passwort) {
-        Email email1 = new Email(email);
-        Optional<Citizen> citizenOpt = citizenRepository.findByEmail(email1);
+        Email emailObj = new Email(email);
 
-        System.out.println("Hier: " + citizenOpt);
-
-        // Prüfen ob Citizen existiert
-        if (citizenOpt.isPresent()) {
-            Citizen c = citizenOpt.get();
-
-            // Passwort vergleichen (anpassen, falls Passwort gehasht ist!)
-            if (c.getPassword().password().equals(passwort)) {
-                return true;
-            }
-        }
-
-        return false;
+        return citizenRepository.findByEmail(emailObj)
+                .map(c -> c.getPassword().password().equals(passwort))
+                .orElse(false);
     }
 
     public CitizenDto getCurrentLoggedInCitizen() {

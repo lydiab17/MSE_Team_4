@@ -1,9 +1,9 @@
 package citizen_management.domain.events;
 
-import com.evote.app.citizen_management.aggregator.CitizenAggregator;
+import com.evote.app.citizen_management.application.CitizenAggregator;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationResponseDto;
 import com.evote.app.citizen_management.application.services.CitizenService;
-import com.evote.app.citizen_management.domain.commands.CitizenRegistrationCommand;
+import com.evote.app.citizen_management.application.commands.CitizenRegistrationCommand;
 import com.evote.app.citizen_management.domain.events.DomainEvent;
 import com.evote.app.citizen_management.domain.model.Citizen;
 import com.evote.app.citizen_management.domain.valueobjects.Email;

@@ -1,4 +1,4 @@
-package com.evote.app.citizen_management.infrastructure;
+package com.evote.app.citizen_management.application.config;
 
 import com.evote.app.citizen_management.application.services.TokenService;
 import jakarta.servlet.FilterChain;

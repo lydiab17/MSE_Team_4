@@ -1,6 +1,6 @@
 package com.evote.app.votingmanagement.ui.controller;
 
-import com.evote.app.ui.controller.MainController;
+import com.evote.app.sharedkernel.controller.MainController;
 import com.evote.app.sharedkernel.security.AuthSession;
 import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
 import com.evote.app.votingmanagement.interfaces.dto.OptionResultResponse;

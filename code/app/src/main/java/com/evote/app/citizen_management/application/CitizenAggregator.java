@@ -1,7 +1,7 @@
-package com.evote.app.citizen_management.aggregator;
+package com.evote.app.citizen_management.application;
 
 import com.evote.app.citizen_management.application.dto.CitizenDto;
-import com.evote.app.citizen_management.domain.commands.CitizenRegistrationCommand;
+import com.evote.app.citizen_management.application.commands.CitizenRegistrationCommand;
 import com.evote.app.citizen_management.domain.events.CitizenCreatedEvent;
 import com.evote.app.citizen_management.domain.events.DomainEvent;
 import com.evote.app.citizen_management.domain.model.Citizen;

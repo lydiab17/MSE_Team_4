@@ -1,4 +1,4 @@
-package com.evote.app.ui.controller;
+package com.evote.app.sharedkernel.controller;
 
 import com.evote.app.HelloApplication;
 import javafx.fxml.FXML;

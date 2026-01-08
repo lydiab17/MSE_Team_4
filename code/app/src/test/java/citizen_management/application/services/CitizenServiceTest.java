@@ -1,7 +1,6 @@
-package citizen_management.infrastructure;
+package citizen_management.application.services;
 
-import com.evote.app.citizen_management.aggregator.CitizenAggregator;
-import com.evote.app.citizen_management.application.dto.CitizenDto;
+import com.evote.app.citizen_management.application.CitizenAggregator;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationRequestDto;
 import com.evote.app.citizen_management.application.services.CitizenService;
 import com.evote.app.citizen_management.domain.model.Citizen;
