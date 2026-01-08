@@ -2,7 +2,7 @@ package com.evote.app.citizen_management.domain.events;
 
 import com.evote.app.citizen_management.application.dto.CitizenDto;
 
-// TODO
+
 public class CitizenCreatedEvent extends DomainEvent {
     private CitizenDto citizenDto;
 

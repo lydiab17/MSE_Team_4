@@ -23,7 +23,7 @@
             </padding>
 
             <HBox spacing="8.0">
-                <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Abstimmen" />
+                <Label style="-fx-font-size: 18; -fx-font-weight: bold;" text="Abstimmen bei eVote" />
 
                 <Region HBox.hgrow="ALWAYS" /> <!-- Spacer -->
 
@@ -71,7 +71,7 @@
 
             <!-- Rechte Seite: Details + Optionen + Stimme abgeben -->
             <VBox spacing="8.0" HBox.hgrow="ALWAYS">
-                <Label style="-fx-font-weight: bold;" text="Details &amp; Optionen" />
+                <Label style="-fx-font-weight: bold;" text="Details und Optionen" />
 
                 <Label fx:id="selectedVotingTitle" style="-fx-font-size: 14; -fx-font-weight: bold;" />
 
@@ -79,13 +79,13 @@
 
                 <TextArea fx:id="selectedVotingInfo" editable="false" prefRowCount="4" wrapText="true" />
 
-                <Label text="Option wählen:">
+                <Label text="Option wählen">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
                 <ListView fx:id="optionsList" prefHeight="103.0" prefWidth="512.0" />
 
-                <Label text="Voter-Key (Demo):" />
+                <Label text="Voter-Key (Demo):" visible="false" />
                 <TextField fx:id="voterKeyField" promptText="z. B. E-Mail oder Token" />
 
                 <Button onAction="#onCastVote" prefHeight="29.0" prefWidth="145.0" style="-fx-background-color: white;" text="Stimme abgeben">

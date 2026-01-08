@@ -1,4 +1,4 @@
-package com.evote.app.citizen_management.domain.commands;
+package com.evote.app.citizen_management.application.commands;
 
 public record CitizenRegistrationCommand(
     String vorname,

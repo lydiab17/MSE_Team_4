@@ -25,7 +25,7 @@ class InMemoryCitizenRepositoryTest {
     }
 
     @Test
-    @DisplayName("Sollte einen Citizen speichern und dessen ID danach auffinden")
+    @DisplayName("Sollte einen Citizen speichern und dessen E-Mail danach auffinden")
     void shouldSaveAndFindCitizen() {
         // Value Objects anlegen
         Name name = new Name("Max", "Mustermann");
@@ -35,13 +35,10 @@ class InMemoryCitizenRepositoryTest {
         // Citizen über Factory erzeugen
         Citizen citizen = Citizen.create(name, email, password);
 
-        // ID aus dem erzeugten Citizen holen
-        CitizenID id = citizen.getCitizenID();
-
         // Citizen-Objekt im Repository speichern
         repository.save(citizen);
 
-        // Citizen anhand der ID finden
+        // Citizen anhand der E-Mail
         Optional<Citizen> result = repository.findByEmail(email);
 
         // Assertions
@@ -49,5 +46,27 @@ class InMemoryCitizenRepositoryTest {
         assertTrue(result.isPresent());
         // prüft, dass das gespeicherte Objekt mit dem gefundenen Objekt übereinstimmt
         assertEquals(citizen, result.get());
+    }
+
+    @Test
+    @DisplayName("clear(): Sollte alle gespeicherten Citizens entfernen")
+    void clear_shouldRemoveAllCitizens() {
+        // Arrange
+        Name name = new Name("Max", "Mustermann");
+        Email email = new Email("max@example.com");
+        Password password = new Password("SehrSicher123");
+        Citizen citizen = Citizen.create(name, email, password);
+
+        repository.save(citizen);
+        assertTrue(repository.findByEmail(email).isPresent(),
+                "Vor clear() sollte Citizen vorhanden sein");
+
+        // Act
+        repository.clear();
+
+        // Assert
+        Optional<Citizen> result = repository.findByEmail(email);
+        assertTrue(result.isEmpty(),
+                "Nach clear() sollte kein Citizen mehr vorhanden sein");
     }
 }

@@ -1,6 +1,5 @@
-package com.evote.app.config;
+package com.evote.app.citizen_management.application.config;
 
-import com.evote.app.citizen_management.infrastructure.AuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

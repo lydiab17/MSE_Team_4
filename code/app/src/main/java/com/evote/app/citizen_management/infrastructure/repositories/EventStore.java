@@ -26,6 +26,7 @@ public class EventStore {
     }
 
     public List<DomainEvent> getEvents() {
+
         return this.store.values().stream().flatMap(List::stream).toList();
     }
 

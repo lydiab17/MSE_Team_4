@@ -38,7 +38,7 @@
                </ImageView>
             </graphic></Button>
 
-            <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Neues Voting anlegen" />
+            <Label style="-fx-font-size: 16; -fx-font-weight: bold;" text="Neue Abstimmung anlegen" />
 
             <GridPane hgap="8.0" vgap="8.0">
                 <columnConstraints>
@@ -51,7 +51,7 @@
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-                <TextField fx:id="idField" promptText="z.B. 1" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                <TextField fx:id="idField" promptText="ID der Abstimmung" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
                 <!-- Name -->
                 <Label text="Name" GridPane.columnIndex="0" GridPane.rowIndex="1">
@@ -72,17 +72,17 @@
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-                <DatePicker fx:id="startDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                <DatePicker fx:id="startDatePicker" promptText="01.01.2026" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
                 <!-- Enddatum -->
                 <Label text="Enddatum" GridPane.columnIndex="0" GridPane.rowIndex="4">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-                <DatePicker fx:id="endDatePicker" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                <DatePicker fx:id="endDatePicker" promptText="31.01.2026" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
                 <!-- Optionen -->
-                <Label text="Optionen (durch Komma trennen)" GridPane.columnIndex="0" GridPane.rowIndex="5">
+                <Label text="Optionen " GridPane.columnIndex="0" GridPane.rowIndex="5">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
@@ -98,7 +98,7 @@
             </GridPane>
 
             <HBox spacing="8.0">
-                <Button onAction="#onCreateVoting" prefHeight="29.0" prefWidth="136.0" style="-fx-background-color: white;" text="Voting anlegen">
+                <Button onAction="#onCreateVoting" prefHeight="29.0" prefWidth="167.0" style="-fx-background-color: white;" text="Abstimmung anlegen">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -106,7 +106,7 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-                <Button onAction="#onClearForm" style="-fx-background-color: white;" text="Formular leeren">
+                <Button onAction="#onClearForm" prefHeight="29.0" prefWidth="129.0" style="-fx-background-color: white;" text="Formular leeren">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
                      <image>
@@ -132,7 +132,7 @@
 
             <!-- Nicht offene Votings -->
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label style="-fx-font-weight: bold;" text="Nicht offene Votings" />
+                <Label style="-fx-font-weight: bold;" text="Nicht aktive Abstimmungen" />
                 <ListView fx:id="notOpenVotingsList" prefHeight="140.0" prefWidth="248.0" />
 
                 <HBox spacing="8.0">
@@ -149,7 +149,7 @@
 
             <!-- Offene Votings -->
             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
-                <Label style="-fx-font-weight: bold;" text="Offene Votings" />
+                <Label style="-fx-font-weight: bold;" text="Aktive Abstimmungen" />
                 <ListView fx:id="openVotingsList" prefHeight="140.0" prefWidth="248.0" />
             </VBox>
 

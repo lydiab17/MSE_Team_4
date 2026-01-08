@@ -1,6 +1,6 @@
 package citizen_management.infrastructure;
 
-import com.evote.app.citizen_management.aggregator.CitizenAggregator;
+import com.evote.app.citizen_management.application.CitizenAggregator;
 import com.evote.app.citizen_management.application.dto.CitizenLoginRequestDto;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationRequestDto;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationResponseDto;

@@ -1,6 +1,5 @@
 package com.evote.app.citizen_management.application.dto;
 
-import com.evote.app.citizen_management.domain.model.Citizen;
 
 public record CitizenResponseDto(
         String email,
