@@ -1,6 +1,5 @@
 package com.evote.app.citizen_management.infrastructure.repositories;
 
-import com.evote.app.citizen_management.domain.events.CitizenCreatedEvent;
 import com.evote.app.citizen_management.domain.events.DomainEvent;
 import org.springframework.stereotype.Service;
 

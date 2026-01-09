@@ -61,10 +61,5 @@ public class CitizenService {
         return new CitizenDto(citizen.getCitizenID().toString(), citizen.getName().firstName(), citizen.getName().lastName(), citizen.getEmail().email(), citizen.getPassword().password());
     }
 
-    private void project() {
-        this.citizenProjector.project(this.eventRepository.getEvents());
-        this.eventRepository.clear();
-    }
-
 }
 

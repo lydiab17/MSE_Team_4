@@ -4,10 +4,7 @@ import com.evote.app.citizen_management.domain.valueobjects.CitizenID;
 import com.evote.app.citizen_management.domain.valueobjects.Email;
 import com.evote.app.citizen_management.domain.valueobjects.Name;
 import com.evote.app.citizen_management.domain.valueobjects.Password;
-import com.evote.app.citizen_management.domain.events.DomainEvent;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**

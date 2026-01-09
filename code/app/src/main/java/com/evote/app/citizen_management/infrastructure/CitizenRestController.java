@@ -44,7 +44,6 @@ public class CitizenRestController {
         }
 
         String token = TokenService.generateToken(request.email());
-        System.out.println((token));
         response.addHeader("Authorization", "Bearer " + token);
         return ResponseEntity.ok(token);
     }

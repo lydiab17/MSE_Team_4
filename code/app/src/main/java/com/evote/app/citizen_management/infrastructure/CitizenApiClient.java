@@ -30,13 +30,12 @@ public class CitizenApiClient {
 
             var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            System.out.println("Hier: " + response.statusCode());
             if (response.statusCode() == 403) {
                 // Vom Backend geworfene UserAlreadyExistsException
-                System.out.println("geht nicsch");
+
             }
             if(response.statusCode() == 200) {
-                System.out.println(response.statusCode());
+
                 return true;
             } else {
                 return false;

@@ -44,7 +44,6 @@ public class LoginController {
     private void loginAction(ActionEvent e1) {
 
         if (isAnyFieldEmpty()) {
-            System.out.println("Es wurden nicht alle Felder ausgefüllt.");
             return;
         }
 

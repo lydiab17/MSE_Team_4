@@ -1,6 +1,5 @@
 package com.evote.app.votingmanagement.ui.api;
 
-import com.evote.app.citizen_management.application.dto.CitizenRegistrationResponseDto;
 import com.evote.app.citizen_management.application.dto.CitizenResponseDto;
 import com.evote.app.votingmanagement.interfaces.dto.CastVoteRequest;
 import com.evote.app.votingmanagement.interfaces.dto.CreateVotingRequest;
