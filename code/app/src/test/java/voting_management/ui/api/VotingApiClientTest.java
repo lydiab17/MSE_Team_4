@@ -25,6 +25,9 @@ class VotingApiClientTest {
 
   private static HttpServer server;
 
+  private static final int PORT = 8081;
+  private static final String ORIGIN = "http://localhost:" + PORT;
+
   /** pro Test konfigurierbare Responses je Pfad */
   private static final Map<String, StubResponse> responses = new ConcurrentHashMap<>();
 
@@ -33,8 +36,8 @@ class VotingApiClientTest {
 
   @BeforeAll
   static void startServer() throws Exception {
-    // VotingApiClient hat fest localhost:8080 -> daher 8080
-    server = HttpServer.create(new InetSocketAddress("localhost", 8080), 0);
+    // Stub-Server läuft auf 8081
+    server = HttpServer.create(new InetSocketAddress("localhost", PORT), 0);
 
     // Ein Catch-All Handler reicht, wir matchen nach Pfad
     server.createContext("/api/votings", VotingApiClientTest::handle);
@@ -62,7 +65,7 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings/open", StubResponse.okJson("[]"));
 
-    VotingApiClient client = new VotingApiClient(null);
+    VotingApiClient client = new VotingApiClient(null, ORIGIN);
 
     // Act
     client.getOpenVotings();
@@ -81,7 +84,7 @@ class VotingApiClientTest {
     responses.put("/api/votings/5", StubResponse.okJson(votingResponseJson(5, true)));
 
     Supplier<Optional<String>> tokenSupplier = () -> Optional.of("jwt-123");
-    VotingApiClient client = new VotingApiClient(tokenSupplier);
+    VotingApiClient client = new VotingApiClient(tokenSupplier, ORIGIN);
 
     // Act
     VotingResponse vr = client.getById(5);
@@ -100,7 +103,7 @@ class VotingApiClientTest {
     responses.put("/api/votings/open", StubResponse.okJson("[]"));
 
     Supplier<Optional<String>> tokenSupplier = () -> null; // bewusst
-    VotingApiClient client = new VotingApiClient(tokenSupplier);
+    VotingApiClient client = new VotingApiClient(tokenSupplier, ORIGIN);
 
     // Act + Assert (darf nicht crashen)
     assertDoesNotThrow(client::getOpenVotings);
@@ -119,7 +122,7 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings/7/open", StubResponse.noContent());
 
-    VotingApiClient client = new VotingApiClient(Optional::empty);
+    VotingApiClient client = new VotingApiClient(Optional::empty, ORIGIN);
 
     // Act
     client.openVoting(7);
@@ -135,7 +138,7 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings/9/votes", StubResponse.noContent());
 
-    VotingApiClient client = new VotingApiClient(() -> Optional.of("tkn"));
+    VotingApiClient client = new VotingApiClient(() -> Optional.of("tkn"), ORIGIN);
 
     // Act
     client.castVote(9, "Nein");
@@ -158,7 +161,7 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings/1", StubResponse.status(404, "not found"));
 
-    VotingApiClient client = new VotingApiClient(Optional::empty);
+    VotingApiClient client = new VotingApiClient(Optional::empty, ORIGIN);
 
     // Act
     VotingApiException ex = assertThrows(VotingApiException.class, () -> client.getById(1));
@@ -174,7 +177,7 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings/2/open", StubResponse.status(400, "bad request"));
 
-    VotingApiClient client = new VotingApiClient(Optional::empty);
+    VotingApiClient client = new VotingApiClient(Optional::empty, ORIGIN);
 
     // Act
     VotingApiException ex = assertThrows(VotingApiException.class, () -> client.openVoting(2));
@@ -190,13 +193,12 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings/3/votes", StubResponse.status(500, "boom"));
 
-    VotingApiClient client = new VotingApiClient(Optional::empty);
+    VotingApiClient client = new VotingApiClient(Optional::empty, ORIGIN);
 
     // Act
     VotingApiException ex = assertThrows(VotingApiException.class, () -> client.castVote(3, "Ja"));
 
-    // Assert: altes spezielles Prefix ("HTTP 500: ") gibt es nicht mehr,
-    // stattdessen Status + Kontext + Body
+    // Assert
     assertTrue(ex.getMessage().contains("HTTP 500"), "Message sollte den HTTP-Status enthalten");
     assertTrue(ex.getMessage().contains("boom"), "Message sollte den Response-Body enthalten");
     assertTrue(ex.getMessage().contains("/api/votings/3/votes"), "Message sollte den Pfad/URI enthalten");
@@ -211,9 +213,8 @@ class VotingApiClientTest {
     // Arrange
     responses.put("/api/votings", StubResponse.okJson(votingResponseJson(42, false)));
 
-    VotingApiClient client = new VotingApiClient(Optional::empty);
+    VotingApiClient client = new VotingApiClient(Optional::empty, ORIGIN);
 
-    // CreateVotingRequest ist bei dir vorhanden, aber Signatur kann variieren -> robust via reflection
     Object req =
             newCreateVotingRequestReflectively(
                     42,
@@ -272,8 +273,6 @@ class VotingApiClientTest {
   }
 
   private static String votingResponseJson(int id, boolean open) {
-    // VotingResponse record:
-    // id, name, info, startDate, endDate, open, options
     return "{"
             + "\"id\":"
             + id
