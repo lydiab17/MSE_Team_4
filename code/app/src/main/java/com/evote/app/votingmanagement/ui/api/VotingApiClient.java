@@ -27,27 +27,61 @@ import java.util.function.Supplier;
  */
 public class VotingApiClient {
 
-  private static final String BASE_URL = "http://localhost:8080/api/votings";
-  private static final String BASE_URL_CITIZENS = "http://localhost:8080/api/citizens";
+  // Defaults für die echte Anwendung
+  private static final String DEFAULT_SERVER_ORIGIN = "http://localhost:8080";
+
+  // Optionale Overrides per System Property (praktisch für Tests / CI)
+  // z.B. -Devote.api.origin=http://localhost:8081
+  private static final String ORIGIN_PROP = "evote.api.origin";
 
   private final HttpClient http;
   private final ObjectMapper om;
   private final Supplier<Optional<String>> tokenSupplier;
 
+  // Statt static final: instanzbasiert
+  private final String baseUrlVotings;   // .../api/votings
+  private final String baseUrlCitizens;  // .../api/citizens
+
   /**
-   * Erstellt einen API-Client.
+   * Erstellt einen API-Client mit Default-Origin (oder Property Override).
    *
    * @param tokenSupplier liefert optional ein JWT (z.B. aus einer Session); kann {@code null} sein
    */
   public VotingApiClient(Supplier<Optional<String>> tokenSupplier) {
-    this(HttpClient.newHttpClient(), new ObjectMapper().findAndRegisterModules(), tokenSupplier);
+    this(HttpClient.newHttpClient(), new ObjectMapper().findAndRegisterModules(), tokenSupplier, resolveOrigin());
   }
 
-  // Optionaler Konstruktor für Tests/DI
-  public VotingApiClient(HttpClient http, ObjectMapper om, Supplier<Optional<String>> tokenSupplier) {
+  /**
+   * Optionaler Konstruktor für Tests/DI: Base-Origin explizit setzen.
+   * Beispiele:
+   *   new VotingApiClient(Optional::empty, "http://localhost:8081")
+   *   new VotingApiClient(Optional::empty, "http://127.0.0.1:12345")
+   */
+  public VotingApiClient(Supplier<Optional<String>> tokenSupplier, String serverOrigin) {
+    this(HttpClient.newHttpClient(), new ObjectMapper().findAndRegisterModules(), tokenSupplier, serverOrigin);
+  }
+
+  // Optionaler Konstruktor für Tests/DI (voll konfigurierbar)
+  public VotingApiClient(HttpClient http, ObjectMapper om, Supplier<Optional<String>> tokenSupplier, String serverOrigin) {
     this.http = http;
     this.om = om;
     this.tokenSupplier = tokenSupplier;
+
+    String origin = normalizeOrigin(serverOrigin);
+    this.baseUrlVotings = origin + "/api/votings";
+    this.baseUrlCitizens = origin + "/api/citizens";
+  }
+
+  private static String resolveOrigin() {
+    // Property gewinnt, sonst Default
+    String prop = System.getProperty(ORIGIN_PROP);
+    return (prop == null || prop.isBlank()) ? DEFAULT_SERVER_ORIGIN : prop;
+  }
+
+  private static String normalizeOrigin(String origin) {
+    if (origin == null || origin.isBlank()) return DEFAULT_SERVER_ORIGIN;
+    // trailing slash entfernen, damit ".../api/..." sauber wird
+    return origin.endsWith("/") ? origin.substring(0, origin.length() - 1) : origin;
   }
 
   /** Legt ein neues Voting an. */
@@ -98,14 +132,14 @@ public class VotingApiClient {
   }
 
   public CitizenResponseDto getCurrentUser() {
-      HttpRequest request = requestBuilderCitizens("/citizen")
-              .GET()
-              .build();
+    HttpRequest request = requestBuilderCitizens("/citizen")
+            .GET()
+            .build();
 
-      HttpResponse<String> resp = send(request);
-      throwIfError(request, resp);
+    HttpResponse<String> resp = send(request);
+    throwIfError(request, resp);
 
-      return fromJson(resp.body(), new TypeReference<CitizenResponseDto>() {}, request.uri());
+    return fromJson(resp.body(), new TypeReference<CitizenResponseDto>() {}, request.uri());
   }
 
   /** Liefert alle aktuell nicht offenen Votings. */
@@ -148,27 +182,21 @@ public class VotingApiClient {
   // -------------------------
 
   private HttpRequest.Builder requestBuilder(String pathSuffix) {
-    URI uri = URI.create(BASE_URL + pathSuffix);
+    URI uri = URI.create(baseUrlVotings + pathSuffix);
     HttpRequest.Builder b = HttpRequest.newBuilder().uri(uri);
-
     addAuthHeaderIfPresent(b);
     return b;
   }
 
   private HttpRequest.Builder requestBuilderCitizens(String pathSuffix) {
-    URI uri = URI.create(BASE_URL_CITIZENS + pathSuffix);
+    URI uri = URI.create(baseUrlCitizens + pathSuffix);
     HttpRequest.Builder b = HttpRequest.newBuilder().uri(uri);
-
     addAuthHeaderIfPresent(b);
     return b;
   }
 
-  /**
-   * Fügt einen Authorization-Header hinzu, sofern ein Token verfügbar ist.
-   */
   private void addAuthHeaderIfPresent(HttpRequest.Builder b) {
     if (tokenSupplier == null) return;
-
     Optional<String> tokenOpt = Optional.ofNullable(tokenSupplier.get()).orElse(Optional.empty());
     tokenOpt.ifPresent(t -> b.header("Authorization", "Bearer " + t));
   }
@@ -193,10 +221,7 @@ public class VotingApiClient {
     String body = resp.body();
     String bodyPart = (body == null || body.isBlank()) ? "" : " | body=" + abbreviate(body, 2_000);
 
-    // Message bewusst maschinenlesbar für Logging/Handling
     String msg = "HTTP " + sc + " bei " + request.method() + " " + request.uri() + bodyPart;
-
-    // Wenn du später Subklassen willst: hier nach sc mappen (400/401/403/404/5xx)
     throw new VotingApiException(msg);
   }
 
