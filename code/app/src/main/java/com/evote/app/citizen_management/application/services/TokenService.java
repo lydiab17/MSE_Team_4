@@ -27,7 +27,6 @@ public class TokenService {
 
     public static String validateToken(String token) {
         try {
-            System.out.println(token);
             return Jwts.parser()
                     .setSigningKey(SECRET)
                     .parseClaimsJws(token)

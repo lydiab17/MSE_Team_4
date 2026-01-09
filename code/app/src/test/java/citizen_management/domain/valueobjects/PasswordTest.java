@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @version 1.0
  */
 @DisplayName("Name Value Objects Tests")
-public class PasswordTest {
+class PasswordTest {
 
     // Happy-Path-Tests
     @Test

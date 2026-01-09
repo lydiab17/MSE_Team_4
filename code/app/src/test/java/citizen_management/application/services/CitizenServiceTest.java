@@ -22,17 +22,13 @@ import static org.junit.jupiter.api.Assertions.*;
         CitizenProjector.class,
         EventStore.class,
         InMemoryCitizenRepository.class })
-public class CitizenServiceTest {
+class CitizenServiceTest {
 
     @Autowired
     private CitizenService citizenService;
 
     @Autowired
     private CitizenRepository citizenRepository;
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @AfterEach
     void cleanUp() {

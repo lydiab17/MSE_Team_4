@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @version 1.0
  */
 @DisplayName("Citizen Model Tests")
-public class CitizenTest {
+class CitizenTest {
 
     private Name name;
     private Email email;

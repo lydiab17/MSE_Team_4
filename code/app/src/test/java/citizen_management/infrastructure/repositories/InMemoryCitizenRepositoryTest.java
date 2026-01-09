@@ -1,7 +1,6 @@
 package citizen_management.infrastructure.repositories;
 
 import com.evote.app.citizen_management.domain.model.Citizen;
-import com.evote.app.citizen_management.domain.valueobjects.CitizenID;
 import com.evote.app.citizen_management.domain.valueobjects.Email;
 import com.evote.app.citizen_management.domain.valueobjects.Password;
 import com.evote.app.citizen_management.infrastructure.repositories.InMemoryCitizenRepository;

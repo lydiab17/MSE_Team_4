@@ -25,7 +25,7 @@ import java.util.List;
         CitizenProjector.class,
         EventStore.class,
         InMemoryCitizenRepository.class })
-public class CitizenCommandEventTest {
+class CitizenCommandEventTest {
 
     @Autowired
     private CitizenAggregator citizenAggregator;

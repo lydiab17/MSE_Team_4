@@ -27,7 +27,7 @@ public class CitizenDto {
         return nachname;
     }
 
-    public void setNachname(String vorname) {
+    public void setNachname(String nachname) {
         this.nachname = nachname;
     }
 
