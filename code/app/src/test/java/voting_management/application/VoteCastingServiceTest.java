@@ -44,10 +44,7 @@ public class VoteCastingServiceTest {
     voteRepo = new InMemoryVoteRepository();
 
     today = LocalDate.of(2030, 5, 10);
-    fixedClock = Clock.fixed(
-            today.atStartOfDay(ZoneId.of("UTC")).toInstant(),
-            ZoneId.of("UTC")
-    );
+    fixedClock = Clock.fixed(today.atStartOfDay(ZoneId.of("UTC")).toInstant(), ZoneId.of("UTC"));
 
     eventPublisher = mock(ApplicationEventPublisher.class);
 
@@ -55,7 +52,8 @@ public class VoteCastingServiceTest {
     authPort = token -> Optional.of(new PseudonymToken("p-1"));
 
     commandService = new VotingCommandService(votingRepo, eventPublisher, fixedClock);
-    voteCastingService = new VoteCastingService(votingRepo, voteRepo, authPort, eventPublisher, fixedClock);
+    voteCastingService =
+        new VoteCastingService(votingRepo, voteRepo, authPort, eventPublisher, fixedClock);
   }
 
   private Set<String> opts(String... vals) {
@@ -72,13 +70,12 @@ public class VoteCastingServiceTest {
   @Test
   void castVote_success_savesVote_andPublishesEvent() {
     commandService.createVoting(
-            30,
-            "Abstimmung CastVote",
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today.minusDays(1),
-            today.plusDays(1),
-            opts("Ja", "Nein")
-    );
+        30,
+        "Abstimmung CastVote",
+        "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+        today.minusDays(1),
+        today.plusDays(1),
+        opts("Ja", "Nein"));
     commandService.openVoting(30);
 
     reset(eventPublisher); // nur VoteSubmittedEvent zählen
@@ -100,22 +97,22 @@ public class VoteCastingServiceTest {
   void castVote_authFails_throwsIllegalState_andDoesNotPublish() {
     AuthPort failingAuth = token -> Optional.empty();
     VoteCastingService failingSvc =
-            new VoteCastingService(votingRepo, voteRepo, failingAuth, eventPublisher, fixedClock);
+        new VoteCastingService(votingRepo, voteRepo, failingAuth, eventPublisher, fixedClock);
 
     commandService.createVoting(
-            31,
-            "Abstimmung AuthFail",
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today.minusDays(1),
-            today.plusDays(1),
-            opts("Ja", "Nein")
-    );
+        31,
+        "Abstimmung AuthFail",
+        "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+        today.minusDays(1),
+        today.plusDays(1),
+        opts("Ja", "Nein"));
     commandService.openVoting(31);
 
     reset(eventPublisher);
 
-    assertThrows(IllegalStateException.class,
-            () -> failingSvc.castVote(new CastVoteDto("bad-token", 31, "Ja")));
+    assertThrows(
+        IllegalStateException.class,
+        () -> failingSvc.castVote(new CastVoteDto("bad-token", 31, "Ja")));
 
     // Wichtig: any(Object.class) statt any()
     verify(eventPublisher, never()).publishEvent(any(Object.class));
@@ -134,13 +131,12 @@ public class VoteCastingServiceTest {
   @Test
   void castVote_votingNotOpened_throwsIllegalState() {
     commandService.createVoting(
-            32,
-            "Abstimmung Closed",
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today.minusDays(1),
-            today.plusDays(1),
-            opts("Ja", "Nein")
-    );
+        32,
+        "Abstimmung Closed",
+        "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+        today.minusDays(1),
+        today.plusDays(1),
+        opts("Ja", "Nein"));
 
     reset(eventPublisher);
 
@@ -154,13 +150,12 @@ public class VoteCastingServiceTest {
   @Test
   void castVote_optionNotInVoting_throwsIllegalArgument() {
     commandService.createVoting(
-            33,
-            "Abstimmung Option",
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today.minusDays(1),
-            today.plusDays(1),
-            opts("Ja", "Nein")
-    );
+        33,
+        "Abstimmung Option",
+        "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+        today.minusDays(1),
+        today.plusDays(1),
+        opts("Ja", "Nein"));
     commandService.openVoting(33);
 
     reset(eventPublisher);
@@ -175,13 +170,12 @@ public class VoteCastingServiceTest {
   @Test
   void castVote_doubleVote_throwsIllegalState() {
     commandService.createVoting(
-            34,
-            "Abstimmung Double",
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today.minusDays(1),
-            today.plusDays(1),
-            opts("Ja", "Nein")
-    );
+        34,
+        "Abstimmung Double",
+        "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+        today.minusDays(1),
+        today.plusDays(1),
+        opts("Ja", "Nein"));
     commandService.openVoting(34);
 
     String option = firstOptionText(34);
@@ -194,8 +188,9 @@ public class VoteCastingServiceTest {
 
     reset(eventPublisher);
 
-    assertThrows(IllegalStateException.class,
-            () -> voteCastingService.castVote(new CastVoteDto("token-1", 34, option)));
+    assertThrows(
+        IllegalStateException.class,
+        () -> voteCastingService.castVote(new CastVoteDto("token-1", 34, option)));
 
     // zweiter Versuch darf nicht publishen
     verify(eventPublisher, never()).publishEvent(any(Object.class));

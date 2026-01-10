@@ -1,14 +1,13 @@
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import java.lang.reflect.Field;
-
 import com.evote.app.HelloApplication;
+import java.lang.reflect.Field;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import org.junit.jupiter.api.*;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.junit.jupiter.api.Tag;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @Tag("javafx")
 class HelloApplicationTest {
@@ -20,7 +19,7 @@ class HelloApplicationTest {
     // JavaFX Toolkit muss einmal initialisiert werden, sonst schlägt FXMLLoader.load oft fehl.
     if (!javafxStarted) {
       try {
-        Platform.startup(() -> { });
+        Platform.startup(() -> {});
       } catch (IllegalStateException alreadyStarted) {
         // Toolkit läuft schon (z.B. in anderer Testklasse)
       }
@@ -57,8 +56,8 @@ class HelloApplicationTest {
 
     // Hinweis: Bei fehlender Resource ist getResource(...) == null.
     // Deine Methode fängt nur IOException, daher fliegt hier aktuell eine NPE.
-    assertThrows(IllegalStateException.class,
-            () -> HelloApplication.loadFXML("fxml/does-not-exist.fxml"));
+    assertThrows(
+        IllegalStateException.class, () -> HelloApplication.loadFXML("fxml/does-not-exist.fxml"));
   }
 
   @Test

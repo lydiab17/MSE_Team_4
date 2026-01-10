@@ -6,9 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-/**
- * Globaler Exception-Handler für REST-Controller.
- */
+/** Globaler Exception-Handler für REST-Controller. */
 @RestControllerAdvice
 public class GlobalRestExceptionHandler {
 
@@ -20,8 +18,7 @@ public class GlobalRestExceptionHandler {
    */
   @ExceptionHandler(RequestNotPermitted.class)
   public ResponseEntity<String> handleRateLimit(RequestNotPermitted ex) {
-    return ResponseEntity
-            .status(HttpStatus.TOO_MANY_REQUESTS)
-            .body("Rate limit exceeded. Please try again later.");
+    return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+        .body("Rate limit exceeded. Please try again later.");
   }
 }

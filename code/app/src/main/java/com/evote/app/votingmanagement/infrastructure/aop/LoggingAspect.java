@@ -10,11 +10,8 @@ import org.springframework.stereotype.Component;
 /**
  * Einfacher AOP-Logging-Aspect.
  *
- * <p>Loggt alle Methodenaufrufe im VotingApplicationService:
- * - Methodenname + Parameter
- * - Rückgabewert
- * - Dauer in ms
- * - Exceptions
+ * <p>Loggt alle Methodenaufrufe im VotingApplicationService: - Methodenname + Parameter -
+ * Rückgabewert - Dauer in ms - Exceptions
  */
 @Aspect
 @Component
@@ -25,12 +22,9 @@ public class LoggingAspect {
   /**
    * Around-Advice für alle öffentlichen Methoden im VotingApplicationService.
    *
-   * <p>Pointcut:
-   * execution(public * com.evote.app.votingmanagement.application.services.*.*(..))
+   * <p>Pointcut: execution(public * com.evote.app.votingmanagement.application.services.*.*(..))
    */
-  @Around(
-          "execution(public * com.evote.app.votingmanagement.application.services.*.*(..))\n"
-  )
+  @Around("execution(public * com.evote.app.votingmanagement.application.services.*.*(..))\n")
   public Object logAround(ProceedingJoinPoint joinPoint) throws Throwable {
     String methodName = joinPoint.getSignature().toShortString();
     Object[] args = joinPoint.getArgs();
@@ -39,7 +33,7 @@ public class LoggingAspect {
     log.info(">>> {} called with args={}", methodName, args);
 
     try {
-      Object result = joinPoint.proceed();  // eigentlicher Methodenaufruf
+      Object result = joinPoint.proceed(); // eigentlicher Methodenaufruf
 
       long duration = System.currentTimeMillis() - start;
       log.info("<<< {} returned={} ({} ms)", methodName, result, duration);

@@ -1,7 +1,6 @@
 open module com.evote.app {
   requires javafx.controls;
   requires javafx.fxml;
-
   requires org.controlsfx.controls;
 
   // Spring Boot / Web
@@ -26,8 +25,7 @@ open module com.evote.app {
   requires io.github.resilience4j.annotations;
   requires io.github.resilience4j.ratelimiter;
   requires jdk.httpserver;
-    requires com.fasterxml.jackson.core;
+  requires com.fasterxml.jackson.core;
 
-
-    exports com.evote.app;
+  exports com.evote.app;
 }

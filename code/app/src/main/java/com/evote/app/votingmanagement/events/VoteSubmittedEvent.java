@@ -8,10 +8,4 @@ import java.time.Instant;
  * <p>Pseudonym-Token als String, um Abhängigkeiten zu reduzieren.
  */
 public record VoteSubmittedEvent(
-        int votingId,
-        String optionId,
-        String pseudonymToken,
-        Instant submittedAt
-) {
-}
-
+    int votingId, String optionId, String pseudonymToken, Instant submittedAt) {}

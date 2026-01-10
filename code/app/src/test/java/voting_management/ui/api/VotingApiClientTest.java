@@ -75,7 +75,8 @@ class VotingApiClientTest {
     assertNotNull(req);
     assertEquals("GET", req.method);
     assertEquals("/api/votings/open", req.path);
-    assertFalse(req.headers.containsKey("authorization"), "Authorization Header darf nicht gesetzt sein");
+    assertFalse(
+        req.headers.containsKey("authorization"), "Authorization Header darf nicht gesetzt sein");
   }
 
   @Test
@@ -184,8 +185,10 @@ class VotingApiClientTest {
 
     // Assert
     assertTrue(ex.getMessage().contains("HTTP 400"), "Message sollte den HTTP-Status enthalten");
-    assertTrue(ex.getMessage().contains("bad request"), "Message sollte den Response-Body enthalten");
-    assertTrue(ex.getMessage().contains("/api/votings/2/open"), "Message sollte den Pfad/URI enthalten");
+    assertTrue(
+        ex.getMessage().contains("bad request"), "Message sollte den Response-Body enthalten");
+    assertTrue(
+        ex.getMessage().contains("/api/votings/2/open"), "Message sollte den Pfad/URI enthalten");
   }
 
   @Test
@@ -201,7 +204,8 @@ class VotingApiClientTest {
     // Assert
     assertTrue(ex.getMessage().contains("HTTP 500"), "Message sollte den HTTP-Status enthalten");
     assertTrue(ex.getMessage().contains("boom"), "Message sollte den Response-Body enthalten");
-    assertTrue(ex.getMessage().contains("/api/votings/3/votes"), "Message sollte den Pfad/URI enthalten");
+    assertTrue(
+        ex.getMessage().contains("/api/votings/3/votes"), "Message sollte den Pfad/URI enthalten");
   }
 
   // ------------------------------------------------------------
@@ -216,13 +220,13 @@ class VotingApiClientTest {
     VotingApiClient client = new VotingApiClient(Optional::empty, ORIGIN);
 
     Object req =
-            newCreateVotingRequestReflectively(
-                    42,
-                    "Abstimmung 2030",
-                    "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-                    LocalDate.of(2030, 5, 10),
-                    LocalDate.of(2030, 5, 20),
-                    List.of("Ja", "Nein"));
+        newCreateVotingRequestReflectively(
+            42,
+            "Abstimmung 2030",
+            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+            LocalDate.of(2030, 5, 10),
+            LocalDate.of(2030, 5, 20),
+            List.of("Ja", "Nein"));
 
     // Act
     VotingResponse created = client.createVoting((CreateVotingRequest) req);
@@ -247,14 +251,15 @@ class VotingApiClientTest {
     String body = readAll(ex.getRequestBody());
     Map<String, String> headers = new HashMap<>();
     ex.getRequestHeaders()
-            .forEach(
-                    (k, v) -> {
-                      if (!v.isEmpty()) headers.put(k.toLowerCase(Locale.ROOT), v.get(0));
-                    });
+        .forEach(
+            (k, v) -> {
+              if (!v.isEmpty()) headers.put(k.toLowerCase(Locale.ROOT), v.get(0));
+            });
 
     last.set(new CapturedRequest(method, path, headers, body));
 
-    StubResponse resp = responses.getOrDefault(path, StubResponse.status(404, "no stub for " + path));
+    StubResponse resp =
+        responses.getOrDefault(path, StubResponse.status(404, "no stub for " + path));
 
     byte[] out = resp.body.getBytes(StandardCharsets.UTF_8);
     if (resp.contentType != null) {
@@ -274,20 +279,20 @@ class VotingApiClientTest {
 
   private static String votingResponseJson(int id, boolean open) {
     return "{"
-            + "\"id\":"
-            + id
-            + ","
-            + "\"name\":\"Voting "
-            + id
-            + "\","
-            + "\"info\":\"Beschreibung Mit Mindestens Dreißig Zeichen Länge.\","
-            + "\"startDate\":\"2030-01-01\","
-            + "\"endDate\":\"2030-01-10\","
-            + "\"open\":"
-            + open
-            + ","
-            + "\"options\":[\"Ja\",\"Nein\"]"
-            + "}";
+        + "\"id\":"
+        + id
+        + ","
+        + "\"name\":\"Voting "
+        + id
+        + "\","
+        + "\"info\":\"Beschreibung Mit Mindestens Dreißig Zeichen Länge.\","
+        + "\"startDate\":\"2030-01-01\","
+        + "\"endDate\":\"2030-01-10\","
+        + "\"open\":"
+        + open
+        + ","
+        + "\"options\":[\"Ja\",\"Nein\"]"
+        + "}";
   }
 
   // ============================================================
@@ -295,7 +300,7 @@ class VotingApiClientTest {
   // ============================================================
 
   private static Object newCreateVotingRequestReflectively(
-          int id, String name, String info, LocalDate start, LocalDate end, List<String> options) {
+      int id, String name, String info, LocalDate start, LocalDate end, List<String> options) {
     try {
       Class<?> clazz = CreateVotingRequest.class;
 
@@ -355,7 +360,8 @@ class VotingApiClientTest {
         return ctor.newInstance(args);
       }
 
-      throw new IllegalStateException("Konnte CreateVotingRequest nicht konstruieren (unerwartete Signatur).");
+      throw new IllegalStateException(
+          "Konnte CreateVotingRequest nicht konstruieren (unerwartete Signatur).");
 
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -366,7 +372,8 @@ class VotingApiClientTest {
   // Data holder
   // ============================================================
 
-  private record CapturedRequest(String method, String path, Map<String, String> headers, String body) {}
+  private record CapturedRequest(
+      String method, String path, Map<String, String> headers, String body) {}
 
   private static class StubResponse {
     final int status;
