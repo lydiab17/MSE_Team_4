@@ -11,8 +11,7 @@ public class TokenStore {
 
   private static volatile String jwt; // simple für Prototyp
 
-  private TokenStore() {
-  }
+  private TokenStore() {}
 
   public static void setJwt(String token) {
     jwt = token;

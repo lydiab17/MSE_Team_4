@@ -37,7 +37,8 @@ class LoggingAspectTest {
   }
 
   @Test
-  @DisplayName("logAround: wenn proceed() Exception wirft, wird IllegalStateException geworfen und Ursache gesetzt")
+  @DisplayName(
+      "logAround: wenn proceed() Exception wirft, wird IllegalStateException geworfen und Ursache gesetzt")
   void logAround_exception_wrapsIntoIllegalStateException() throws Throwable {
     // Arrange
     LoggingAspect aspect = new LoggingAspect();
@@ -52,18 +53,21 @@ class LoggingAspectTest {
     when(pjp.proceed()).thenThrow(original);
 
     // Act
-    IllegalStateException ex = assertThrows(IllegalStateException.class, () -> aspect.logAround(pjp));
+    IllegalStateException ex =
+        assertThrows(IllegalStateException.class, () -> aspect.logAround(pjp));
 
     // Assert
     assertNotNull(ex.getMessage());
-    assertTrue(ex.getMessage().contains("VotingService.fail(..) failed after"),
-            "Message sollte Methodennamen + 'failed after' enthalten");
+    assertTrue(
+        ex.getMessage().contains("VotingService.fail(..) failed after"),
+        "Message sollte Methodennamen + 'failed after' enthalten");
     assertSame(original, ex.getCause());
     verify(pjp, times(1)).proceed();
   }
 
   @Test
-  @DisplayName("logAround: wenn proceed() Error wirft, wird nicht gefangen (weil catch(Exception) )")
+  @DisplayName(
+      "logAround: wenn proceed() Error wirft, wird nicht gefangen (weil catch(Exception) )")
   void logAround_error_isNotCaught() throws Throwable {
     // Arrange
     LoggingAspect aspect = new LoggingAspect();

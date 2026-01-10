@@ -1,12 +1,12 @@
 package voting_management.domain.valueobjects;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import com.evote.app.votingmanagement.domain.valueobjects.VotingInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class VotingInfoTest {
 
@@ -50,19 +50,14 @@ class VotingInfoTest {
   @Test
   @DisplayName("Null-Wert: wirft NullPointerException")
   void nullValue_throwsException() {
-    assertThrows(NullPointerException.class,
-            () -> new VotingInfo(null));
+    assertThrows(NullPointerException.class, () -> new VotingInfo(null));
   }
 
   @ParameterizedTest(name = "Ungültige leere Info: \"{0}\"")
-  @ValueSource(strings = {
-          "",
-          "   "
-  })
+  @ValueSource(strings = {"", "   "})
   @DisplayName("Leere und nur aus Leerzeichen bestehende Strings sind nicht erlaubt")
   void emptyOrBlank_throwsException(String raw) {
-    assertThrows(IllegalArgumentException.class,
-            () -> new VotingInfo(raw));
+    assertThrows(IllegalArgumentException.class, () -> new VotingInfo(raw));
   }
 
   // ---------- Negative: Länge ----------
@@ -73,8 +68,7 @@ class VotingInfoTest {
     String text = "Zu kurz für Info";
     assertTrue(text.trim().length() < 30);
 
-    assertThrows(IllegalArgumentException.class,
-            () -> new VotingInfo(text));
+    assertThrows(IllegalArgumentException.class, () -> new VotingInfo(text));
   }
 
   @Test
@@ -88,8 +82,7 @@ class VotingInfoTest {
     String text = sb.toString();
     assertTrue(text.trim().length() > 1000);
 
-    assertThrows(IllegalArgumentException.class,
-            () -> new VotingInfo(text));
+    assertThrows(IllegalArgumentException.class, () -> new VotingInfo(text));
   }
 
   // ---------- Negative: erster Buchstabe klein ----------
@@ -100,17 +93,16 @@ class VotingInfoTest {
     String text = "beschreibung beginnt klein aber ist lang genug........................";
     assertTrue(text.trim().length() >= 30);
 
-    assertThrows(IllegalArgumentException.class,
-            () -> new VotingInfo(text));
+    assertThrows(IllegalArgumentException.class, () -> new VotingInfo(text));
   }
 
   @Test
   @DisplayName("Erster sichtbarer Buchstabe nach Spaces ist klein → Exception")
   void firstCharAfterSpacesLowercase_throwsException() {
-    String text = "   beschreibung mit führenden Spaces und kleinem Anfangsbuchstaben........................";
+    String text =
+        "   beschreibung mit führenden Spaces und kleinem Anfangsbuchstaben........................";
     assertTrue(text.trim().length() >= 30);
 
-    assertThrows(IllegalArgumentException.class,
-            () -> new VotingInfo(text));
+    assertThrows(IllegalArgumentException.class, () -> new VotingInfo(text));
   }
 }

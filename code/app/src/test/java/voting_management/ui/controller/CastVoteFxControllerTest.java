@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import com.evote.app.sharedkernel.security.AuthSession;
 import com.evote.app.votingmanagement.interfaces.dto.VotingResponse;
 import com.evote.app.votingmanagement.ui.api.VotingApiClient;
+import com.evote.app.votingmanagement.ui.controller.CastVoteFxController;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.time.LocalDate;
@@ -16,8 +17,6 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
-
-import com.evote.app.votingmanagement.ui.controller.CastVoteFxController;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.Label;
@@ -47,13 +46,15 @@ class CastVoteFxControllerTest {
     String wayland = System.getenv("WAYLAND_DISPLAY");
 
     assumeTrue(
-            (display != null && !display.isBlank()) || (wayland != null && !wayland.isBlank()),
-            "Skipping JavaFX tests: no DISPLAY/WAYLAND_DISPLAY available"
-    );
+        (display != null && !display.isBlank()) || (wayland != null && !wayland.isBlank()),
+        "Skipping JavaFX tests: no DISPLAY/WAYLAND_DISPLAY available");
 
     try {
       // Toolkit nur einmal starten
-      Platform.startup(() -> { /* noop */ });
+      Platform.startup(
+          () -> {
+            /* noop */
+          });
     } catch (IllegalStateException alreadyStarted) {
       // ok
     }
@@ -62,15 +63,15 @@ class CastVoteFxControllerTest {
     Platform.setImplicitExit(false);
   }
 
-
   @AfterEach
   void cleanupWindows() throws Exception {
     // Nach jedem Test evtl. offene Alerts schließen, damit nichts blockiert
-    runOnFxThreadAndWait(() -> {
-      for (Window w : new ArrayList<>(Window.getWindows())) {
-        if (w.isShowing()) w.hide();
-      }
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          for (Window w : new ArrayList<>(Window.getWindows())) {
+            if (w.isShowing()) w.hide();
+          }
+        });
   }
 
   @BeforeEach
@@ -79,25 +80,26 @@ class CastVoteFxControllerTest {
     authSession = new AuthSession();
     controller = new CastVoteFxController(api, authSession);
 
-    runOnFxThreadAndWait(() -> {
-      try {
-        inject(controller, "openVotingsList", new ListView<VotingResponse>());
-        inject(controller, "optionsList", new ListView<String>());
+    runOnFxThreadAndWait(
+        () -> {
+          try {
+            inject(controller, "openVotingsList", new ListView<VotingResponse>());
+            inject(controller, "optionsList", new ListView<String>());
 
-        inject(controller, "selectedVotingTitle", new Label());
-        inject(controller, "selectedVotingDates", new Label());
-        inject(controller, "selectedVotingInfo", new TextArea());
+            inject(controller, "selectedVotingTitle", new Label());
+            inject(controller, "selectedVotingDates", new Label());
+            inject(controller, "selectedVotingInfo", new TextArea());
 
-        inject(controller, "voterKeyField", new TextField());
-        inject(controller, "statusLabel", new Label());
+            inject(controller, "voterKeyField", new TextField());
+            inject(controller, "statusLabel", new Label());
 
-        @SuppressWarnings("unchecked")
-        ListView<String> opts = (ListView<String>) getField(controller, "optionsList");
-        opts.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
+            @SuppressWarnings("unchecked")
+            ListView<String> opts = (ListView<String>) getField(controller, "optionsList");
+            opts.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
   }
 
   // ------------------------------------------------------------
@@ -106,30 +108,37 @@ class CastVoteFxControllerTest {
 
   @Test
   void initialize_hidesVoterKeyField_andRefreshesOpenVotings() throws Exception {
-    VotingResponse v1 = new VotingResponse(
-            1, "Voting 1", "Info text ist lang genug",
-            LocalDate.of(2030, 1, 1), LocalDate.of(2030, 1, 10),
-            true, List.of("Ja", "Nein")
-    );
+    VotingResponse v1 =
+        new VotingResponse(
+            1,
+            "Voting 1",
+            "Info text ist lang genug",
+            LocalDate.of(2030, 1, 1),
+            LocalDate.of(2030, 1, 10),
+            true,
+            List.of("Ja", "Nein"));
     api.openVotingsToReturn = List.of(v1);
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "initialize"));
 
-    runOnFxThreadAndWait(() -> {
-      TextField voterKey = (TextField) getField(controller, "voterKeyField");
-      assertTrue(voterKey.isDisabled());
-      assertFalse(voterKey.isManaged());
-      assertFalse(voterKey.isVisible());
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          TextField voterKey = (TextField) getField(controller, "voterKeyField");
+          assertTrue(voterKey.isDisabled());
+          assertFalse(voterKey.isManaged());
+          assertFalse(voterKey.isVisible());
+        });
 
     // initialize() triggert async refresh -> warten
-    waitUntilFx(() -> {
-      @SuppressWarnings("unchecked")
-      ListView<VotingResponse> open = (ListView<VotingResponse>) getField(controller, "openVotingsList");
-      Label status = (Label) getField(controller, "statusLabel");
-      return open.getItems().size() == 1
+    waitUntilFx(
+        () -> {
+          @SuppressWarnings("unchecked")
+          ListView<VotingResponse> open =
+              (ListView<VotingResponse>) getField(controller, "openVotingsList");
+          Label status = (Label) getField(controller, "statusLabel");
+          return open.getItems().size() == 1
               && status.getText().equals("Offene Abstimmungen geladen: 1");
-    });
+        });
 
     assertEquals(1, api.getOpenVotingsCalls.get());
   }
@@ -140,27 +149,37 @@ class CastVoteFxControllerTest {
 
   @Test
   void onRefreshOpenVotings_setsListAndStatusLabel() throws Exception {
-    VotingResponse v1 = new VotingResponse(
-            11, "Offen A", "Info ...",
-            LocalDate.of(2030, 2, 1), LocalDate.of(2030, 2, 5),
-            true, List.of("A", "B")
-    );
-    VotingResponse v2 = new VotingResponse(
-            12, "Offen B", "Info ...",
-            LocalDate.of(2030, 2, 1), LocalDate.of(2030, 2, 5),
-            true, List.of("A", "B")
-    );
+    VotingResponse v1 =
+        new VotingResponse(
+            11,
+            "Offen A",
+            "Info ...",
+            LocalDate.of(2030, 2, 1),
+            LocalDate.of(2030, 2, 5),
+            true,
+            List.of("A", "B"));
+    VotingResponse v2 =
+        new VotingResponse(
+            12,
+            "Offen B",
+            "Info ...",
+            LocalDate.of(2030, 2, 1),
+            LocalDate.of(2030, 2, 5),
+            true,
+            List.of("A", "B"));
     api.openVotingsToReturn = List.of(v1, v2);
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "onRefreshOpenVotings"));
 
-    waitUntilFx(() -> {
-      @SuppressWarnings("unchecked")
-      ListView<VotingResponse> open = (ListView<VotingResponse>) getField(controller, "openVotingsList");
-      Label status = (Label) getField(controller, "statusLabel");
-      return open.getItems().size() == 2
+    waitUntilFx(
+        () -> {
+          @SuppressWarnings("unchecked")
+          ListView<VotingResponse> open =
+              (ListView<VotingResponse>) getField(controller, "openVotingsList");
+          Label status = (Label) getField(controller, "statusLabel");
+          return open.getItems().size() == 2
               && status.getText().equals("Offene Abstimmungen geladen: 2");
-    });
+        });
 
     assertEquals(1, api.getOpenVotingsCalls.get());
   }
@@ -171,51 +190,65 @@ class CastVoteFxControllerTest {
 
   @Test
   void selectingVoting_loadsDetailsAndOptions() throws Exception {
-    VotingResponse listItem = new VotingResponse(
-            5, "ListItem", "Info ...",
-            LocalDate.of(2030, 3, 1), LocalDate.of(2030, 3, 2),
-            true, List.of("X")
-    );
+    VotingResponse listItem =
+        new VotingResponse(
+            5,
+            "ListItem",
+            "Info ...",
+            LocalDate.of(2030, 3, 1),
+            LocalDate.of(2030, 3, 2),
+            true,
+            List.of("X"));
 
-    VotingResponse details = new VotingResponse(
-            5, "DetailName", "DetailInfo",
-            LocalDate.of(2030, 3, 10), LocalDate.of(2030, 3, 20),
-            true, List.of("Ja", "Nein", "Enthaltung")
-    );
+    VotingResponse details =
+        new VotingResponse(
+            5,
+            "DetailName",
+            "DetailInfo",
+            LocalDate.of(2030, 3, 10),
+            LocalDate.of(2030, 3, 20),
+            true,
+            List.of("Ja", "Nein", "Enthaltung"));
 
     api.openVotingsToReturn = List.of(listItem);
     api.byIdToReturn = details;
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "initialize"));
 
-    waitUntilFx(() -> {
-      @SuppressWarnings("unchecked")
-      ListView<VotingResponse> open = (ListView<VotingResponse>) getField(controller, "openVotingsList");
-      return open.getItems().size() == 1;
-    });
+    waitUntilFx(
+        () -> {
+          @SuppressWarnings("unchecked")
+          ListView<VotingResponse> open =
+              (ListView<VotingResponse>) getField(controller, "openVotingsList");
+          return open.getItems().size() == 1;
+        });
 
     // Auswahl -> Controller sollte Details nachladen
-    runOnFxThreadAndWait(() -> {
-      @SuppressWarnings("unchecked")
-      ListView<VotingResponse> open = (ListView<VotingResponse>) getField(controller, "openVotingsList");
-      open.getSelectionModel().select(0);
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          @SuppressWarnings("unchecked")
+          ListView<VotingResponse> open =
+              (ListView<VotingResponse>) getField(controller, "openVotingsList");
+          open.getSelectionModel().select(0);
+        });
 
-    waitUntilFx(() -> {
-      Label title = (Label) getField(controller, "selectedVotingTitle");
-      Label dates = (Label) getField(controller, "selectedVotingDates");
-      TextArea info = (TextArea) getField(controller, "selectedVotingInfo");
+    waitUntilFx(
+        () -> {
+          Label title = (Label) getField(controller, "selectedVotingTitle");
+          Label dates = (Label) getField(controller, "selectedVotingDates");
+          TextArea info = (TextArea) getField(controller, "selectedVotingInfo");
 
-      @SuppressWarnings("unchecked")
-      ListView<String> opts = (ListView<String>) getField(controller, "optionsList");
-      Label status = (Label) getField(controller, "statusLabel");
+          @SuppressWarnings("unchecked")
+          ListView<String> opts = (ListView<String>) getField(controller, "optionsList");
+          Label status = (Label) getField(controller, "statusLabel");
 
-      return "DetailName".equals(title.getText())
+          return "DetailName".equals(title.getText())
               && dates.getText().contains("2030-03-10 bis 2030-03-20")
               && "DetailInfo".equals(info.getText())
-              && opts.getItems().equals(FXCollections.observableArrayList("Ja", "Nein", "Enthaltung"))
+              && opts.getItems()
+                  .equals(FXCollections.observableArrayList("Ja", "Nein", "Enthaltung"))
               && "Voting geladen: ID 5".equals(status.getText());
-    });
+        });
 
     assertEquals(1, api.getByIdCalls.get());
   }
@@ -256,19 +289,24 @@ class CastVoteFxControllerTest {
   void onCastVote_whenNoOptionSelected_doesNotCallApi() throws Exception {
     authSession.setToken("jwt");
 
-    VotingResponse selected = new VotingResponse(
-            77, "Sel", "Info",
-            LocalDate.of(2030, 1, 1), LocalDate.of(2030, 1, 2),
-            true, List.of("Ja", "Nein")
-    );
+    VotingResponse selected =
+        new VotingResponse(
+            77,
+            "Sel",
+            "Info",
+            LocalDate.of(2030, 1, 1),
+            LocalDate.of(2030, 1, 2),
+            true,
+            List.of("Ja", "Nein"));
     setField(controller, "selectedVoting", selected);
 
-    runOnFxThreadAndWait(() -> {
-      @SuppressWarnings("unchecked")
-      ListView<String> opts = (ListView<String>) getField(controller, "optionsList");
-      opts.getItems().setAll("Ja", "Nein");
-      opts.getSelectionModel().clearSelection();
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          @SuppressWarnings("unchecked")
+          ListView<String> opts = (ListView<String>) getField(controller, "optionsList");
+          opts.getItems().setAll("Ja", "Nein");
+          opts.getSelectionModel().clearSelection();
+        });
 
     AutoCloseAlerts closer = AutoCloseAlerts.start();
     try {
@@ -284,28 +322,34 @@ class CastVoteFxControllerTest {
   void onCastVote_success_callsApi_setsStatus() throws Exception {
     authSession.setToken("jwt");
 
-    VotingResponse selected = new VotingResponse(
-            88, "Sel", "Info",
-            LocalDate.of(2030, 1, 1), LocalDate.of(2030, 1, 2),
-            true, List.of("Ja", "Nein")
-    );
+    VotingResponse selected =
+        new VotingResponse(
+            88,
+            "Sel",
+            "Info",
+            LocalDate.of(2030, 1, 1),
+            LocalDate.of(2030, 1, 2),
+            true,
+            List.of("Ja", "Nein"));
     setField(controller, "selectedVoting", selected);
 
-    runOnFxThreadAndWait(() -> {
-      @SuppressWarnings("unchecked")
-      ListView<String> opts = (ListView<String>) getField(controller, "optionsList");
-      opts.getItems().setAll("Ja", "Nein");
-      opts.getSelectionModel().select("Nein");
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          @SuppressWarnings("unchecked")
+          ListView<String> opts = (ListView<String>) getField(controller, "optionsList");
+          opts.getItems().setAll("Ja", "Nein");
+          opts.getSelectionModel().select("Nein");
+        });
 
     AutoCloseAlerts closer = AutoCloseAlerts.start();
     try {
       runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "onCastVote"));
 
-      waitUntilFx(() -> {
-        Label status = (Label) getField(controller, "statusLabel");
-        return "Stimme wurde abgegeben ✅".equals(status.getText());
-      });
+      waitUntilFx(
+          () -> {
+            Label status = (Label) getField(controller, "statusLabel");
+            return "Stimme wurde abgegeben ✅".equals(status.getText());
+          });
     } finally {
       closer.stop();
     }
@@ -356,23 +400,25 @@ class CastVoteFxControllerTest {
     }
   }
 
-  /**
-   * Schließt alle offenen JavaFX Windows regelmäßig, damit Alert.showAndWait() nicht blockiert.
-   */
+  /** Schließt alle offenen JavaFX Windows regelmäßig, damit Alert.showAndWait() nicht blockiert. */
   static class AutoCloseAlerts {
     private volatile boolean running = true;
     private final Thread t;
 
     private AutoCloseAlerts() {
-      t = new Thread(() -> {
-        while (running) {
-          Platform.runLater(() -> {
-            for (Window w : new ArrayList<>(Window.getWindows())) {
-              if (w.isShowing()) w.hide();
-            }
-          });
-        }
-      }, "auto-close-alerts");
+      t =
+          new Thread(
+              () -> {
+                while (running) {
+                  Platform.runLater(
+                      () -> {
+                        for (Window w : new ArrayList<>(Window.getWindows())) {
+                          if (w.isShowing()) w.hide();
+                        }
+                      });
+                }
+              },
+              "auto-close-alerts");
       t.setDaemon(true);
       t.start();
     }
@@ -420,19 +466,22 @@ class CastVoteFxControllerTest {
     }
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<Throwable> error = new AtomicReference<>();
-    Platform.runLater(() -> {
-      try {
-        r.run();
-      } catch (Throwable t) {
-        error.set(t);
-      } finally {
-        latch.countDown();
-      }
-    });
+    Platform.runLater(
+        () -> {
+          try {
+            r.run();
+          } catch (Throwable t) {
+            error.set(t);
+          } finally {
+            latch.countDown();
+          }
+        });
 
     // mehr Zeit + bessere Message
     boolean ok = latch.await(15, TimeUnit.SECONDS);
-    assertTrue(ok, "FX runLater timeout (Toolkit evtl. beendet). Stelle sicher: Platform.setImplicitExit(false)");
+    assertTrue(
+        ok,
+        "FX runLater timeout (Toolkit evtl. beendet). Stelle sicher: Platform.setImplicitExit(false)");
     if (error.get() != null) throw new RuntimeException(error.get());
   }
 

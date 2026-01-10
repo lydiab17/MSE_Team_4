@@ -10,49 +10,40 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/api/citizens")
 public class CitizenRestController {
 
-    private final CitizenService citizenService;
+  private final CitizenService citizenService;
 
-    public CitizenRestController(CitizenService citizenService) {
-        this.citizenService = citizenService;
+  public CitizenRestController(CitizenService citizenService) {
+    this.citizenService = citizenService;
+  }
+
+  @PostMapping("/register")
+  public CitizenRegistrationResponseDto register(@RequestBody CitizenRegistrationRequestDto request)
+      throws UserAlreadyExistsException {
+    Citizen c = citizenService.registerCitizen(request);
+
+    return CitizenRegistrationResponseDto.fromDomain(c);
+  }
+
+  @PostMapping("/login")
+  public ResponseEntity<String> login(
+      @RequestBody CitizenLoginRequestDto request, HttpServletResponse response) {
+    boolean b = citizenService.loginCitizen(request.email(), request.password());
+
+    if (!b) {
+      return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
     }
 
+    String token = TokenService.generateToken(request.email());
+    response.addHeader("Authorization", "Bearer " + token);
+    return ResponseEntity.ok(token);
+  }
 
-    @PostMapping("/register")
-    public CitizenRegistrationResponseDto register(
-            @RequestBody CitizenRegistrationRequestDto request
-    ) throws UserAlreadyExistsException {
-        Citizen c = citizenService.registerCitizen(request);
-
-        return CitizenRegistrationResponseDto.fromDomain(c);
-    }
-
-
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody CitizenLoginRequestDto request, HttpServletResponse response) {
-        boolean b = citizenService.loginCitizen(
-                request.email(),
-                request.password()
-        );
-
-        if (!b) {
-            return ResponseEntity.status(HttpServletResponse.SC_UNAUTHORIZED).build();
-        }
-
-        String token = TokenService.generateToken(request.email());
-        response.addHeader("Authorization", "Bearer " + token);
-        return ResponseEntity.ok(token);
-    }
-
-    @GetMapping("/citizen")
-    public CitizenResponseDto getLoggedInCitizen (HttpServletRequest request) {
-        return CitizenResponseDto.fromDomain(citizenService.getCurrentLoggedInCitizen());
-
-    }
-
-
+  @GetMapping("/citizen")
+  public CitizenResponseDto getLoggedInCitizen(HttpServletRequest request) {
+    return CitizenResponseDto.fromDomain(citizenService.getCurrentLoggedInCitizen());
+  }
 }

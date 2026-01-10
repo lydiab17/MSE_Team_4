@@ -35,10 +35,7 @@ public class VotingQueryServiceTest {
     voteRepo = new InMemoryVoteRepository();
 
     today = LocalDate.of(2030, 5, 10);
-    fixedClock = Clock.fixed(
-            today.atStartOfDay(ZoneId.of("UTC")).toInstant(),
-            ZoneId.of("UTC")
-    );
+    fixedClock = Clock.fixed(today.atStartOfDay(ZoneId.of("UTC")).toInstant(), ZoneId.of("UTC"));
 
     // CommandService braucht Publisher -> Dummy Mock reicht
     ApplicationEventPublisher dummyPublisher = mock(ApplicationEventPublisher.class);
@@ -61,13 +58,12 @@ public class VotingQueryServiceTest {
   @Test
   void getVotingById_returnsVoting_whenFound() {
     commandService.createVoting(
-            11,
-            "Abstimmung GetById",
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today,
-            today.plusDays(5),
-            opts("Ja", "Nein")
-    );
+        11,
+        "Abstimmung GetById",
+        "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+        today,
+        today.plusDays(5),
+        opts("Ja", "Nein"));
 
     var opt = queryService.getVotingById(11);
     assertTrue(opt.isPresent());
@@ -76,25 +72,25 @@ public class VotingQueryServiceTest {
 
   @Test
   void getOpenVotings_returnsOnlyOpenOnes() {
-    Voting v1 = commandService.createVoting(
+    Voting v1 =
+        commandService.createVoting(
             4,
             "Abstimmung Offen",
             "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
             today.minusDays(1),
             today.plusDays(1),
-            opts("Ja", "Nein")
-    );
+            opts("Ja", "Nein"));
     v1.setVotingStatus(true);
     votingRepo.save(v1);
 
-    Voting v2 = commandService.createVoting(
+    Voting v2 =
+        commandService.createVoting(
             5,
             "Abstimmung Geschlossen",
             "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
             today.minusDays(1),
             today.plusDays(1),
-            opts("Ja", "Nein")
-    );
+            opts("Ja", "Nein"));
     votingRepo.save(v2);
 
     var openVotings = queryService.getOpenVotings();
@@ -105,25 +101,25 @@ public class VotingQueryServiceTest {
 
   @Test
   void getNotOpenVotings_returnsOnlyThoseNotOpen() {
-    Voting open = commandService.createVoting(
+    Voting open =
+        commandService.createVoting(
             7,
             "Abstimmung Offen 2",
             "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
             today.minusDays(1),
             today.plusDays(1),
-            opts("Ja", "Nein")
-    );
+            opts("Ja", "Nein"));
     open.setVotingStatus(true);
     votingRepo.save(open);
 
-    Voting closed = commandService.createVoting(
+    Voting closed =
+        commandService.createVoting(
             8,
             "Abstimmung Zu",
             "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
             today.minusDays(100),
             today.plusDays(100),
-            opts("Ja", "Nein")
-    );
+            opts("Ja", "Nein"));
     closed.setVotingStatus(false);
     votingRepo.save(closed);
 
@@ -135,13 +131,12 @@ public class VotingQueryServiceTest {
   @Test
   void getResultsForVoting_countsVotesPerOption_caseInsensitive_andIncludesZeroCounts() {
     commandService.createVoting(
-            20,
-            "Abstimmung Results",
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            today.minusDays(1),
-            today.plusDays(1),
-            opts("Ja", "Nein", "Enthaltung")
-    );
+        20,
+        "Abstimmung Results",
+        "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+        today.minusDays(1),
+        today.plusDays(1),
+        opts("Ja", "Nein", "Enthaltung"));
 
     voteRepo.save(Vote.createNew(20, "Ja", "p1"));
     voteRepo.save(Vote.createNew(20, "ja", "p2"));

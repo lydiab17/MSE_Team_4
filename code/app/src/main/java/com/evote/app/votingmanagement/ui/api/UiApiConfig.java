@@ -4,9 +4,7 @@ import com.evote.app.sharedkernel.security.AuthSession;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * Spring-Konfiguration für UI-API-Komponenten (z.B. REST-Clients).
- */
+/** Spring-Konfiguration für UI-API-Komponenten (z.B. REST-Clients). */
 @Configuration
 public class UiApiConfig {
 

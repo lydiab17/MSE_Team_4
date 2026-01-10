@@ -20,36 +20,26 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import org.springframework.stereotype.Component;
 
-/**
- * JavaFX-Controller für vote-view.fxml – kommuniziert per REST mit dem Backend.
- */
+/** JavaFX-Controller für vote-view.fxml – kommuniziert per REST mit dem Backend. */
 @Component
 public class CastVoteFxController {
 
   private final VotingApiClient apiClient;
   private final AuthSession authSession;
 
-  @FXML
-  private ListView<VotingResponse> openVotingsList;
-  @FXML
-  private ListView<String> optionsList;
+  @FXML private ListView<VotingResponse> openVotingsList;
+  @FXML private ListView<String> optionsList;
 
-  @FXML
-  private Label greetings;
+  @FXML private Label greetings;
 
-  @FXML
-  private Label selectedVotingTitle;
-  @FXML
-  private Label selectedVotingDates;
-  @FXML
-  private TextArea selectedVotingInfo;
+  @FXML private Label selectedVotingTitle;
+  @FXML private Label selectedVotingDates;
+  @FXML private TextArea selectedVotingInfo;
 
   // ist in deiner FXML noch drin – wird aber mit JWT nicht mehr gebraucht
-  @FXML
-  private TextField voterKeyField;
+  @FXML private TextField voterKeyField;
 
-  @FXML
-  private Label statusLabel;
+  @FXML private Label statusLabel;
 
   private VotingResponse selectedVoting;
 
@@ -68,27 +58,32 @@ public class CastVoteFxController {
     }
 
     // ListView schön rendern (ID + Name)
-    openVotingsList.setCellFactory(lv -> new ListCell<>() {
-      @Override
-      protected void updateItem(VotingResponse item, boolean empty) {
-        super.updateItem(item, empty);
-        if (empty || item == null) {
-          setText(null);
-        } else {
-          setText("ID " + item.id() + " – " + item.name());
-        }
-      }
-    });
+    openVotingsList.setCellFactory(
+        lv ->
+            new ListCell<>() {
+              @Override
+              protected void updateItem(VotingResponse item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                  setText(null);
+                } else {
+                  setText("ID " + item.id() + " – " + item.name());
+                }
+              }
+            });
 
     // Wenn Voting ausgewählt: Details laden + Optionen anzeigen
-    openVotingsList.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
-      if (newV != null) {
-        loadVotingDetails(newV.id());
-      }
-    });
+    openVotingsList
+        .getSelectionModel()
+        .selectedItemProperty()
+        .addListener(
+            (obs, oldV, newV) -> {
+              if (newV != null) {
+                loadVotingDetails(newV.id());
+              }
+            });
 
     optionsList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-
 
     onRefreshOpenVotings();
   }
@@ -96,17 +91,19 @@ public class CastVoteFxController {
   @FXML
   private void onRefreshOpenVotings() {
     runAsync(
-            apiClient::getOpenVotings,
-            votings -> {
-              openVotingsList.setItems(FXCollections.observableArrayList(votings));
-              statusLabel.setText("Offene Abstimmungen geladen: " + votings.size());
-            }
-    );
+        apiClient::getOpenVotings,
+        votings -> {
+          openVotingsList.setItems(FXCollections.observableArrayList(votings));
+          statusLabel.setText("Offene Abstimmungen geladen: " + votings.size());
+        });
 
-    runAsync(apiClient::getCurrentUser,
-            citizenResponseDto -> {
-              greetings.setText(String.format("Hallo %s %s! ", citizenResponseDto.vorname(), citizenResponseDto.nachname()));
-            });
+    runAsync(
+        apiClient::getCurrentUser,
+        citizenResponseDto -> {
+          greetings.setText(
+              String.format(
+                  "Hallo %s %s! ", citizenResponseDto.vorname(), citizenResponseDto.nachname()));
+        });
   }
 
   @FXML
@@ -116,66 +113,53 @@ public class CastVoteFxController {
 
   private void loadVotingDetails(int votingId) {
     runAsync(
-            () -> apiClient.getById(votingId),
-            voting -> {
-              this.selectedVoting = voting;
+        () -> apiClient.getById(votingId),
+        voting -> {
+          this.selectedVoting = voting;
 
-              selectedVotingTitle.setText(voting.name());
-              selectedVotingDates.setText(voting.startDate() + " bis " + voting.endDate());
-              selectedVotingInfo.setText(voting.info());
+          selectedVotingTitle.setText(voting.name());
+          selectedVotingDates.setText(voting.startDate() + " bis " + voting.endDate());
+          selectedVotingInfo.setText(voting.info());
 
-              List<String> opts = voting.options();
-              optionsList.setItems(FXCollections.observableArrayList(opts));
+          List<String> opts = voting.options();
+          optionsList.setItems(FXCollections.observableArrayList(opts));
 
-              statusLabel.setText("Voting geladen: ID " + voting.id());
-            }
-    );
+          statusLabel.setText("Voting geladen: ID " + voting.id());
+        });
   }
 
   @FXML
   private void onCastVote() {
     if (authSession.token().isEmpty()) {
-      showAlert(
-              AlertType.ERROR,
-              "Nicht eingeloggt",
-              "Bitte zuerst einloggen."
-      );
+      showAlert(AlertType.ERROR, "Nicht eingeloggt", "Bitte zuerst einloggen.");
       return;
     }
 
     if (selectedVoting == null) {
       showAlert(
-              AlertType.ERROR,
-              "Kein Voting ausgewählt",
-              "Bitte wählen Sie zuerst eine Abstimmung aus."
-      );
+          AlertType.ERROR,
+          "Kein Voting ausgewählt",
+          "Bitte wählen Sie zuerst eine Abstimmung aus.");
       return;
     }
 
     String selectedOption = optionsList.getSelectionModel().getSelectedItem();
     if (selectedOption == null || selectedOption.isBlank()) {
       showAlert(
-              AlertType.ERROR,
-              "Keine Option ausgewählt",
-              "Bitte wählen Sie zuerst eine Option aus."
-      );
+          AlertType.ERROR, "Keine Option ausgewählt", "Bitte wählen Sie zuerst eine Option aus.");
       return;
     }
 
     runAsync(
-            () -> {
-              apiClient.castVote(selectedVoting.id(), selectedOption);
-              return null;
-            },
-            ignored -> {
-              statusLabel.setText("Stimme wurde abgegeben ✅");
-              showAlert(
-                      AlertType.INFORMATION,
-                      "Abstimmen",
-                      "Sie haben erfolgreich Ihre Stimme abgegeben."
-              );
-            }
-    );
+        () -> {
+          apiClient.castVote(selectedVoting.id(), selectedOption);
+          return null;
+        },
+        ignored -> {
+          statusLabel.setText("Stimme wurde abgegeben ✅");
+          showAlert(
+              AlertType.INFORMATION, "Abstimmen", "Sie haben erfolgreich Ihre Stimme abgegeben.");
+        });
   }
 
   // -------------------------------------------------------
@@ -187,17 +171,20 @@ public class CastVoteFxController {
   }
 
   private <T> void runAsync(SupplierWithException<T> work, Consumer<T> onSuccess) {
-    new Thread(() -> {
-      try {
-        T result = work.get();
-        Platform.runLater(() -> onSuccess.accept(result));
-      } catch (Exception ex) {
-        Platform.runLater(() -> {
-          statusLabel.setText("Fehler: " + ex.getMessage());
-          showAlert(AlertType.ERROR, "Fehler", ex.getMessage());
-        });
-      }
-    }).start();
+    new Thread(
+            () -> {
+              try {
+                T result = work.get();
+                Platform.runLater(() -> onSuccess.accept(result));
+              } catch (Exception ex) {
+                Platform.runLater(
+                    () -> {
+                      statusLabel.setText("Fehler: " + ex.getMessage());
+                      showAlert(AlertType.ERROR, "Fehler", ex.getMessage());
+                    });
+              }
+            })
+        .start();
   }
 
   private void showAlert(AlertType type, String title, String message) {

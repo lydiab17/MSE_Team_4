@@ -3,10 +3,7 @@ package com.evote.app.sharedkernel.security;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
-/**
- * Speichert den JWT im laufenden JavaFX-Client (in-memory).
- * Reicht für Prototyp / Demo.
- */
+/** Speichert den JWT im laufenden JavaFX-Client (in-memory). Reicht für Prototyp / Demo. */
 @Component
 public class AuthSession {
 
