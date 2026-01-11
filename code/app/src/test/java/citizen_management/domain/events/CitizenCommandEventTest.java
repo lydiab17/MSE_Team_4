@@ -22,14 +22,12 @@ import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 /**
  * Integration-/Component-Test.
  *
- * Ziel:
- * - Registrierungs-Command wird vom Aggregator verarbeitet
- * - dabei entstehende DomainEvents werden im EventStore abgelegt
- * - anschließend werden die Events in ein Read-Model (CitizenRepository) projiziert
- * - das Read-Model wird abgefragt und in ein Response-DTO gemappt
+ * <p>Ziel: - Registrierungs-Command wird vom Aggregator verarbeitet - dabei entstehende
+ * DomainEvents werden im EventStore abgelegt - anschließend werden die Events in ein Read-Model
+ * (CitizenRepository) projiziert - das Read-Model wird abgefragt und in ein Response-DTO gemappt
  *
- * Technisch:
- * - SpringJUnitConfig erstellt einen kleinen Spring Context nur mit den benötigten Beans.
+ * <p>Technisch: - SpringJUnitConfig erstellt einen kleinen Spring Context nur mit den benötigten
+ * Beans.
  */
 @SpringJUnitConfig(
     classes = {
@@ -58,7 +56,7 @@ class CitizenCommandEventTest {
   // Happy Path Test
   @Test
   void testRegistrationEventFlow() throws UserAlreadyExistsException {
-      // 1. Command erstellen: beschreibt die gewünschte Aktion (Citizen registrieren)
+    // 1. Command erstellen: beschreibt die gewünschte Aktion (Citizen registrieren)
     CitizenRegistrationCommand citizenRegistrationCommand =
         new CitizenRegistrationCommand(
             "Max", "Mustermann", "max.mustermann@test.de", "testtest1234");
@@ -69,12 +67,12 @@ class CitizenCommandEventTest {
     // 3. Projection: Events werden auf die Read-Seite projiziert
     citizenProjector.project(domainEvents);
 
-      // 4. Query: Read-Model abfragen und in ein UI-taugliches Response-DTO umwandeln.
+    // 4. Query: Read-Model abfragen und in ein UI-taugliches Response-DTO umwandeln.
     Citizen citizen = citizenRepository.findByEmail(new Email("max.mustermann@test.de")).get();
     CitizenRegistrationResponseDto citizenRegistrationResponseDto =
         CitizenRegistrationResponseDto.fromDomain(citizen);
 
-      // 5. Assert: Prüfen, ob die Projektion die erwarteten Werte enthält.
+    // 5. Assert: Prüfen, ob die Projektion die erwarteten Werte enthält.
     Assertions.assertEquals("Max", citizenRegistrationResponseDto.firstName());
     Assertions.assertEquals("Mustermann", citizenRegistrationResponseDto.lastName());
   }
