@@ -1,6 +1,5 @@
 package citizen_management.infrastructure;
 
-import com.evote.app.citizen_management.application.CitizenAggregator;
 import com.evote.app.citizen_management.application.dto.CitizenLoginRequestDto;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationRequestDto;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationResponseDto;
@@ -33,20 +32,18 @@ class CitizenRestControllerTest {
     @Mock
     private CitizenService citizenService;
 
-    @Mock
-    private CitizenAggregator citizenAggregator;
-
     @Test
     void testUserCreatedSuccessful() throws UserAlreadyExistsException {
-        // input
+        // Eingabedaten für die Registrierung
         CitizenRegistrationRequestDto citizenRegistrationRequestDto = new CitizenRegistrationRequestDto("Max", "Mustermann", "test@test.de", "testtest1234");
 
-        // mock service
+        // Mock
+        // Wenn registerCitizen(...) aufgerufen wird, soll ein Citizen-Objekt zurückkommen,
+        // das aus den DTO-Daten erzeugt wird.
         when(citizenService.registerCitizen(any())).thenReturn(Citizen.create(new Name(citizenRegistrationRequestDto.firstName(), citizenRegistrationRequestDto.lastName()),
                 new Email(citizenRegistrationRequestDto.email()),
                 new Password(citizenRegistrationRequestDto.password())));
 
-        // verify
         CitizenRegistrationResponseDto citizenRegistrationResponseDto = controller.register(citizenRegistrationRequestDto);
 
         // check

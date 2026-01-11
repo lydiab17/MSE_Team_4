@@ -7,20 +7,12 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit-Tests für den {@link TokenService}.
- *
- * Getestet werden:
- * - Erzeugung und Validierung von JWTs
- * - Pseudonymisierung von Bürger-IDs (Datenschutz)
- *
- * Es handelt sich um reine Unit-Tests ohne Spring-Kontext,
- * da der Service keine externen Abhängigkeiten hat.
+ * Test für TokenService
  */
 class TokenServiceTest {
 
     /**
      * Echte Instanz des Services.
-     * Kein Mocking notwendig, da keine externen Abhängigkeiten existieren.
      */
     private final TokenService tokenService = new TokenService();
 

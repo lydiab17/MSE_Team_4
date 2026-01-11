@@ -11,52 +11,90 @@ import org.springframework.stereotype.Component;
 
 import static org.springframework.beans.factory.config.BeanDefinition.SCOPE_PROTOTYPE;
 
+/**
+ * JavaFX-Controller für die Registrierungsansicht.
+ * Dieser Controller verarbeitet die Benutzereingaben zur Registrierung
+ * eines neuen Bürgers, validiert die Eingabefelder und kommuniziert mit dem
+ * CitizenApiClient, um die Registrierung im Backend durchzuführen.
+ *
+ * @author Lydia Boes
+ * @version 1.0
+ */
 @Component
 @Scope(SCOPE_PROTOTYPE)
 public class RegisterController {
 
+    /** Textfeld zur Eingabe des Vornamens. */
     @FXML
     private TextField firstName;
 
+    /** Label zur Anzeige von Validierungsfehlern für den Vornamen. */
     @FXML
     private Label firstNameError;
 
+    /** Textfeld zur Eingabe des Nachnamens. */
     @FXML
     private TextField lastName;
 
+    /** Label zur Anzeige von Validierungsfehlern für den Nachnamen. */
     @FXML
     private Label lastNameError;
 
+    /** Textfeld zur Eingabe der E-Mail-Adresse. */
     @FXML
     private TextField email;
 
+    /** Label zur Anzeige von Validierungsfehlern für die E-Mail-Adresse. */
     @FXML
     private Label emailError;
 
+    /** Passwortfeld zur Eingabe des Passworts. */
     @FXML
     private PasswordField password;
 
+    /** Label zur Anzeige von Validierungsfehlern für das Passwort. */
     @FXML
     private Label passwordError;
 
+    /** Button zum Auslösen des Registrierungsvorgangs. */
     @FXML
     private Button registerButton;
 
+    /** Button zum Wechsel zur Login-Ansicht. */
     @FXML
     private Button loginButton;
 
+    /** API-Client zur Durchführung der Registrierung. */
     private final CitizenApiClient apiClient = new CitizenApiClient();
 
     // Regex
+    /** Minimale erlaubte Länge für Vor- und Nachnamen. */
     private static final int MIN_NAME_LENGTH = 3;
+    /** Maximale erlaubte Länge für Vor- und Nachnamen. */
     private static final int MAX_NAME_LENGTH = 10;
+    /** Erlaubte Zeichen für Vor- und Nachnamen. */
     private static final String NAME_CHAR_PATTERN = "A-Za-zÄÖÜäöüß";
+    /** Regulärer Ausdruck zur Validierung von Vor- und Nachnamen. */
     private static final String NAME_REGEX =
             "^[" + NAME_CHAR_PATTERN + "]{" + MIN_NAME_LENGTH + "," + MAX_NAME_LENGTH + "}$";
+    /** Regulärer Ausdruck zur Validierung von E-Mail-Adressen. */
     private static final String EMAIL_REGEX = "^(.+)@(\\S+)$";
+    /** Regulärer Ausdruck zur Validierung von Passwörtern. */
     private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$";
 
 
+    /**
+     * Event-Handler für den Registrierungs-Button.
+     *
+     * Führt zunächst eine Validierung aller Eingabefelder durch.
+     * Bei gültigen Eingaben wird der Registrierungsvorgang über den
+     * CitizenApiClient ausgeführt. Abhängig vom Ergebnis wird
+     * eine Erfolgs- oder Fehlermeldung angezeigt und ggf. zur Login-Ansicht
+     * gewechselt.
+     *
+     *
+     * @param e1 das auslösende ActionEvent
+     */
     @FXML
     private void registerAction(ActionEvent e1) {
         if (isAnyFieldInvalid()) return;
@@ -76,11 +114,24 @@ public class RegisterController {
         }
     }
 
+    /**
+     * Event-Handler für den Login-Button.
+     * Wechselt von der Registrierungsansicht zur Login-Ansicht.
+     *
+     * @param e2 das auslösende ActionEvent
+     */
     @FXML
     private void loginAction(ActionEvent e2) {
         MainController.getInstance().changeView("login");
     }
 
+    /**
+     * Zeigt einen Dialog (Alert) mit dem angegebenen Titel, Text und Typ an.
+     *
+     * @param title   der Titel des Dialogs
+     * @param message die anzuzeigende Nachricht
+     * @param type    der AlertType des Dialogs
+     */
     private void showAlert(String title, String message, AlertType type) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -89,6 +140,23 @@ public class RegisterController {
         alert.showAndWait();
     }
 
+    /**
+     * Prüft genau ein Eingabefeld. (wiederverwendbare Einzel-Validierung)
+     *
+     * Ist das Feld leer oder entspricht der Inhalt nicht dem angegebenen
+     * regulären Ausdruck, wird eine Fehlermeldung angezeigt und das Feld
+     * rot markiert. Sollte das Feld nicht leer sein und der Inhalt entspricht
+     * dem angegebenen regulären Ausdruck, wird die Fehlermeldung nicht angezeigt
+     * und das Feld wird nicht rot markiert.
+     *
+     *
+     * @param field        das zu prüfende Eingabefeld
+     * @param errorLabel   das Label zur Anzeige der Fehlermeldung
+     * @param regex        der reguläre Ausdruck zur Validierung
+     * @param emptyMsg     die Fehlermeldung bei leerem Feld
+     * @param invalidMsg   die Fehlermeldung bei ungültigem Inhalt
+     * @return true, wenn das Feld ungültig ist, sonst false
+     */
     private boolean validateField(TextField field, Label errorLabel, String regex,
                                   String emptyMsg, String invalidMsg) {
 
@@ -110,9 +178,15 @@ public class RegisterController {
             errorLabel.setVisible(false);
         }
 
-        return hasError;  // KEIN early-return! nur Status zurückgeben
+        return hasError;
     }
 
+    /**
+     * Gesamtprüfung.
+     * Validiert alle Felder über validateField (delegiert) und fasst die Ergebnisse zusammen.
+     *
+     * @return true, wenn mindestens ein Feld ungültig ist, sonst false.
+     */
     private boolean isAnyFieldInvalid() {
 
         boolean firstInvalid = validateField(
