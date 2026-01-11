@@ -19,6 +19,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
 
+/**
+ * Integration-/Component-Test.
+ *
+ * <p>Ziel: - Registrierungs-Command wird vom Aggregator verarbeitet - dabei entstehende
+ * DomainEvents werden im EventStore abgelegt - anschließend werden die Events in ein Read-Model
+ * (CitizenRepository) projiziert - das Read-Model wird abgefragt und in ein Response-DTO gemappt
+ *
+ * <p>Technisch: - SpringJUnitConfig erstellt einen kleinen Spring Context nur mit den benötigten
+ * Beans.
+ */
 @SpringJUnitConfig(
     classes = {
       CitizenService.class,
@@ -43,26 +53,26 @@ class CitizenCommandEventTest {
     citizenRepository.clear();
   }
 
+  // Happy Path Test
   @Test
   void testRegistrationEventFlow() throws UserAlreadyExistsException {
-    // 1. Command creating
+    // 1. Command erstellen: beschreibt die gewünschte Aktion (Citizen registrieren)
     CitizenRegistrationCommand citizenRegistrationCommand =
         new CitizenRegistrationCommand(
             "Max", "Mustermann", "max.mustermann@test.de", "testtest1234");
 
-    // 2. Aggregator handles the command and put the successfull events in the event store repos
+    // 2. Aggregator verarbeitet den Command und speichert die Events im Event Store
     List<DomainEvent> domainEvents = citizenAggregator.handle(citizenRegistrationCommand);
 
-    // 3. Project all events; writing the read/query repository (CitizenRepository)
+    // 3. Projection: Events werden auf die Read-Seite projiziert
     citizenProjector.project(domainEvents);
 
-    // 4. Receive the objects for showing the user. CitizenRegistrationResponseDto is the needed
-    // projection of the registration (for the UI)
+    // 4. Query: Read-Model abfragen und in ein UI-taugliches Response-DTO umwandeln.
     Citizen citizen = citizenRepository.findByEmail(new Email("max.mustermann@test.de")).get();
     CitizenRegistrationResponseDto citizenRegistrationResponseDto =
         CitizenRegistrationResponseDto.fromDomain(citizen);
 
-    // assert
+    // 5. Assert: Prüfen, ob die Projektion die erwarteten Werte enthält.
     Assertions.assertEquals("Max", citizenRegistrationResponseDto.firstName());
     Assertions.assertEquals("Mustermann", citizenRegistrationResponseDto.lastName());
   }

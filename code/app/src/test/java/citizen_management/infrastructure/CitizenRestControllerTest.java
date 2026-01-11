@@ -5,7 +5,6 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.evote.app.citizen_management.application.CitizenAggregator;
 import com.evote.app.citizen_management.application.dto.CitizenLoginRequestDto;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationRequestDto;
 import com.evote.app.citizen_management.application.dto.CitizenRegistrationResponseDto;
@@ -24,22 +23,24 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.ResponseEntity;
 
+// Unit-Test für den CitizenRestController.
 @ExtendWith(MockitoExtension.class)
 class CitizenRestControllerTest {
 
   @InjectMocks private CitizenRestController controller;
 
+  // CitizenService ist ein Mock-Objekt
   @Mock private CitizenService citizenService;
 
-  @Mock private CitizenAggregator citizenAggregator;
-
+  // Happy-Path-Test:
+  // Erfolgreiche Registrierung eines neuen Bürgers.
   @Test
   void testUserCreatedSuccessful() throws UserAlreadyExistsException {
-    // input
+    // Arrange
     CitizenRegistrationRequestDto citizenRegistrationRequestDto =
         new CitizenRegistrationRequestDto("Max", "Mustermann", "test@test.de", "testtest1234");
 
-    // mock service
+    // Service simuliert erfolgreiche Registrierung
     when(citizenService.registerCitizen(any()))
         .thenReturn(
             Citizen.create(
@@ -49,23 +50,26 @@ class CitizenRestControllerTest {
                 new Email(citizenRegistrationRequestDto.email()),
                 new Password(citizenRegistrationRequestDto.password())));
 
-    // verify
+    // Act
     CitizenRegistrationResponseDto citizenRegistrationResponseDto =
         controller.register(citizenRegistrationRequestDto);
 
-    // check
+    // Assert
     assertEquals("Max", citizenRegistrationResponseDto.firstName());
     assertEquals("Mustermann", citizenRegistrationResponseDto.lastName());
     assertEquals("test@test.de", citizenRegistrationResponseDto.email());
   }
 
+  // Negativ-Test:
+  // Registrierung schlägt fehl, da Benutzer bereits existiert.
   @Test
   void testUserCreatedErrorUserAlreadyExists() throws UserAlreadyExistsException {
-    // create first user (Preconditions)
+    // Arrange
     CitizenRegistrationRequestDto citizenRegistrationRequestDto =
         new CitizenRegistrationRequestDto(
             "Max", "Mustermann", "max.mustermann@test.de", "testtest1234");
 
+    // Service simuliert erfolgreiche erste Registrierung
     when(citizenService.registerCitizen(any()))
         .thenReturn(
             Citizen.create(
@@ -77,47 +81,59 @@ class CitizenRestControllerTest {
 
     controller.register(citizenRegistrationRequestDto);
 
-    // create second user with same email (maybe from her husband)
     CitizenRegistrationRequestDto anotherCitizenRegistrationRequestDto =
         new CitizenRegistrationRequestDto(
             "Erika", "Mustermann", "max.mustermann@test.de", "testtest1234");
 
+    // Service simuliert Duplicate-User-Fehler
     when(citizenService.registerCitizen(any()))
         .thenThrow(new UserAlreadyExistsException(citizenRegistrationRequestDto.email()));
+
+    // Act & Assert
     assertThrows(
         UserAlreadyExistsException.class,
         () -> controller.register(anotherCitizenRegistrationRequestDto));
   }
 
+  // Happy-Path-Test:
+  // Erfolgreicher Login.
   @Test
   void testUserLoginSuccessful() throws UserAlreadyExistsException {
-    // input
+    // Arrange
     CitizenLoginRequestDto login =
         new CitizenLoginRequestDto("max.mustermann@test.de", "testtest1234");
 
     HttpServletResponse servletResponse = mock(HttpServletResponse.class);
 
-    // check
+    // Service bestätigt erfolgreichen Login
     when(citizenService.loginCitizen(login.email(), login.password())).thenReturn(true);
+
+    // Act
     ResponseEntity<String> responseEntity = controller.login(login, servletResponse);
 
+    // Assert
     assertNotNull(responseEntity);
     assertTrue(responseEntity.getStatusCode().is2xxSuccessful());
     assertTrue(responseEntity.hasBody());
   }
 
+  // Negativ-Test:
+  // Login schlägt fehl.
   @Test
   void testUserLoginInvalidLoginData() {
-    // input
+    // Arrange
     CitizenLoginRequestDto login =
         new CitizenLoginRequestDto("max.mustermann@test.de", "testtest1234");
 
     HttpServletResponse servletResponse = mock(HttpServletResponse.class);
 
-    // check
+    // Service simuliert fehlgeschlagenen Login
     when(citizenService.loginCitizen(login.email(), login.password())).thenReturn(false);
+
+    // Act
     ResponseEntity<String> responseEntity = controller.login(login, servletResponse);
 
+    // Assert
     assertNotNull(responseEntity);
     assertTrue(responseEntity.getStatusCode().is4xxClientError());
     assertFalse(responseEntity.hasBody());
