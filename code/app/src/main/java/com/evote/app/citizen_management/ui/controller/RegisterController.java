@@ -11,6 +11,10 @@ import javafx.scene.control.Alert.AlertType;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+/**
+ * Controller für die Registrierungsansicht. Verantwortlich für die Validierung der
+ * Benutzereingaben, die Durchführung der Registrierung und die Navigation zur Login-Ansicht.
+ */
 @Component
 @Scope(SCOPE_PROTOTYPE)
 public class RegisterController {
@@ -46,6 +50,12 @@ public class RegisterController {
   private static final String EMAIL_REGEX = "^(.+)@(\\S+)$";
   private static final String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d).{8,}$";
 
+  /**
+   * Wird beim Klick auf den Registrieren-Button ausgeführt. Validiert die Eingabefelder und führt
+   * bei Erfolg die Registrierung aus.
+   *
+   * @param e1 ActionEvent des Buttons
+   */
   @FXML
   private void registerAction(ActionEvent e1) {
     if (isAnyFieldInvalid()) return;
@@ -68,11 +78,23 @@ public class RegisterController {
     }
   }
 
+  /**
+   * Wechselt zur Login-Ansicht.
+   *
+   * @param e2 ActionEvent des Buttons
+   */
   @FXML
   private void loginAction(ActionEvent e2) {
     MainController.getInstance().changeView("login");
   }
 
+  /**
+   * Zeigt einen modalen Alert mit Titel, Nachricht und Typ an.
+   *
+   * @param title Titel des Dialogs
+   * @param message Inhaltstext des Dialogs
+   * @param type Typ des Alerts
+   */
   private void showAlert(String title, String message, AlertType type) {
     Alert alert = new Alert(type);
     alert.setTitle(title);
@@ -81,6 +103,17 @@ public class RegisterController {
     alert.showAndWait();
   }
 
+  /**
+   * Validiert ein einzelnes Eingabefeld anhand eines regulären Ausdrucks und zeigt bei Fehlern eine
+   * entsprechende Fehlermeldung an.
+   *
+   * @param field das zu prüfende TextField
+   * @param errorLabel Label zur Anzeige der Fehlermeldung
+   * @param regex Validierungs-RegEx
+   * @param emptyMsg Fehlermeldung bei leerem Feld
+   * @param invalidMsg Fehlermeldung bei ungültigem Inhalt
+   * @return true, wenn das Feld ungültig ist, sonst false
+   */
   private boolean validateField(
       TextField field, Label errorLabel, String regex, String emptyMsg, String invalidMsg) {
 
@@ -105,6 +138,11 @@ public class RegisterController {
     return hasError; // KEIN early-return! nur Status zurückgeben
   }
 
+  /**
+   * Prüft alle Eingabefelder auf Gültigkeit.
+   *
+   * @return true, wenn mindestens ein Feld ungültig ist, sonst false
+   */
   private boolean isAnyFieldInvalid() {
 
     boolean firstInvalid =

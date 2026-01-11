@@ -4,24 +4,30 @@ import com.evote.app.citizen_management.domain.model.Citizen;
 import com.evote.app.citizen_management.domain.valueobjects.Email;
 import java.util.Optional;
 
+/**
+ * Repository-Interface für den Zugriff auf Citizen-Daten.
+ *
+ * <p>Definiert grundlegende Persistenz-Operationen zum Speichern, Löschen und Suchen von {@link
+ * Citizen}-Entitäten.
+ */
 public interface CitizenRepository {
 
   /**
-   * Speichert ein Citizen-Objekt.
+   * Speichert einen {@link Citizen}.
    *
-   * @param citizen citizen
+   * @param citizen die zu speichernde Citizen-Entität
    */
   void save(Citizen citizen);
 
-  /** Löscht alles */
+  /** Entfernt alle gespeicherten {@link Citizen}-Einträge aus dem Repository. */
   void clear();
 
   /**
-   * Sucht einen Citizen anhand seiner eindeutigen CitizenID
+   * Sucht einen {@link Citizen} anhand seiner eindeutigen E-Mail-Adresse.
    *
-   * @param email die eindeutige CitizenID
-   * @return Wenn ein Bürger mit der angegebenen CitizenID gefunden wird, enthält das Optional ein
-   *     Citizen-Objekt. Wenn kein Bürger gefunden wird, ist das Optional leer.
+   * @param email die eindeutige E-Mail-Adresse des Bürgers
+   * @return ein {@link Optional}, das einen {@link Citizen} enthält, wenn ein entsprechender
+   *     Eintrag gefunden wurde, oder {@link Optional#empty()}, wenn kein Eintrag existiert
    */
   Optional<Citizen> findByEmail(Email email);
 }

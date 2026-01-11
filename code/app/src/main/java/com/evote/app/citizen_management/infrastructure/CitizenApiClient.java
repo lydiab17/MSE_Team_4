@@ -10,10 +10,25 @@ import java.net.http.HttpResponse;
 import java.util.Optional;
 import org.springframework.stereotype.Component;
 
+/**
+ * Infrastruktur-Komponente zur Kommunikation mit dem Citizen-Backend. Diese Klasse kapselt
+ * HTTP-Aufrufe für Registrierung und Login und übernimmt die Serialisierung der Request-Daten.
+ */
 @Component
 public class CitizenApiClient {
+
+  /** Basis-URL des Citizen-REST-Endpunkts. */
   private static final String BASE_URL = "http://localhost:8080/api/citizens";
 
+  /**
+   * Registriert einen neuen Bürger über das Backend.
+   *
+   * @param firstName Vorname des Bürgers
+   * @param lastName Nachname des Bürgers
+   * @param email E-Mail-Adresse des Bürgers
+   * @param password Passwort des Bürgers
+   * @return true, wenn die Registrierung erfolgreich war, sonst false
+   */
   public boolean registerCitizen(String firstName, String lastName, String email, String password) {
     try {
       var payload = new CitizenRegistrationRequestDto(firstName, lastName, email, password);
@@ -29,10 +44,6 @@ public class CitizenApiClient {
 
       var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-      if (response.statusCode() == 403) {
-        // Vom Backend geworfene UserAlreadyExistsException
-
-      }
       if (response.statusCode() == 200) {
 
         return true;
@@ -46,6 +57,14 @@ public class CitizenApiClient {
     }
   }
 
+  /**
+   * Führt einen Login-Vorgang über das Backend aus und liefert bei Erfolg ein
+   * Authentifizierungs-Token zurück.
+   *
+   * @param email E-Mail-Adresse des Bürgers
+   * @param password Passwort des Bürgers
+   * @return Optional mit Token bei erfolgreichem Login, sonst Optional.empty()
+   */
   public Optional<String> loginAndGetToken(String email, String password) {
     try {
       var payload = new CitizenLoginRequestDto(email, password);
@@ -62,7 +81,6 @@ public class CitizenApiClient {
       var response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
       if (response.statusCode() == 200) {
-        // Backend gibt token im Body zurück
         return Optional.ofNullable(response.body()).filter(s -> !s.isBlank());
       }
       return Optional.empty();

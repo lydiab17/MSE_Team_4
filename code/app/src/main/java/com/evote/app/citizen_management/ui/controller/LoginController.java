@@ -12,6 +12,10 @@ import javafx.scene.control.Alert.AlertType;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+/**
+ * Controller für die Login-Ansicht. Verantwortlich für die Validierung der Login-Daten, die
+ * Authentifizierung des Benutzers und die Navigation zu weiteren Ansichten.
+ */
 @Component
 @Scope(SCOPE_PROTOTYPE)
 public class LoginController {
@@ -30,10 +34,21 @@ public class LoginController {
   private final CitizenApiClient apiClient = new CitizenApiClient();
   private final AuthSession authSession;
 
+  /**
+   * Konstruktor für den LoginController.
+   *
+   * @param authSession Session zur Speicherung des Authentifizierungs-Tokens
+   */
   public LoginController(AuthSession authSession) {
     this.authSession = authSession;
   }
 
+  /**
+   * Wird beim Klick auf den Login-Button ausgeführt. Prüft die Eingaben, führt den Login durch und
+   * speichert bei Erfolg das Authentifizierungs-Token.
+   *
+   * @param e1 ActionEvent des Buttons
+   */
   @FXML
   private void loginAction(ActionEvent e1) {
 
@@ -58,11 +73,23 @@ public class LoginController {
     }
   }
 
+  /**
+   * Wechselt zur Registrierungsansicht.
+   *
+   * @param e2 ActionEvent des Buttons
+   */
   @FXML
   private void registerAction(ActionEvent e2) {
     MainController.getInstance().changeView("register");
   }
 
+  /**
+   * Zeigt einen modalen Alert mit Titel, Nachricht und Typ an.
+   *
+   * @param title Titel des Dialogs
+   * @param message Inhaltstext des Dialogs
+   * @param type Typ des Alerts
+   */
   private void showAlert(String title, String message, AlertType type) {
     Alert alert = new Alert(type);
     alert.setTitle(title);
@@ -71,6 +98,11 @@ public class LoginController {
     alert.showAndWait();
   }
 
+  /**
+   * Prüft, ob eines der Eingabefelder leer ist (Gesamtprüfung).
+   *
+   * @return true, wenn mindestens ein Feld leer ist, sonst false
+   */
   private boolean isAnyFieldEmpty() {
 
     boolean emailEmpty = checkField(email, emailError, "Email darf nicht leer sein!");
@@ -79,6 +111,14 @@ public class LoginController {
     return emailEmpty || passwordEmpty;
   }
 
+  /**
+   * Prüft ein einzelnes Eingabefeld auf leeren Inhalt und zeigt bei Bedarf eine Fehlermeldung an.
+   *
+   * @param field das zu prüfende TextField
+   * @param errorLabel Label zur Anzeige der Fehlermeldung
+   * @param errorMessage anzuzeigende Fehlermeldung
+   * @return true, wenn das Feld leer ist, sonst false
+   */
   private boolean checkField(TextField field, Label errorLabel, String errorMessage) {
     boolean empty = field.getText().isEmpty();
 
