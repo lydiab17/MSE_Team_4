@@ -7,32 +7,27 @@ import java.util.Optional;
 /**
  * Repository-Interface für den Zugriff auf Citizen-Daten.
  *
- * <p>Definiert grundlegende Persistenz-Operationen zum Speichern,
- * Löschen und Suchen von {@link Citizen}-Entitäten.</p>
+ * <p>Definiert grundlegende Persistenz-Operationen zum Speichern, Löschen und Suchen von {@link
+ * Citizen}-Entitäten.
  */
 public interface CitizenRepository {
 
-    /**
-     * Speichert einen {@link Citizen}.
-     *
-     * @param citizen die zu speichernde Citizen-Entität
-     */
-    void save(Citizen citizen);
+  /**
+   * Speichert einen {@link Citizen}.
+   *
+   * @param citizen die zu speichernde Citizen-Entität
+   */
+  void save(Citizen citizen);
 
-    /**
-     * Entfernt alle gespeicherten {@link Citizen}-Einträge
-     * aus dem Repository.
-     */
-    void clear();
+  /** Entfernt alle gespeicherten {@link Citizen}-Einträge aus dem Repository. */
+  void clear();
 
-    /**
-     * Sucht einen {@link Citizen} anhand seiner eindeutigen
-     * E-Mail-Adresse.
-     *
-     * @param email die eindeutige E-Mail-Adresse des Bürgers
-     * @return ein {@link Optional}, das einen {@link Citizen} enthält,
-     *         wenn ein entsprechender Eintrag gefunden wurde,
-     *         oder {@link Optional#empty()}, wenn kein Eintrag existiert
-     */
-    Optional<Citizen> findByEmail(Email email);
+  /**
+   * Sucht einen {@link Citizen} anhand seiner eindeutigen E-Mail-Adresse.
+   *
+   * @param email die eindeutige E-Mail-Adresse des Bürgers
+   * @return ein {@link Optional}, das einen {@link Citizen} enthält, wenn ein entsprechender
+   *     Eintrag gefunden wurde, oder {@link Optional#empty()}, wenn kein Eintrag existiert
+   */
+  Optional<Citizen> findByEmail(Email email);
 }

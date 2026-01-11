@@ -1,8 +1,8 @@
 package com.evote.app.citizen_management.application.commands;
 
 /**
- * Command-Objekt für den Use Case „Registrierung eines Bürgers“.
- * Befehl, der eine Zustandsänderung auslösen soll.
+ * Command-Objekt für den Use Case „Registrierung eines Bürgers“. Befehl, der eine Zustandsänderung
+ * auslösen soll.
  *
  * @param vorname Vorname des zu registrierenden Bürgers
  * @param nachname Nachname des zu registrierenden Bürgers
@@ -10,4 +10,4 @@ package com.evote.app.citizen_management.application.commands;
  * @param password Passwort des Bürgers
  */
 public record CitizenRegistrationCommand(
-        String vorname, String nachname, String email, String password) {}
+    String vorname, String nachname, String email, String password) {}
