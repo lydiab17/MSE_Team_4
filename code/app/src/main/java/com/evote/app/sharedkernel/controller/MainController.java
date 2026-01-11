@@ -9,36 +9,57 @@ import javafx.scene.layout.StackPane;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+/**
+ * Zentraler Controller zur Steuerung der Hauptansicht der Anwendung.
+ * Hält eine statische Referenz auf die aktuell initialisierte Instanz,
+ * um anderen Controllern einen globalen Zugriff für View-Wechsel zu ermöglichen.
+ *
+ * <p>Dies ist kein klassisches Singleton-Pattern, sondern eine
+ * pragmatische Lösung im JavaFX-Kontext.</p>
+ */
 @Component
 @Scope(SCOPE_PROTOTYPE)
 public class MainController {
-  // Singleton
-  // Sicherstellen, dass von einer Klasse genau eine einzige Instanz existiert
-  // und dass diese Instanz global zugreifbar ist.
-  private static MainController instance;
 
-  // Singleton-Zugriff auf die einzige Instanz von Main-Controller
-  public static MainController getInstance() {
-    return instance;
-  }
+    /**
+     * Statische Referenz auf die aktuell initialisierte MainController-Instanz.
+     */
+    private static MainController instance;
 
-  // Container für Ansichten
-  @FXML StackPane viewHolder;
+    /**
+     * Liefert die aktuell initialisierte MainController-Instanz.
+     * Die Instanz wird beim Initialisieren des Controllers gesetzt.
+     *
+     * @return aktuelle MainController-Instanz
+     */
+    public static MainController getInstance() {
+        return instance;
+    }
 
-  @FXML
-  public void initialize() {
-    // Initialisiere die Singleton-Instanz mit der aktuellen Instanz dieser Klasse
-    instance = this;
-  }
+    /**
+     * Container, der die aktuell angezeigte View enthält.
+     */
+    @FXML StackPane viewHolder;
 
-  // ändert die aktuelle Ansicht basierend auf dem übergebenen FXML-Dateinamen
-  public void changeView(String fxmlFilename) {
+    /**
+     * Initialisiert den Controller und setzt die statische Referenz
+     * auf diese Instanz.
+     */
+    @FXML
+    public void initialize() {
+        instance = this;
+    }
 
-    // lädt die FXML-Datei und erhält das zugehörige Node-Objekt
-    Node view = HelloApplication.loadFXML("fxml/" + fxmlFilename + ".fxml");
+    /**
+     * Wechselt die aktuell angezeigte View, indem die angegebene
+     * FXML-Datei geladen und im View-Container angezeigt wird.
+     *
+     * @param fxmlFilename Name der FXML-Datei ohne Dateiendung
+     */
+    public void changeView(String fxmlFilename) {
 
-    // alle vorhandenen Kinder des StackPane werden gelöscht und die neue Ansicht wird als einziges
-    // Kind hinzugefügt
-    viewHolder.getChildren().setAll(view);
-  }
+        Node view = HelloApplication.loadFXML("fxml/" + fxmlFilename + ".fxml");
+
+        viewHolder.getChildren().setAll(view);
+    }
 }

@@ -1,5 +1,7 @@
 package com.evote.app.citizen_management.infrastructure.aspects;
 
+import java.util.HashMap;
+import java.util.Map;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
@@ -7,42 +9,79 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * Logging-Aspect für den Citizen-Login.
+ *
+ * <p>Dieses Aspect reagiert auf erfolgreiche und fehlgeschlagene Login-Versuche
+ * im {@code CitizenService} und protokolliert relevante Informationen wie
+ * Klassenname, Methodenname, E-Mail-Adresse und Anzahl der Login-Versuche.</p>
+ *
+ * <p>Zusätzlich wird pro E-Mail-Adresse die Anzahl der aufeinanderfolgenden
+ * Login-Versuche gezählt. Bei einem erfolgreichen Login wird der Zähler
+ * für die entsprechende E-Mail zurückgesetzt.</p>
+ */
 @Aspect
 @Component
 public class LoggingAspectCitizen {
 
-  private static final Logger log = LoggerFactory.getLogger(LoggingAspectCitizen.class);
+    /**
+     * Logger für die Ausgabe von Login-Informationen und Warnungen.
+     */
+    private static final Logger log = LoggerFactory.getLogger(LoggingAspectCitizen.class);
 
-  /**
-   * Diese Methode wird AUTOMATISCH aufgerufen, nachdem CitizenService.loginCitizen(..) ausgeführt
-   * wurde.
-   *
-   * @param joinPoint enthält Infos über den Methodenaufruf (Parameter, Methode, Klasse)
-   * @param success Rückgabewert der Methode loginCitizen(..)
-   */
-  @AfterReturning(
-      pointcut =
-          "execution(boolean com.evote.app.citizen_management.application.services.CitizenService.loginCitizen(..))",
-      returning = "success")
-  public void logLoginAttempt(JoinPoint joinPoint, boolean success) {
+    /**
+     * Map zur Speicherung der Anzahl fehlgeschlagener Login-Versuche
+     * pro E-Mail-Adresse.
+     *
+     * <p>Key: E-Mail-Adresse<br>
+     * Value: Anzahl der Login-Versuche</p>
+     */
+    private final Map<String, Integer> attempts = new HashMap<>();
 
-    // holt alle Argumente (Parameter), mit denen die Methode loginCitizen aufgerufen wurde
-    // und speichert sie in einem generischen Objekt-Array.
-    Object[] args = joinPoint.getArgs();
-    String email;
-    String methodName = joinPoint.getSignature().getName();
+    /**
+     * Wird automatisch nach der Ausführung der Methode
+     * {@code CitizenService.loginCitizen(..)} aufgerufen.
+     *
+     * <p>Die Methode ermittelt relevante Informationen aus dem {@link JoinPoint},
+     * zählt die Login-Versuche pro Benutzer und schreibt je nach Erfolg
+     * einen Info- oder Warn-Logeintrag.</p>
+     *
+     * @param joinPoint enthält Informationen über den Methodenaufruf
+     *                  (z. B. Parameter, Klassen- und Methodenname)
+     * @param success Rückgabewert der Methode {@code loginCitizen(..)},
+     *                {@code true} bei erfolgreichem Login, sonst {@code false}
+     */
+    @AfterReturning(
+            pointcut =
+                    "execution(boolean com.evote.app.citizen_management.application.services.CitizenService.loginCitizen(..))",
+            returning = "success")
+    public void logLoginAttempt(JoinPoint joinPoint, boolean success) {
 
-    if (args != null && args.length > 0) {
-      email = String.valueOf(args[0]);
-    } else {
-      email = "unknown";
+        Object[] args = joinPoint.getArgs();
+        String email;
+        String methodName = joinPoint.getSignature().getName();
+        String className = joinPoint.getTarget().getClass().getSimpleName();
+
+        if (args != null && args.length > 0) {
+            email = String.valueOf(args[0]);
+        } else {
+            email = "unknown";
+        }
+
+        int count = attempts.getOrDefault(email, 0) + 1;
+        attempts.put(email, count);
+
+        if (success) {
+            attempts.remove(email);
+            log.info(
+                    "Klasse: {} | Methode: {} | Login erfolgreich | email={} | Versuche={}",
+                    className, methodName, email, count
+            );
+        } else {
+            log.warn(
+                    "Klasse: {} | Methode: {} | Login fehlgeschlagen | email={} | Versuche={}",
+                    className, methodName, email, count
+            );
+        }
     }
-
-    if (success) {
-      // die geschweiften Klammern ersetzen Variablen im Log-Text
-      log.info("Methode {}: Login erfolgreich (email={})", methodName, email);
-    } else {
-      log.warn("Methode {}: Login fehlgeschlagen (email={})", methodName, email);
-    }
-  }
 }

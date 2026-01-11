@@ -8,32 +8,56 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+/**
+ * Sicherheitskonfiguration der Anwendung.
+ *
+ * SecurityConfig definiert die Sicherheitsregeln der Anwendung.
+ *
+ * <p>Konfiguriert Spring Security für eine zustandslose JWT-basierte
+ * Authentifizierung. Definiert erlaubte und geschützte Endpunkte
+ * sowie die Einbindung des {@link AuthFilter} in die Filterkette.</p>
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-  private final AuthFilter authFilter;
+    private final AuthFilter authFilter;
 
-  public SecurityConfig(AuthFilter authFilter) {
-    this.authFilter = authFilter;
-  }
+    /**
+     * Erstellt eine neue Sicherheitskonfiguration mit dem angegebenen AuthFilter.
+     *
+     * @param authFilter der Filter zur JWT-Authentifizierung
+     */
+    public SecurityConfig(AuthFilter authFilter) {
+        this.authFilter = authFilter;
+    }
 
-  @Bean
-  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    /**
+     * Konfiguriert die {@link SecurityFilterChain} der Anwendung.
+     *
+     * <p>Deaktiviert CSRF, erzwingt eine zustandslose Session-Verwaltung
+     * und definiert Zugriffsregeln für HTTP-Endpunkte.</p>
+     *
+     * @param http das {@link HttpSecurity}-Konfigurationsobjekt
+     * @return die konfigurierte {@link SecurityFilterChain}
+     * @throws Exception bei Konfigurationsfehlern
+     */
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-    http.csrf(csrf -> csrf.disable())
-        .sessionManagement(
-            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        .authorizeHttpRequests(
-            auth ->
-                auth.requestMatchers("/api/citizens/register", "/api/citizens/login")
-                    .permitAll()
-                    .requestMatchers("/api/votings/**")
-                    .permitAll()
-                    .anyRequest()
-                    .authenticated())
-        .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+        http.csrf(csrf -> csrf.disable()) // Cross-Site Request Forgery
+                .sessionManagement(
+                        session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(
+                        auth ->
+                                auth.requestMatchers("/api/citizens/register", "/api/citizens/login")
+                                        .permitAll()
+                                        .requestMatchers("/api/votings/**")
+                                        .permitAll()
+                                        .anyRequest()
+                                        .authenticated())
+                .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 
-    return http.build();
-  }
+        return http.build();
+    }
 }

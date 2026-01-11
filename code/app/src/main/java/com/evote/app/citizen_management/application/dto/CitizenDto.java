@@ -1,57 +1,144 @@
 package com.evote.app.citizen_management.application.dto;
 
+/**
+ * Data Transfer Object (DTO) zur Übertragung von Citizen-Daten
+ * zwischen Anwendungsschichten oder über Schnittstellen.
+ *
+ * <p>Diese Klasse enthält ausschließlich einfache Datenfelder
+ * ohne Geschäftslogik und dient dem strukturierten Austausch
+ * von Bürgerinformationen.</p>
+ */
 public class CitizenDto {
-  private String userId;
-  private String vorname;
-  private String nachname;
-  private String email;
-  private String password;
 
-  public String getUserId() {
-    return userId;
-  }
+    /**
+     * Eindeutige Benutzer-ID des Bürgers.
+     */
+    private String userId;
 
-  public void setUserId(String userId) {
-    this.userId = userId;
-  }
+    /**
+     * Vorname des Bürgers.
+     */
+    private String vorname;
 
-  public String getVorname() {
-    return vorname;
-  }
+    /**
+     * Nachname des Bürgers.
+     */
+    private String nachname;
 
-  public void setVorname(String vorname) {
-    this.vorname = vorname;
-  }
+    /**
+     * E-Mail-Adresse des Bürgers.
+     */
+    private String email;
 
-  public String getNachname() {
-    return nachname;
-  }
+    /**
+     * Passwort des Bürgers.
+     */
+    private String password;
 
-  public void setNachname(String nachname) {
-    this.nachname = nachname;
-  }
+    /**
+     * Liefert die Benutzer-ID des Bürgers.
+     *
+     * @return die Benutzer-ID
+     */
+    public String getUserId() {
+        return userId;
+    }
 
-  public String getEmail() {
-    return email;
-  }
+    /**
+     * Setzt die Benutzer-ID des Bürgers.
+     *
+     * @param userId die Benutzer-ID
+     */
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-  public void setEmail(String email) {
-    this.email = email;
-  }
+    /**
+     * Liefert den Vornamen des Bürgers.
+     *
+     * @return der Vorname
+     */
+    public String getVorname() {
+        return vorname;
+    }
 
-  public String getPassword() {
-    return password;
-  }
+    /**
+     * Setzt den Vornamen des Bürgers.
+     *
+     * @param vorname der Vorname
+     */
+    public void setVorname(String vorname) {
+        this.vorname = vorname;
+    }
 
-  public void setPassword(String password) {
-    this.password = password;
-  }
+    /**
+     * Liefert den Nachnamen des Bürgers.
+     *
+     * @return der Nachname
+     */
+    public String getNachname() {
+        return nachname;
+    }
 
-  public CitizenDto(String userId, String vorname, String nachname, String email, String password) {
-    this.userId = userId;
-    this.vorname = vorname;
-    this.nachname = nachname;
-    this.email = email;
-    this.password = password;
-  }
+    /**
+     * Setzt den Nachnamen des Bürgers.
+     *
+     * @param nachname der Nachname
+     */
+    public void setNachname(String nachname) {
+        this.nachname = nachname;
+    }
+
+    /**
+     * Liefert die E-Mail-Adresse des Bürgers.
+     *
+     * @return die E-Mail-Adresse
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Setzt die E-Mail-Adresse des Bürgers.
+     *
+     * @param email die E-Mail-Adresse
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    /**
+     * Liefert das Passwort des Bürgers.
+     *
+     * @return das Passwort
+     */
+    public String getPassword() {
+        return password;
+    }
+
+    /**
+     * Setzt das Passwort des Bürgers.
+     *
+     * @param password das Passwort
+     */
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    /**
+     * Erstellt ein neues {@link CitizenDto} mit allen erforderlichen Feldern.
+     *
+     * @param userId eindeutige Benutzer-ID
+     * @param vorname Vorname des Bürgers
+     * @param nachname Nachname des Bürgers
+     * @param email E-Mail-Adresse des Bürgers
+     * @param password Passwort des Bürgers
+     */
+    public CitizenDto(String userId, String vorname, String nachname, String email, String password) {
+        this.userId = userId;
+        this.vorname = vorname;
+        this.nachname = nachname;
+        this.email = email;
+        this.password = password;
+    }
 }
