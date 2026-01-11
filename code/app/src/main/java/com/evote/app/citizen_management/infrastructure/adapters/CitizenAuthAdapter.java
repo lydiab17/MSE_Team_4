@@ -10,18 +10,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class CitizenAuthAdapter implements AuthPort {
 
-    private final TokenService tokenService;
+  private final TokenService tokenService;
 
-    public CitizenAuthAdapter(TokenService tokenService) {
-        this.tokenService = tokenService;
-    }
+  public CitizenAuthAdapter(TokenService tokenService) {
+    this.tokenService = tokenService;
+  }
 
-    @Override
-    public Optional<PseudonymToken> verifyAndGetPseudonym(AuthToken token) {
-        String citizenId = TokenService.validateToken(token.value()); // String oder null
-        if (citizenId == null || citizenId.isBlank()) {
-            return Optional.empty();
-        }
-        return Optional.of(tokenService.pseudonymize(citizenId));
+  @Override
+  public Optional<PseudonymToken> verifyAndGetPseudonym(AuthToken token) {
+    String citizenId = TokenService.validateToken(token.value()); // String oder null
+    if (citizenId == null || citizenId.isBlank()) {
+      return Optional.empty();
     }
+    return Optional.of(tokenService.pseudonymize(citizenId));
+  }
 }

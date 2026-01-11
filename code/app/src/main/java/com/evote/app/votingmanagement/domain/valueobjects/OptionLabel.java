@@ -8,11 +8,12 @@ import java.util.function.Predicate;
  * Repräsentiert den Text einer einzelnen Wahl-Option (z.B. "Ja", "Nein").
  *
  * <p>Fachliche Regeln:
+ *
  * <ul>
- *   <li>darf nicht {@code null} sein</li>
- *   <li>darf nicht nur aus Leerzeichen bestehen</li>
- *   <li>erlaubte Zeichen: Buchstaben, Ziffern und Leerzeichen</li>
- *   <li>Sonderzeichen wie {@code ! ? , .} sind nicht erlaubt</li>
+ *   <li>darf nicht {@code null} sein
+ *   <li>darf nicht nur aus Leerzeichen bestehen
+ *   <li>erlaubte Zeichen: Buchstaben, Ziffern und Leerzeichen
+ *   <li>Sonderzeichen wie {@code ! ? , .} sind nicht erlaubt
  * </ul>
  *
  * <p>Ungültige Werte führen im Konstruktor zu einer {@link IllegalArgumentException}.
@@ -25,11 +26,12 @@ public final class OptionLabel {
 
   private final String value;
 
-  private static final List<Rule> RULES = List.of(
+  private static final List<Rule> RULES =
+      List.of(
           new Rule(s -> !s.isEmpty(), "Option darf nicht leer sein"),
-          new Rule(OptionLabel::matchesPattern,
-                  "Option darf nur Buchstaben, Ziffern und Leerzeichen enthalten")
-  );
+          new Rule(
+              OptionLabel::matchesPattern,
+              "Option darf nur Buchstaben, Ziffern und Leerzeichen enthalten"));
 
   /**
    * Erstellt ein neues {@code OptionLabel}.
@@ -43,9 +45,10 @@ public final class OptionLabel {
     String trimmed = raw.trim();
 
     RULES.stream()
-            .filter(rule -> !rule.predicate().test(trimmed))
-            .findFirst()
-            .ifPresent(rule -> {
+        .filter(rule -> !rule.predicate().test(trimmed))
+        .findFirst()
+        .ifPresent(
+            rule -> {
               throw new IllegalArgumentException(rule.message());
             });
 

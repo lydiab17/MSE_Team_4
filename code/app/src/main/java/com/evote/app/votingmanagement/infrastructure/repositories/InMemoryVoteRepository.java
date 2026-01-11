@@ -11,8 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 /**
- * Thread-safe In-Memory implementation of VoteRepository.
- * Suitable for tests and local prototyping.
+ * Thread-safe In-Memory implementation of VoteRepository. Suitable for tests and local prototyping.
  */
 @Repository
 public class InMemoryVoteRepository implements VoteRepository {
@@ -35,30 +34,23 @@ public class InMemoryVoteRepository implements VoteRepository {
   public List<Vote> findByVotingId(int votingId) {
     // collect to new list to avoid exposing internal map values view
     return store.values().stream()
-            .filter(v -> v.getVotingId() == votingId)
-            .collect(Collectors.toCollection(ArrayList::new));
+        .filter(v -> v.getVotingId() == votingId)
+        .collect(Collectors.toCollection(ArrayList::new));
   }
 
   @Override
   public boolean existsByVotingIdAndPseudonym(int votingId, String voterKey) {
     return store.values().stream()
-            .anyMatch(v -> v.getVotingId() == votingId
-                    && voterKey.equals(v.getVoterKey()));
+        .anyMatch(v -> v.getVotingId() == votingId && voterKey.equals(v.getVoterKey()));
   }
 
-  /**
-   * Helper: clear repository (useful in tests).
-   */
+  /** Helper: clear repository (useful in tests). */
   public void clear() {
     store.clear();
   }
 
-  /**
-   * Helper: count votes for a votingId (useful in assertions).
-   */
+  /** Helper: count votes for a votingId (useful in assertions). */
   public long countByVotingId(int votingId) {
-    return store.values().stream()
-            .filter(v -> votingId == v.getVotingId())
-            .count();
+    return store.values().stream().filter(v -> votingId == v.getVotingId()).count();
   }
 }

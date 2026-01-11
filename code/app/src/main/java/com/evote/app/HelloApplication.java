@@ -1,5 +1,6 @@
 package com.evote.app;
 
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -7,8 +8,6 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.ConfigurableApplicationContext;
-
-import java.io.IOException;
 
 public class HelloApplication extends Application {
 
@@ -49,9 +48,8 @@ public class HelloApplication extends Application {
   // FXML-Datei laden und den Controller über Spring erzeugen
   public static Parent loadFXML(String fxmlFilename) {
     try {
-      FXMLLoader loader = new FXMLLoader(
-              HelloApplication.class.getClassLoader().getResource(fxmlFilename)
-      );
+      FXMLLoader loader =
+          new FXMLLoader(HelloApplication.class.getClassLoader().getResource(fxmlFilename));
 
       // <<< WICHTIG: Hier binden wir Spring ein
       loader.setControllerFactory(springContext::getBean);

@@ -12,26 +12,28 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final AuthFilter authFilter;
+  private final AuthFilter authFilter;
 
-    public SecurityConfig(AuthFilter authFilter) {
-        this.authFilter = authFilter;
-    }
+  public SecurityConfig(AuthFilter authFilter) {
+    this.authFilter = authFilter;
+  }
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+  @Bean
+  public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        http
-            .csrf(csrf -> csrf.disable())
-            .sessionManagement(session ->
-                    session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/citizens/register", "/api/citizens/login").permitAll()
-                    .requestMatchers("/api/votings/**").permitAll()
-                    .anyRequest().authenticated()
-            )
-            .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
+    http.csrf(csrf -> csrf.disable())
+        .sessionManagement(
+            session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authorizeHttpRequests(
+            auth ->
+                auth.requestMatchers("/api/citizens/register", "/api/citizens/login")
+                    .permitAll()
+                    .requestMatchers("/api/votings/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated())
+        .addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return http.build();
-    }
+    return http.build();
+  }
 }

@@ -32,29 +32,24 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class VotingRestControllerTest {
 
-  @Mock
-  private VotingCommandService commandService;
+  @Mock private VotingCommandService commandService;
 
-  @Mock
-  private VotingQueryService queryService;
+  @Mock private VotingQueryService queryService;
 
-  @Mock
-  private VoteCastingService voteCastingService;
+  @Mock private VoteCastingService voteCastingService;
 
-  @InjectMocks
-  private VotingRestController controller;
+  @InjectMocks private VotingRestController controller;
 
   private Voting createValidVoting(int id) {
     LocalDate start = LocalDate.of(2030, 5, 10);
     LocalDate end = start.plusDays(7);
     return Voting.create(
-            id,
-            "Abstimmung " + id,
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            start,
-            end,
-            Set.of("Ja", "Nein")
-    );
+        id,
+        "Abstimmung " + id,
+        "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+        start,
+        end,
+        Set.of("Ja", "Nein"));
   }
 
   // ---------- create(...) ----------
@@ -65,14 +60,14 @@ class VotingRestControllerTest {
     LocalDate start = LocalDate.of(2030, 5, 10);
     LocalDate end = start.plusDays(7);
 
-    CreateVotingRequest request = new CreateVotingRequest(
+    CreateVotingRequest request =
+        new CreateVotingRequest(
             1,
             "Abstimmung 1",
             "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
             start,
             end,
-            List.of("Ja", "Nein")
-    );
+            List.of("Ja", "Nein"));
 
     Voting voting = createValidVoting(1);
 
@@ -82,8 +77,8 @@ class VotingRestControllerTest {
             anyString(),
             any(LocalDate.class),
             any(LocalDate.class),
-            anySet()
-    )).thenReturn(voting);
+            anySet()))
+        .thenReturn(voting);
 
     VotingResponse response = controller.create(request);
 
@@ -95,49 +90,56 @@ class VotingRestControllerTest {
     assertEquals(voting.isVotingStatus(), response.open());
     assertEquals(voting.getOptionTexts(), response.options());
 
-    verify(commandService).createVoting(
+    verify(commandService)
+        .createVoting(
             eq(1),
             eq(request.name()),
             eq(request.info()),
             eq(request.startDate()),
             eq(request.endDate()),
-            anySet()
-    );
+            anySet());
   }
 
   @Test
-  @DisplayName("create: Options werden in LinkedHashSet konvertiert (Duplikate raus, Reihenfolge bleibt)")
+  @DisplayName(
+      "create: Options werden in LinkedHashSet konvertiert (Duplikate raus, Reihenfolge bleibt)")
   void create_convertsOptionsToLinkedHashSet_dedupes_preservesOrder() {
     LocalDate start = LocalDate.of(2030, 5, 10);
     LocalDate end = start.plusDays(7);
 
-    CreateVotingRequest request = new CreateVotingRequest(
+    CreateVotingRequest request =
+        new CreateVotingRequest(
             2,
             "Abstimmung 2",
             "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
             start,
             end,
-            List.of("Ja", "Nein", "Ja")
-    );
+            List.of("Ja", "Nein", "Ja"));
 
     Voting voting = createValidVoting(2);
 
-    when(commandService.createVoting(anyInt(), anyString(), anyString(), any(LocalDate.class), any(LocalDate.class), anySet()))
-            .thenReturn(voting);
+    when(commandService.createVoting(
+            anyInt(),
+            anyString(),
+            anyString(),
+            any(LocalDate.class),
+            any(LocalDate.class),
+            anySet()))
+        .thenReturn(voting);
 
     controller.create(request);
 
     @SuppressWarnings("unchecked")
     ArgumentCaptor<Set<String>> optionsCaptor = ArgumentCaptor.forClass(Set.class);
 
-    verify(commandService).createVoting(
+    verify(commandService)
+        .createVoting(
             eq(2),
             eq(request.name()),
             eq(request.info()),
             eq(request.startDate()),
             eq(request.endDate()),
-            optionsCaptor.capture()
-    );
+            optionsCaptor.capture());
 
     Set<String> passed = optionsCaptor.getValue();
     assertNotNull(passed);
@@ -179,7 +181,7 @@ class VotingRestControllerTest {
     when(queryService.getVotingById(99)).thenReturn(Optional.empty());
 
     IllegalArgumentException ex =
-            assertThrows(IllegalArgumentException.class, () -> controller.getById(99));
+        assertThrows(IllegalArgumentException.class, () -> controller.getById(99));
     assertEquals("Voting nicht gefunden", ex.getMessage());
   }
 
@@ -230,7 +232,8 @@ class VotingRestControllerTest {
   // ---------- castVote(...) ----------
 
   @Test
-  @DisplayName("castVote: extrahiert Token aus 'Bearer <jwt>' und delegiert an voteCastingService.castVote")
+  @DisplayName(
+      "castVote: extrahiert Token aus 'Bearer <jwt>' und delegiert an voteCastingService.castVote")
   void castVote_stripsBearerPrefix_andCallsService() {
     CastVoteRequest request = new CastVoteRequest("Ja");
 
@@ -266,10 +269,8 @@ class VotingRestControllerTest {
   @Test
   @DisplayName("getResults: mappt OptionResult-Liste zu VotingResultsResponse")
   void getResults_mapsOptionResults() {
-    when(queryService.getResultsForVoting(3)).thenReturn(List.of(
-            new OptionResult("Ja", 10),
-            new OptionResult("Nein", 3)
-    ));
+    when(queryService.getResultsForVoting(3))
+        .thenReturn(List.of(new OptionResult("Ja", 10), new OptionResult("Nein", 3)));
 
     VotingResultsResponse resp = controller.getResults(3);
 
@@ -290,8 +291,8 @@ class VotingRestControllerTest {
 
   @Test
   void castVote_missingAuthorization_throwsIllegalArgumentException() {
-    assertThrows(IllegalArgumentException.class,
-            () -> controller.castVote(1, new CastVoteRequest("Ja"), null));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> controller.castVote(1, new CastVoteRequest("Ja"), null));
   }
-
 }

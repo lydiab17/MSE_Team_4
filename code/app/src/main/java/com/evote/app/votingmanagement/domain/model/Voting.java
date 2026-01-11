@@ -13,7 +13,6 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
-
 /**
  * Die Klasse repräsentiert die Entität Voting.
  *
@@ -31,12 +30,13 @@ public class Voting {
 
   private boolean votingStatus; // false: noch nicht freigeschaltet
 
-  private Voting(int id,
-                 VotingName name,
-                 VotingInfo info,
-                 LocalDate startDate,
-                 LocalDate endDate,
-                 List<OptionLabel> options) {
+  private Voting(
+      int id,
+      VotingName name,
+      VotingInfo info,
+      LocalDate startDate,
+      LocalDate endDate,
+      List<OptionLabel> options) {
     this.id = id;
     this.name = name;
     this.info = info;
@@ -47,21 +47,23 @@ public class Voting {
   }
 
   /**
-   * Erstellt ein Voting Object.
-   * Regeln:
-   * * <ul>
-   * *   <li>10–100 Zeichen</li>
-   * *   <li>beginnt mit Großbuchstaben (inkl. Umlaute)</li>
-   * *   <li>nur Buchstaben, Ziffern und Leerzeichen</li>
-   * * Ungültige Werte führen zu IllegalArgumentException im Konstruktor.
-   * * </ul>
+   * Erstellt ein Voting Object. Regeln: *
+   *
+   * <ul>
+   *   *
+   *   <li>10–100 Zeichen *
+   *   <li>beginnt mit Großbuchstaben (inkl. Umlaute) *
+   *   <li>nur Buchstaben, Ziffern und Leerzeichen * Ungültige Werte führen zu
+   *       IllegalArgumentException im Konstruktor. *
+   * </ul>
    */
-  public static Voting create(int id,
-                              String rawName,
-                              String rawInfo,
-                              LocalDate startDate,
-                              LocalDate endDate,
-                              Set<String> rawOptions) {
+  public static Voting create(
+      int id,
+      String rawName,
+      String rawInfo,
+      LocalDate startDate,
+      LocalDate endDate,
+      Set<String> rawOptions) {
 
     // null-Prüfungen
     Objects.requireNonNull(startDate, "startDate darf nicht null sein");

@@ -8,12 +8,13 @@ import java.util.function.Predicate;
  * Repräsentiert den Beschreibungstext ({@code info}) einer Abstimmung.
  *
  * <p>Fachliche Regeln:
+ *
  * <ul>
- *   <li>darf nicht {@code null} sein</li>
- *   <li>darf nach dem Trimmen nicht leer sein</li>
- *   <li>Länge (nach Trim): mindestens 30, höchstens 1000 Zeichen</li>
- *   <li>muss mit einem Großbuchstaben beginnen</li>
- *   <li>Zeilenumbrüche und sonstige Zeichen im Rest sind erlaubt</li>
+ *   <li>darf nicht {@code null} sein
+ *   <li>darf nach dem Trimmen nicht leer sein
+ *   <li>Länge (nach Trim): mindestens 30, höchstens 1000 Zeichen
+ *   <li>muss mit einem Großbuchstaben beginnen
+ *   <li>Zeilenumbrüche und sonstige Zeichen im Rest sind erlaubt
  * </ul>
  *
  * <p>Ungültige Werte führen im Konstruktor zu einer {@link IllegalArgumentException}.
@@ -25,11 +26,11 @@ public final class VotingInfo {
 
   private final String value;
 
-  private static final List<Rule> RULES = List.of(
+  private static final List<Rule> RULES =
+      List.of(
           new Rule(s -> !s.isEmpty(), "Info darf nicht leer sein"),
           new Rule(VotingInfo::isValidLength, "Info muss zwischen 30 und 1000 Zeichen lang sein"),
-          new Rule(VotingInfo::startsWithUppercase, "Info muss mit Großbuchstaben beginnen")
-  );
+          new Rule(VotingInfo::startsWithUppercase, "Info muss mit Großbuchstaben beginnen"));
 
   /**
    * Erstellt ein neues {@code VotingInfo}-Objekt und validiert den Beschreibungstext.
@@ -43,9 +44,10 @@ public final class VotingInfo {
     String trimmed = raw.trim();
 
     RULES.stream()
-            .filter(rule -> !rule.predicate().test(trimmed))
-            .findFirst()
-            .ifPresent(rule -> {
+        .filter(rule -> !rule.predicate().test(trimmed))
+        .findFirst()
+        .ifPresent(
+            rule -> {
               throw new IllegalArgumentException(rule.message());
             });
 

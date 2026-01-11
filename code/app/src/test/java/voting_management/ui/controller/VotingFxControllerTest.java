@@ -47,9 +47,8 @@ class VotingFxControllerTest {
     String wayland = System.getenv("WAYLAND_DISPLAY");
 
     assumeTrue(
-            (display != null && !display.isBlank()) || (wayland != null && !wayland.isBlank()),
-            "Skipping JavaFX tests: no DISPLAY/WAYLAND_DISPLAY available"
-    );
+        (display != null && !display.isBlank()) || (wayland != null && !wayland.isBlank()),
+        "Skipping JavaFX tests: no DISPLAY/WAYLAND_DISPLAY available");
 
     try {
       Platform.startup(() -> {});
@@ -59,14 +58,14 @@ class VotingFxControllerTest {
     Platform.setImplicitExit(false);
   }
 
-
   @AfterEach
   void closeWindows() throws Exception {
-    runOnFxThreadAndWait(() -> {
-      for (Window w : new ArrayList<>(Window.getWindows())) {
-        if (w.isShowing()) w.hide();
-      }
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          for (Window w : new ArrayList<>(Window.getWindows())) {
+            if (w.isShowing()) w.hide();
+          }
+        });
   }
 
   @BeforeEach
@@ -76,32 +75,33 @@ class VotingFxControllerTest {
 
     controller = new VotingFxController(api, auth);
 
-    runOnFxThreadAndWait(() -> {
-      try {
-        inject(controller, "idField", new TextField());
-        inject(controller, "nameField", new TextField());
-        inject(controller, "infoArea", new TextArea());
-        inject(controller, "startDatePicker", new DatePicker());
-        inject(controller, "endDatePicker", new DatePicker());
-        inject(controller, "optionsField", new TextField());
+    runOnFxThreadAndWait(
+        () -> {
+          try {
+            inject(controller, "idField", new TextField());
+            inject(controller, "nameField", new TextField());
+            inject(controller, "infoArea", new TextArea());
+            inject(controller, "startDatePicker", new DatePicker());
+            inject(controller, "endDatePicker", new DatePicker());
+            inject(controller, "optionsField", new TextField());
 
-        inject(controller, "openVotingsList", new ListView<VotingResponse>());
-        inject(controller, "notOpenVotingsList", new ListView<VotingResponse>());
+            inject(controller, "openVotingsList", new ListView<VotingResponse>());
+            inject(controller, "notOpenVotingsList", new ListView<VotingResponse>());
 
-        inject(controller, "statusLabel", new Label());
+            inject(controller, "statusLabel", new Label());
 
-        TableView<OptionResultResponse> table = new TableView<>();
-        TableColumn<OptionResultResponse, String> optCol = new TableColumn<>("Option");
-        TableColumn<OptionResultResponse, Long> cntCol = new TableColumn<>("Count");
-        table.getColumns().setAll(optCol, cntCol);
+            TableView<OptionResultResponse> table = new TableView<>();
+            TableColumn<OptionResultResponse, String> optCol = new TableColumn<>("Option");
+            TableColumn<OptionResultResponse, Long> cntCol = new TableColumn<>("Count");
+            table.getColumns().setAll(optCol, cntCol);
 
-        inject(controller, "resultsTable", table);
-        inject(controller, "optionColumn", optCol);
-        inject(controller, "countColumn", cntCol);
-      } catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
+            inject(controller, "resultsTable", table);
+            inject(controller, "optionColumn", optCol);
+            inject(controller, "countColumn", cntCol);
+          } catch (Exception e) {
+            throw new RuntimeException(e);
+          }
+        });
   }
 
   // ============================================================
@@ -115,18 +115,20 @@ class VotingFxControllerTest {
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "initialize"));
 
-    waitUntilFx(() -> {
-      ListView<VotingResponse> open = get("openVotingsList");
-      ListView<VotingResponse> notOpen = get("notOpenVotingsList");
-      return open.getItems().size() == 2 && notOpen.getItems().size() == 1;
-    });
+    waitUntilFx(
+        () -> {
+          ListView<VotingResponse> open = get("openVotingsList");
+          ListView<VotingResponse> notOpen = get("notOpenVotingsList");
+          return open.getItems().size() == 2 && notOpen.getItems().size() == 1;
+        });
 
     // Status kann je nach Implementation variieren -> nur "nicht leer" prüfen
-    runOnFxThreadAndWait(() -> {
-      Label status = get("statusLabel");
-      assertNotNull(status.getText());
-      assertFalse(status.getText().isBlank());
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          Label status = get("statusLabel");
+          assertNotNull(status.getText());
+          assertFalse(status.getText().isBlank());
+        });
 
     assertEquals(1, api.getOpenCalls.get());
     assertEquals(1, api.getNotOpenCalls.get());
@@ -139,45 +141,50 @@ class VotingFxControllerTest {
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "initialize"));
 
-    waitUntilFx(() -> {
-      ListView<VotingResponse> open = get("openVotingsList");
-      return open.getItems().size() == 1;
-    });
+    waitUntilFx(
+        () -> {
+          ListView<VotingResponse> open = get("openVotingsList");
+          return open.getItems().size() == 1;
+        });
 
-    runOnFxThreadAndWait(() -> {
-      TableView<OptionResultResponse> t = get("resultsTable");
-      t.getItems().setAll(new OptionResultResponse("Ja", 1));
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          TableView<OptionResultResponse> t = get("resultsTable");
+          t.getItems().setAll(new OptionResultResponse("Ja", 1));
+        });
 
-    runOnFxThreadAndWait(() -> {
-      ListView<VotingResponse> open = get("openVotingsList");
-      open.getSelectionModel().select(0);
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          ListView<VotingResponse> open = get("openVotingsList");
+          open.getSelectionModel().select(0);
+        });
 
-    waitUntilFx(() -> {
-      ListView<VotingResponse> notOpen = get("notOpenVotingsList");
-      TextField idField = get("idField");
-      TableView<OptionResultResponse> t = get("resultsTable");
-      return notOpen.getSelectionModel().getSelectedItem() == null
+    waitUntilFx(
+        () -> {
+          ListView<VotingResponse> notOpen = get("notOpenVotingsList");
+          TextField idField = get("idField");
+          TableView<OptionResultResponse> t = get("resultsTable");
+          return notOpen.getSelectionModel().getSelectedItem() == null
               && "1".equals(idField.getText())
               && t.getItems().isEmpty();
-    });
+        });
   }
 
   @Test
   void initialize_tableColumnsAreConfigured() throws Exception {
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "initialize"));
 
-    runOnFxThreadAndWait(() -> {
-      TableView<OptionResultResponse> table = get("resultsTable");
-      table.getItems().setAll(new OptionResultResponse("Nein", 5L));
+    runOnFxThreadAndWait(
+        () -> {
+          TableView<OptionResultResponse> table = get("resultsTable");
+          table.getItems().setAll(new OptionResultResponse("Nein", 5L));
 
-      TableColumn<OptionResultResponse, String> optionCol = get("optionColumn");
-      TableColumn<OptionResultResponse, Long> countCol = get("countColumn");
+          TableColumn<OptionResultResponse, String> optionCol = get("optionColumn");
+          TableColumn<OptionResultResponse, Long> countCol = get("countColumn");
 
-      assertEquals("Nein", optionCol.getCellData(0));
-      assertEquals(5L, countCol.getCellData(0));
-    });
+          assertEquals("Nein", optionCol.getCellData(0));
+          assertEquals(5L, countCol.getCellData(0));
+        });
   }
 
   // ============================================================
@@ -186,29 +193,31 @@ class VotingFxControllerTest {
 
   @Test
   void onClearForm_clearsAndSetsStatus() throws Exception {
-    runOnFxThreadAndWait(() -> {
-      getText("idField").setText("99");
-      getText("nameField").setText("Name");
-      ((TextArea) getField(controller, "infoArea")).setText("Info");
-      ((DatePicker) getField(controller, "startDatePicker")).setValue(LocalDate.of(2030, 1, 1));
-      ((DatePicker) getField(controller, "endDatePicker")).setValue(LocalDate.of(2030, 1, 2));
-      getText("optionsField").setText("Ja, Nein");
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          getText("idField").setText("99");
+          getText("nameField").setText("Name");
+          ((TextArea) getField(controller, "infoArea")).setText("Info");
+          ((DatePicker) getField(controller, "startDatePicker")).setValue(LocalDate.of(2030, 1, 1));
+          ((DatePicker) getField(controller, "endDatePicker")).setValue(LocalDate.of(2030, 1, 2));
+          getText("optionsField").setText("Ja, Nein");
+        });
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "onClearForm"));
 
-    runOnFxThreadAndWait(() -> {
-      assertEquals("", getText("idField").getText());
-      assertEquals("", getText("nameField").getText());
-      assertEquals("", ((TextArea) getField(controller, "infoArea")).getText());
-      assertNull(((DatePicker) getField(controller, "startDatePicker")).getValue());
-      assertNull(((DatePicker) getField(controller, "endDatePicker")).getValue());
-      assertEquals("", getText("optionsField").getText());
+    runOnFxThreadAndWait(
+        () -> {
+          assertEquals("", getText("idField").getText());
+          assertEquals("", getText("nameField").getText());
+          assertEquals("", ((TextArea) getField(controller, "infoArea")).getText());
+          assertNull(((DatePicker) getField(controller, "startDatePicker")).getValue());
+          assertNull(((DatePicker) getField(controller, "endDatePicker")).getValue());
+          assertEquals("", getText("optionsField").getText());
 
-      Label status = get("statusLabel");
-      assertNotNull(status.getText());
-      assertFalse(status.getText().isBlank());
-    });
+          Label status = get("statusLabel");
+          assertNotNull(status.getText());
+          assertFalse(status.getText().isBlank());
+        });
   }
 
   // ============================================================
@@ -226,25 +235,28 @@ class VotingFxControllerTest {
 
     assertEquals(0, api.createCalls.get());
 
-    runOnFxThreadAndWait(() -> {
-      // je nach Implementation: Status kann Fehler enthalten ODER unverändert bleiben
-      Label status = get("statusLabel");
-      assertNotNull(status.getText());
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          // je nach Implementation: Status kann Fehler enthalten ODER unverändert bleiben
+          Label status = get("statusLabel");
+          assertNotNull(status.getText());
+        });
   }
 
   @Test
   void onCreateVoting_invalidId_doesNotCallApi() throws Exception {
     auth.setToken("jwt");
 
-    runOnFxThreadAndWait(() -> {
-      getText("idField").setText("abc");
-      getText("nameField").setText("Abstimmung 1");
-      ((TextArea) getField(controller, "infoArea")).setText("Beschreibung Mit Mindestens Dreißig Zeichen Länge.");
-      ((DatePicker) getField(controller, "startDatePicker")).setValue(LocalDate.of(2030, 1, 1));
-      ((DatePicker) getField(controller, "endDatePicker")).setValue(LocalDate.of(2030, 1, 2));
-      getText("optionsField").setText("Ja");
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          getText("idField").setText("abc");
+          getText("nameField").setText("Abstimmung 1");
+          ((TextArea) getField(controller, "infoArea"))
+              .setText("Beschreibung Mit Mindestens Dreißig Zeichen Länge.");
+          ((DatePicker) getField(controller, "startDatePicker")).setValue(LocalDate.of(2030, 1, 1));
+          ((DatePicker) getField(controller, "endDatePicker")).setValue(LocalDate.of(2030, 1, 2));
+          getText("optionsField").setText("Ja");
+        });
 
     AutoCloseAlerts closer = AutoCloseAlerts.start();
     try {
@@ -264,14 +276,16 @@ class VotingFxControllerTest {
     api.notOpenToReturn = List.of(voting(2, false));
     api.createdToReturn = voting(42, false);
 
-    runOnFxThreadAndWait(() -> {
-      getText("idField").setText("42");
-      getText("nameField").setText("Abstimmung 42");
-      ((TextArea) getField(controller, "infoArea")).setText("Beschreibung Mit Mindestens Dreißig Zeichen Länge.");
-      ((DatePicker) getField(controller, "startDatePicker")).setValue(LocalDate.of(2030, 5, 1));
-      ((DatePicker) getField(controller, "endDatePicker")).setValue(LocalDate.of(2030, 5, 2));
-      getText("optionsField").setText("Ja, Nein");
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          getText("idField").setText("42");
+          getText("nameField").setText("Abstimmung 42");
+          ((TextArea) getField(controller, "infoArea"))
+              .setText("Beschreibung Mit Mindestens Dreißig Zeichen Länge.");
+          ((DatePicker) getField(controller, "startDatePicker")).setValue(LocalDate.of(2030, 5, 1));
+          ((DatePicker) getField(controller, "endDatePicker")).setValue(LocalDate.of(2030, 5, 2));
+          getText("optionsField").setText("Ja, Nein");
+        });
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "initialize"));
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "onCreateVoting"));
@@ -279,14 +293,15 @@ class VotingFxControllerTest {
     // robust: warte auf API-Call statt Status-String
     waitUntil(() -> api.createCalls.get() == 1, 10);
 
-    runOnFxThreadAndWait(() -> {
-      assertEquals("", getText("idField").getText());
-      assertEquals("", getText("nameField").getText());
-      assertEquals("", ((TextArea) getField(controller, "infoArea")).getText());
-      assertNull(((DatePicker) getField(controller, "startDatePicker")).getValue());
-      assertNull(((DatePicker) getField(controller, "endDatePicker")).getValue());
-      assertEquals("", getText("optionsField").getText());
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          assertEquals("", getText("idField").getText());
+          assertEquals("", getText("nameField").getText());
+          assertEquals("", ((TextArea) getField(controller, "infoArea")).getText());
+          assertNull(((DatePicker) getField(controller, "startDatePicker")).getValue());
+          assertNull(((DatePicker) getField(controller, "endDatePicker")).getValue());
+          assertEquals("", getText("optionsField").getText());
+        });
 
     CreateVotingRequest req = api.lastCreateRequest.get();
     assertNotNull(req);
@@ -314,7 +329,9 @@ class VotingFxControllerTest {
     String after = runOnFxThreadAndGet(() -> getStatus().getText());
     assertNotNull(after);
     // entweder Fehler gesetzt oder Status bleibt wie vorher
-    assertTrue(after.equals(before) || after.startsWith("Fehler:"), "Status sollte Fehler anzeigen oder unverändert bleiben");
+    assertTrue(
+        after.equals(before) || after.startsWith("Fehler:"),
+        "Status sollte Fehler anzeigen oder unverändert bleiben");
   }
 
   @Test
@@ -323,12 +340,16 @@ class VotingFxControllerTest {
     api.notOpenToReturn = List.of();
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "initialize"));
-    waitUntilFx(() -> ((ListView<VotingResponse>) getField(controller, "openVotingsList")).getItems().size() == 1);
+    waitUntilFx(
+        () ->
+            ((ListView<VotingResponse>) getField(controller, "openVotingsList")).getItems().size()
+                == 1);
 
-    runOnFxThreadAndWait(() -> {
-      ListView<VotingResponse> open = get("openVotingsList");
-      open.getSelectionModel().select(0);
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          ListView<VotingResponse> open = get("openVotingsList");
+          open.getSelectionModel().select(0);
+        });
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "onLoadSelectedVoting"));
 
@@ -373,15 +394,17 @@ class VotingFxControllerTest {
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "initialize"));
 
-    waitUntilFx(() -> {
-      ListView<VotingResponse> l = get("notOpenVotingsList");
-      return l.getItems().size() == 1;
-    });
+    waitUntilFx(
+        () -> {
+          ListView<VotingResponse> l = get("notOpenVotingsList");
+          return l.getItems().size() == 1;
+        });
 
-    runOnFxThreadAndWait(() -> {
-      ListView<VotingResponse> l = get("notOpenVotingsList");
-      l.getSelectionModel().select(0);
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          ListView<VotingResponse> l = get("notOpenVotingsList");
+          l.getSelectionModel().select(0);
+        });
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "onOpenSelectedVoting"));
 
@@ -397,28 +420,29 @@ class VotingFxControllerTest {
   void onLoadResults_noSelection_doesNotCallApi_andDoesNotPopulateTable() throws Exception {
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "initialize"));
 
-    runOnFxThreadAndWait(() -> {
-      TableView<OptionResultResponse> table = get("resultsTable");
-      table.getItems().clear();
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          TableView<OptionResultResponse> table = get("resultsTable");
+          table.getItems().clear();
+        });
 
     int callsBefore = api.getResultsCalls.get();
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "onLoadResults"));
 
-    runOnFxThreadAndWait(() -> {
-      // API darf ohne Auswahl nicht aufgerufen werden
-      assertEquals(callsBefore, api.getResultsCalls.get());
+    runOnFxThreadAndWait(
+        () -> {
+          // API darf ohne Auswahl nicht aufgerufen werden
+          assertEquals(callsBefore, api.getResultsCalls.get());
 
-      // Tabelle bleibt leer
-      TableView<OptionResultResponse> table = get("resultsTable");
-      assertTrue(table.getItems().isEmpty());
+          // Tabelle bleibt leer
+          TableView<OptionResultResponse> table = get("resultsTable");
+          assertTrue(table.getItems().isEmpty());
 
-      // Status wird im echten Code gesetzt:
-      assertEquals("Bitte zuerst ein Voting auswählen.", getStatus().getText());
-    });
+          // Status wird im echten Code gesetzt:
+          assertEquals("Bitte zuerst ein Voting auswählen.", getStatus().getText());
+        });
   }
-
 
   @Test
   void onLoadResults_success_populatesTable() throws Exception {
@@ -427,20 +451,20 @@ class VotingFxControllerTest {
     VotingResponse v = voting(3, true);
     setField(controller, "selectedVoting", v);
 
-    api.resultsToReturn = new VotingResultsResponse(
-            3,
-            List.of(new OptionResultResponse("Ja", 10), new OptionResultResponse("Nein", 2))
-    );
+    api.resultsToReturn =
+        new VotingResultsResponse(
+            3, List.of(new OptionResultResponse("Ja", 10), new OptionResultResponse("Nein", 2)));
 
     runOnFxThreadAndWait(() -> invokeVoidNoArgs(controller, "onLoadResults"));
 
     // robust: warte auf API call und Table befüllt
     waitUntil(() -> api.getResultsCalls.get() == 1, 10);
 
-    waitUntilFx(() -> {
-      TableView<OptionResultResponse> table = get("resultsTable");
-      return table.getItems().size() == 2;
-    });
+    waitUntilFx(
+        () -> {
+          TableView<OptionResultResponse> table = get("resultsTable");
+          return table.getItems().size() == 2;
+        });
   }
 
   // ============================================================
@@ -458,11 +482,12 @@ class VotingFxControllerTest {
       closer.stop();
     }
 
-    runOnFxThreadAndWait(() -> {
-      Label status = get("statusLabel");
-      assertNotNull(status.getText());
-      // je nach Implementation kann Fehler im Status stehen
-    });
+    runOnFxThreadAndWait(
+        () -> {
+          Label status = get("statusLabel");
+          assertNotNull(status.getText());
+          // je nach Implementation kann Fehler im Status stehen
+        });
   }
 
   // ============================================================
@@ -471,14 +496,13 @@ class VotingFxControllerTest {
 
   private VotingResponse voting(int id, boolean open) {
     return new VotingResponse(
-            id,
-            "Voting " + id,
-            "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-            LocalDate.of(2030, 1, 1),
-            LocalDate.of(2030, 1, 2),
-            open,
-            List.of("Ja", "Nein")
-    );
+        id,
+        "Voting " + id,
+        "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+        LocalDate.of(2030, 1, 1),
+        LocalDate.of(2030, 1, 2),
+        open,
+        List.of("Ja", "Nein"));
   }
 
   private Label getStatus() {
@@ -544,34 +568,35 @@ class VotingFxControllerTest {
 
     private VotingResponse votingFallback() {
       return new VotingResponse(
-              1,
-              "Voting 1",
-              "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
-              LocalDate.of(2030, 1, 1),
-              LocalDate.of(2030, 1, 2),
-              true,
-              List.of("Ja")
-      );
+          1,
+          "Voting 1",
+          "Beschreibung Mit Mindestens Dreißig Zeichen Länge.",
+          LocalDate.of(2030, 1, 1),
+          LocalDate.of(2030, 1, 2),
+          true,
+          List.of("Ja"));
     }
   }
 
-  /**
-   * Schließt Alerts, damit showAndWait() nicht hängt.
-   */
+  /** Schließt Alerts, damit showAndWait() nicht hängt. */
   static class AutoCloseAlerts {
     private volatile boolean running = true;
     private final Thread t;
 
     private AutoCloseAlerts() {
-      t = new Thread(() -> {
-        while (running) {
-          Platform.runLater(() -> {
-            for (Window w : new ArrayList<>(Window.getWindows())) {
-              if (w.isShowing()) w.hide();
-            }
-          });
-        }
-      }, "auto-close-alerts");
+      t =
+          new Thread(
+              () -> {
+                while (running) {
+                  Platform.runLater(
+                      () -> {
+                        for (Window w : new ArrayList<>(Window.getWindows())) {
+                          if (w.isShowing()) w.hide();
+                        }
+                      });
+                }
+              },
+              "auto-close-alerts");
       t.setDaemon(true);
       t.start();
     }
@@ -617,18 +642,20 @@ class VotingFxControllerTest {
     }
     CountDownLatch latch = new CountDownLatch(1);
     AtomicReference<Throwable> error = new AtomicReference<>();
-    Platform.runLater(() -> {
-      try {
-        r.run();
-      } catch (Throwable t) {
-        error.set(t);
-      } finally {
-        latch.countDown();
-      }
-    });
+    Platform.runLater(
+        () -> {
+          try {
+            r.run();
+          } catch (Throwable t) {
+            error.set(t);
+          } finally {
+            latch.countDown();
+          }
+        });
 
     boolean ok = latch.await(15, TimeUnit.SECONDS);
-    assertTrue(ok, "FX runLater timeout (Toolkit evtl. beendet). Tipp: Platform.setImplicitExit(false)");
+    assertTrue(
+        ok, "FX runLater timeout (Toolkit evtl. beendet). Tipp: Platform.setImplicitExit(false)");
     if (error.get() != null) throw new RuntimeException(error.get());
   }
 
@@ -639,15 +666,16 @@ class VotingFxControllerTest {
     AtomicReference<Throwable> error = new AtomicReference<>();
     AtomicReference<T> value = new AtomicReference<>();
 
-    Platform.runLater(() -> {
-      try {
-        value.set(s.get());
-      } catch (Throwable t) {
-        error.set(t);
-      } finally {
-        latch.countDown();
-      }
-    });
+    Platform.runLater(
+        () -> {
+          try {
+            value.set(s.get());
+          } catch (Throwable t) {
+            error.set(t);
+          } finally {
+            latch.countDown();
+          }
+        });
 
     boolean ok = latch.await(15, TimeUnit.SECONDS);
     assertTrue(ok, "FX runLater timeout");

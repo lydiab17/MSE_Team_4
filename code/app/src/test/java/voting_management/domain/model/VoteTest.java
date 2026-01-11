@@ -2,11 +2,10 @@ package voting_management.domain.model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.evote.app.votingmanagement.domain.model.Vote;
 import java.lang.reflect.Constructor;
 import java.time.Instant;
 import java.util.UUID;
-
-import com.evote.app.votingmanagement.domain.model.Vote;
 import org.junit.jupiter.api.Test;
 
 class VoteTest {
@@ -37,10 +36,12 @@ class VoteTest {
     assertNotNull(vote.getSubmittedAt());
 
     // Wenn deine CI mal minimal drift hat, ist das robust:
-    assertTrue(!vote.getSubmittedAt().isBefore(before.minusMillis(50)),
-            "submittedAt sollte nicht deutlich vor 'before' liegen");
-    assertTrue(!vote.getSubmittedAt().isAfter(after.plusMillis(50)),
-            "submittedAt sollte nicht deutlich nach 'after' liegen");
+    assertTrue(
+        !vote.getSubmittedAt().isBefore(before.minusMillis(50)),
+        "submittedAt sollte nicht deutlich vor 'before' liegen");
+    assertTrue(
+        !vote.getSubmittedAt().isAfter(after.plusMillis(50)),
+        "submittedAt sollte nicht deutlich nach 'after' liegen");
   }
 
   @Test
@@ -61,20 +62,16 @@ class VoteTest {
 
   @Test
   void privateConstructor_rejectsNullSubmittedAt_andNullId_viaReflection() throws Exception {
-    Constructor<Vote> ctor = Vote.class.getDeclaredConstructor(
-            String.class, int.class, String.class, String.class, Instant.class
-    );
+    Constructor<Vote> ctor =
+        Vote.class.getDeclaredConstructor(
+            String.class, int.class, String.class, String.class, Instant.class);
     ctor.setAccessible(true);
 
     // id null
-    assertThrows(Exception.class, () ->
-            ctor.newInstance(null, 1, "Ja", "voter", Instant.now())
-    );
+    assertThrows(Exception.class, () -> ctor.newInstance(null, 1, "Ja", "voter", Instant.now()));
 
     // submittedAt null
-    assertThrows(Exception.class, () ->
-            ctor.newInstance("id", 1, "Ja", "voter", null)
-    );
+    assertThrows(Exception.class, () -> ctor.newInstance("id", 1, "Ja", "voter", null));
   }
 
   @Test

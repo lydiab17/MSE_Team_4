@@ -6,10 +6,6 @@ import java.util.List;
  * Response-DTO für die Ergebnisse einer Abstimmung.
  *
  * @param votingId ID der Abstimmung
- * @param results  Liste der Ergebnisse je Option
+ * @param results Liste der Ergebnisse je Option
  */
-public record VotingResultsResponse(
-        int votingId,
-        List<OptionResultResponse> results
-) {
-}
+public record VotingResultsResponse(int votingId, List<OptionResultResponse> results) {}

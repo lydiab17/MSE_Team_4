@@ -4,22 +4,16 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.UUID;
 
-/**
- * Einfaches immutable Vote-Aggregate (minimal).
- */
+/** Einfaches immutable Vote-Aggregate (minimal). */
 public final class Vote {
 
   private final String id;
   private final int votingId;
   private final String optionId;
-  private final String voterKey;   // früher: PseudonymToken
+  private final String voterKey; // früher: PseudonymToken
   private final Instant submittedAt;
 
-  private Vote(String id,
-               int votingId,
-               String optionId,
-               String voterKey,
-               Instant submittedAt) {
+  private Vote(String id, int votingId, String optionId, String voterKey, Instant submittedAt) {
     this.id = Objects.requireNonNull(id, "id");
     this.votingId = votingId;
     this.optionId = Objects.requireNonNull(optionId, "optionId");
@@ -30,19 +24,13 @@ public final class Vote {
   /**
    * Erzeugt einen neuen Vote mit zufälliger ID und aktuellem Zeitpunkt.
    *
-   * @param votingId  die ID der Abstimmung
-   * @param optionId  die gewählte Option
-   * @param voterKey  eindeutiger Schlüssel des Wählers (z.B. Pseudonym)
+   * @param votingId die ID der Abstimmung
+   * @param optionId die gewählte Option
+   * @param voterKey eindeutiger Schlüssel des Wählers (z.B. Pseudonym)
    * @return der neu erzeugte Vote
    */
   public static Vote createNew(int votingId, String optionId, String voterKey) {
-    return new Vote(
-            UUID.randomUUID().toString(),
-            votingId,
-            optionId,
-            voterKey,
-            Instant.now()
-    );
+    return new Vote(UUID.randomUUID().toString(), votingId, optionId, voterKey, Instant.now());
   }
 
   public String getId() {

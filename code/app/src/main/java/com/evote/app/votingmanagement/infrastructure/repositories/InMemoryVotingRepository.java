@@ -10,8 +10,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 /**
- * Einfache In-Memory-Implementierung des {@link VotingRepository}.
- * Dient vor allem zu Test- und Entwicklungszwecken.
+ * Einfache In-Memory-Implementierung des {@link VotingRepository}. Dient vor allem zu Test- und
+ * Entwicklungszwecken.
  */
 @Repository // Spring kann dieses Bean dann automatisch injizieren
 public class InMemoryVotingRepository implements VotingRepository {

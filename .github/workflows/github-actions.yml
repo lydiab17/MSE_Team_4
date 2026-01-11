@@ -29,6 +29,58 @@ jobs:
           name: app-jar
           path: code/app/target/*.jar
 
+  codeql:
+    name: CodeQL (security scan)
+    runs-on: ubuntu-latest
+    needs: build
+
+    # Wichtig: Rechte fürs Hochladen der Security Findings
+    permissions:
+      actions: read
+      contents: read
+      security-events: write
+      packages: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: java-kotlin
+          build-mode: manual
+
+      - name: Build for CodeQL
+        working-directory: code/app
+        run: mvn -B -ntp -DskipTests clean package
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+
+
+  formatting:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Spotless check (formatting)
+        working-directory: code/app
+        run: mvn -B -ntp spotless:check
+
+
   unit-tests:
     runs-on: ubuntu-latest
     needs: build
@@ -41,9 +93,52 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Run unit tests + coverage
+      - name: Run unit tests + generate JaCoCo report
         working-directory: code/app
-        run: mvn -B -ntp test
+        run: mvn -B -ntp test jacoco:report
+
+      - name: Write test + coverage summary
+        working-directory: code/app
+        shell: bash
+        run: |
+          python - <<'PY'
+          import glob, os, xml.etree.ElementTree as ET
+
+          summary_path = os.environ["GITHUB_STEP_SUMMARY"]
+
+          # ---- Surefire summary (TEST-*.xml) ----
+          tests = failures = errors = skipped = 0
+          for f in glob.glob("target/surefire-reports/TEST-*.xml"):
+              root = ET.parse(f).getroot()
+              tests += int(root.attrib.get("tests", 0))
+              failures += int(root.attrib.get("failures", 0))
+              errors += int(root.attrib.get("errors", 0))
+              skipped += int(root.attrib.get("skipped", 0))
+
+          # ---- JaCoCo summary (jacoco.xml) ----
+          cov_pct = None
+          jacoco_xml = "target/site/jacoco/jacoco.xml"
+          if os.path.exists(jacoco_xml):
+              root = ET.parse(jacoco_xml).getroot()
+              instr = root.find(".//counter[@type='INSTRUCTION']")
+              if instr is not None:
+                  missed = int(instr.attrib.get("missed", 0))
+                  covered = int(instr.attrib.get("covered", 0))
+                  total = missed + covered
+                  cov_pct = (covered / total * 100.0) if total else None
+
+          lines = []
+          lines.append("## ✅ Unit Tests")
+          lines.append(f"- Tests: **{tests}**")
+          lines.append(f"- Failures: **{failures}**, Errors: **{errors}**, Skipped: **{skipped}**")
+          if cov_pct is None:
+              lines.append("- Coverage (JaCoCo): **(jacoco.xml nicht gefunden / nicht erzeugt)**")
+          else:
+              lines.append(f"- Coverage (Instructions): **{cov_pct:.2f}%**")
+
+          with open(summary_path, "a", encoding="utf-8") as fp:
+              fp.write("\n".join(lines) + "\n")
+          PY
 
       - name: Upload test reports & coverage
         uses: actions/upload-artifact@v4
@@ -52,10 +147,11 @@ jobs:
           path: |
             code/app/target/surefire-reports
             code/app/target/site/jacoco
+  
 
   code-quality:
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, formatting]
     steps:
       - uses: actions/checkout@v4
 
@@ -65,6 +161,35 @@ jobs:
           java-version: '21'
           cache: maven
 
-      - name: Run Checkstyle (Google style)
+      - name: Generate Checkstyle report
+        working-directory: code/app
+        run: mvn -B -ntp checkstyle:checkstyle
+
+      - name: Fail on Checkstyle violations
         working-directory: code/app
         run: mvn -B -ntp checkstyle:check
+
+      - name: Write Checkstyle summary
+        working-directory: code/app
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, xml.etree.ElementTree as ET
+
+          summary_path = os.environ["GITHUB_STEP_SUMMARY"]
+          report = "target/checkstyle-result.xml"
+
+          count = None
+          if os.path.exists(report):
+              root = ET.parse(report).getroot()
+              count = len(root.findall(".//error"))
+
+          with open(summary_path, "a", encoding="utf-8") as fp:
+              fp.write("\n## 🧹 Checkstyle\n")
+              if count is None:
+                  fp.write("- Violations: **(Report nicht gefunden)**\n")
+              else:
+                  fp.write(f"- Violations: **{count}**\n")
+          PY
+     
+

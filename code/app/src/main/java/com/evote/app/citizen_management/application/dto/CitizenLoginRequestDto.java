@@ -1,6 +1,3 @@
 package com.evote.app.citizen_management.application.dto;
 
-public record CitizenLoginRequestDto(
-        String email,
-        String password
-) {}
+public record CitizenLoginRequestDto(String email, String password) {}

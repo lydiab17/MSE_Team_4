@@ -3,9 +3,7 @@ package com.evote.app.votingmanagement.domain.model;
 import java.util.List;
 import java.util.Optional;
 
-/**
- * Domain-Port: nur Interface (keine Implementierung hier).
- */
+/** Domain-Port: nur Interface (keine Implementierung hier). */
 public interface VoteRepository {
   void save(Vote vote);
 
@@ -14,6 +12,4 @@ public interface VoteRepository {
   List<Vote> findByVotingId(int votingId);
 
   boolean existsByVotingIdAndPseudonym(int votingId, String voterKey);
-
 }
-
